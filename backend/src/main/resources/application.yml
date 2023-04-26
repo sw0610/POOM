@@ -1,0 +1,27 @@
+# MongoDB Connection
+spring:
+  data:
+    mongodb:
+      host: k8a805.p.ssafy.io
+      port: 27017
+      database: poomdb
+      username: poom
+      password: poompwd1234
+
+  # Spring MVC 경로 매칭
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+# swagger setting
+springfox:
+  documentation:
+    swagger:
+      v2:
+        use-model-v3: false
+
+
+# loggin level
+logging:
+  level:
+    root: info  # TRACE  <  DEBUG  <  INFO  <  WARN  <  ERROR
