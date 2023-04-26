@@ -24,7 +24,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-aop'
+
 
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
@@ -41,9 +41,16 @@ dependencies {
     implementation("io.springfox:springfox-boot-starter:3.0.0")
 
     // to use newArrayList()
-    implementation("com.google.guava:guava:29.0-jre")
+    implementation('com.google.guava:guava:31.1-jre')
 
     // to use AOP
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
+
+    // to use JWT
+    implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
+    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
+    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
+
 
 }
 

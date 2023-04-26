@@ -32,6 +32,7 @@ public class ControllerAspect {
 
         // 파라미터 받아오기
         Object[] args = joinPoint.getArgs();
+//        if(args == null) return;
         for (Object arg : args) {
             log.info("parameter type = {}", arg.getClass().getSimpleName());
             log.info("parameter value = {}", arg);

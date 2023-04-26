@@ -1,5 +1,6 @@
 package com.poom.backend.api.controller;
 
+import com.poom.backend.api.service.member.MemberService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @Slf4j
 public class TestController {
+
+    private final MemberService memberService;
 
 
     @GetMapping("/api/test/log")
