@@ -18,6 +18,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String nickname = "songo427";
   String email = "songo427@gmail.com";
   String profileImgUrl = "https://avatars.githubusercontent.com/u/38373150?v=4";
+  bool isHideMenu = false;
+
+  void setHideMenu() {
+    setState(() {
+      isHideMenu = !isHideMenu;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,28 +61,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
             SizedBox(
               height: 286,
               child: ProfileForm(
-                  nickname: nickname,
-                  email: email,
-                  profileImgUrl: profileImgUrl),
+                nickname: nickname,
+                email: email,
+                profileImgUrl: profileImgUrl,
+                setHideMenu: setHideMenu,
+              ),
             ),
-            const Column(
+            Column(
               children: [
-                SizedBox(
-                  height: 4,
+                const SizedBox(
+                  height: 32,
                 ),
-                SizedBox(
-                  height: 60,
-                ),
-                Column(
-                  children: [
-                    MenuItem(icon: Icons.receipt, title: "나의 후원 내역"),
-                    MenuItem(
-                      icon: Icons.night_shelter_rounded,
-                      title: "보호소 회원 인증",
-                      isShelter: true,
-                    ),
-                  ],
-                ),
+                isHideMenu
+                    ? const SizedBox()
+                    : const Column(
+                        children: [
+                          MenuItem(icon: Icons.receipt, title: "나의 후원 내역"),
+                          MenuItem(
+                            icon: Icons.night_shelter_rounded,
+                            title: "보호소 회원 인증",
+                            isShelter: true,
+                          ),
+                        ],
+                      ),
               ],
             )
           ],

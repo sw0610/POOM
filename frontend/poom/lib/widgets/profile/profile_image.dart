@@ -45,7 +45,18 @@ class _ProfileImageState extends State<ProfileImage> {
             color: Colors.white,
             child: Center(
               child: _image == null
-                  ? const Text("NO IMAGE")
+                  ? Container(
+                      decoration: BoxDecoration(
+                          color: const Color(0xFFFAFAFA),
+                          borderRadius: BorderRadius.circular(100),
+                          border: Border.all(
+                              color: const Color(0xFFE6E6E6), width: 2)),
+                      child: const Center(
+                        child: Text(
+                          "NO IMAGE",
+                        ),
+                      ),
+                    )
                   : Image.file(
                       File(
                         _image!.path,

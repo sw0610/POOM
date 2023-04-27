@@ -3,13 +3,16 @@ import 'package:poom/widgets/profile/profile_image.dart';
 
 // Form
 class ProfileForm extends StatefulWidget {
-  const ProfileForm(
-      {super.key,
-      required this.nickname,
-      required this.email,
-      required this.profileImgUrl});
+  const ProfileForm({
+    super.key,
+    required this.nickname,
+    required this.email,
+    required this.profileImgUrl,
+    required this.setHideMenu,
+  });
 
   final String nickname, email, profileImgUrl;
+  final setHideMenu;
   static const _textColor = Color(0xFF333333);
 
   @override
@@ -22,6 +25,7 @@ class _ProfileFormState extends State<ProfileForm> {
   bool isEditMode = false;
 
   void onUpdateProfile() {
+    widget.setHideMenu();
     setState(() {
       isEditMode = !isEditMode;
     });
@@ -74,41 +78,23 @@ class _ProfileFormState extends State<ProfileForm> {
                       decoration: InputDecoration(
                         filled: true,
                         fillColor: _inputBackgroundColor,
-                        hintText: "닉네임을 입력해주세요.",
-                        border: OutlineInputBorder(
+                        contentPadding: const EdgeInsets.symmetric(
+                            vertical: 14, horizontal: 16),
+                        enabledBorder: OutlineInputBorder(
                           borderSide: const BorderSide(
-                            color: _inputBackgroundColor,
-                            width: 1,
-                          ),
+                              width: 0, color: _inputBackgroundColor),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderSide: const BorderSide(
-                            color: _inputBackgroundColor,
-                            width: 1,
-                          ),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(
-                            color: _inputBackgroundColor,
-                            width: 1,
-                          ),
+                              width: 0, color: _inputBackgroundColor),
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                      autovalidateMode: AutovalidateMode.always,
-                      onSaved: (newValue) {
-                        _nickname = newValue as String;
-                      },
-                      validator: (value) {
-                        if (value == null ||
-                            value.isEmpty ||
-                            value.length > 16) {
-                          return "닉네임은 최소 2글자부터 최대 15글자까지 입력 가능합니다.";
-                        }
-                        return null;
-                      },
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                      ),
                     ),
                   )
                 : Text(
