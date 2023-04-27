@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:poom/widgets/profile/profile_image.dart';
 
 // Form
 class ProfileForm extends StatefulWidget {
@@ -60,12 +61,7 @@ class _ProfileFormState extends State<ProfileForm> {
                 ),
               ],
             ),
-            ClipOval(
-              child: SizedBox.fromSize(
-                size: const Size.fromRadius(64), // Image radius
-                child: Image.network(_profileImgUrl, fit: BoxFit.cover),
-              ),
-            ),
+            ProfileImage(isEditMode: isEditMode),
             const SizedBox(
               height: 20,
             ),
