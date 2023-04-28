@@ -22,11 +22,17 @@ springfox:
       v2:
         use-model-v3: false
 
+server:
+  servlet:
+    contextPath : /api
 
 # loggin level
 logging:
   level:
     root: info  # TRACE  <  DEBUG  <  INFO  <  WARN  <  ERROR
+
+oauth:
+  kakao: cd2efe918e29d2852de282fb31320ac3
 
 
 jwt:
