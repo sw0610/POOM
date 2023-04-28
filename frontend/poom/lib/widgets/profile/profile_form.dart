@@ -12,7 +12,7 @@ class ProfileForm extends StatefulWidget {
   });
 
   final String nickname, email, profileImgUrl;
-  final setHideMenu;
+  final Function setHideMenu; // 프로필 페이지 메뉴 숨김 여부
   static const _textColor = Color(0xFF333333);
 
   @override

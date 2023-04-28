@@ -21,9 +21,11 @@ class _ProfileImageState extends State<ProfileImage> {
   Future getProfileImage(ImageSource imageSource) async {
     final profileImage = await imagePicker.pickImage(source: imageSource);
 
-    setState(() {
-      _image = File(profileImage!.path);
-    });
+    if (profileImage != null) {
+      setState(() {
+        _image = File(profileImage.path);
+      });
+    }
   }
 
   @override
@@ -32,40 +34,59 @@ class _ProfileImageState extends State<ProfileImage> {
     SystemChrome.setPreferredOrientations(
         [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 
-    return ClipOval(
-      child: SizedBox.fromSize(
-        size: const Size.fromRadius(64),
-        child: GestureDetector(
-          onTap: () {
-            if (!widget.isEditMode) return;
-            getProfileImage(ImageSource.gallery);
-          },
-          child: Container(
-            width: MediaQuery.of(context).size.width,
-            color: Colors.white,
-            child: Center(
-              child: _image == null
-                  ? Container(
-                      decoration: BoxDecoration(
-                          color: const Color(0xFFFAFAFA),
-                          borderRadius: BorderRadius.circular(100),
-                          border: Border.all(
-                              color: const Color(0xFFE6E6E6), width: 2)),
-                      child: const Center(
-                        child: Text(
-                          "NO IMAGE",
+    return GestureDetector(
+      onTap: () {
+        if (!widget.isEditMode) return;
+        getProfileImage(ImageSource.gallery);
+      },
+      child: Stack(
+        children: [
+          Container(
+            width: 100,
+            height: 100,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              image: DecorationImage(
+                image: _image != null
+                    ? FileImage(
+                        File(
+                          _image!.path,
                         ),
-                      ),
-                    )
-                  : Image.file(
-                      File(
-                        _image!.path,
-                      ),
-                      fit: BoxFit.cover,
-                    ),
+                      ) as ImageProvider
+                    : const NetworkImage('https://picsum.photos/250?image=9'),
+                fit: BoxFit.cover,
+              ),
             ),
           ),
-        ),
+          widget.isEditMode && _image != null
+              ? Positioned(
+                  right: 0,
+                  top: 0,
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _image = null;
+                      });
+                    },
+                    child: Container(
+                      width: 24,
+                      height: 24,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.black,
+                      ),
+                      child: const Center(
+                        child: Icon(
+                          Icons.close_rounded,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                      ),
+                    ),
+                  ),
+                )
+              : const SizedBox(),
+        ],
       ),
     );
   }
