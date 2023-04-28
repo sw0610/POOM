@@ -29,10 +29,11 @@ class _ProfileSupportScreenState extends State<ProfileSupportScreen> {
         ),
       ),
       body: const Padding(
-          padding: EdgeInsets.symmetric(
-        vertical: 20,
-        horizontal: 24,
-      )),
+        padding: EdgeInsets.symmetric(
+          vertical: 20,
+          horizontal: 24,
+        ),
+      ),
     );
   }
 }

@@ -50,10 +50,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
           centerTitle: true,
           elevation: 1,
           actions: [
-            IconButton(
-              onPressed: onTapSettingButton,
-              icon: const Icon(Icons.settings),
-            ),
+            isHideMenu
+                ? const SizedBox()
+                : IconButton(
+                    onPressed: onTapSettingButton,
+                    icon: const Icon(Icons.settings),
+                  ),
           ],
           title: const Text(
             "나의 프로필",
