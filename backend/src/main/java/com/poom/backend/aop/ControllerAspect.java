@@ -16,6 +16,7 @@ public class ControllerAspect {
 
     @Around("restControllerCut()")
     public Object logExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
+        if(joinPoint == null) return null;
         long start = System.currentTimeMillis();
         Object proceed = joinPoint.proceed();
         long executionTime = System.currentTimeMillis() - start;
@@ -24,25 +25,25 @@ public class ControllerAspect {
     }
 
     // Pointcut에 의해 필터링된 경로로 들어오는 경우 메서드 호출 전에 적용
-    @Before("restControllerCut()")
-    public void beforeParameterLog(JoinPoint joinPoint) {
-        Signature s = joinPoint.getSignature();
-        // 메서드 정보 받아오기
-        log.info("========= method name = {} =========", s.getName());
-
-        // 파라미터 받아오기
-        Object[] args = joinPoint.getArgs();
+//    @Before("restControllerCut()")
+//    public void beforeParameterLog(JoinPoint joinPoint) {
+//        Signature s = joinPoint.getSignature();
+//        // 메서드 정보 받아오기
+//        log.info("========= method name = {} =========", s.getName());
+//
+//        // 파라미터 받아오기
+//        Object[] args = joinPoint.getArgs();
 //        if(args == null) return;
-        for (Object arg : args) {
-            log.info("parameter type = {}", arg.getClass().getSimpleName());
-            log.info("parameter value = {}", arg);
-        }
-    }
+//        for (Object arg : args) {
+//            log.info("parameter type = {}", arg.getClass().getSimpleName());
+//            log.info("parameter value = {}", arg);
+//        }
+//    }
 
     // Poincut에 의해 필터링된 경로로 들어오는 경우 메서드 리턴 후에 적용
-    @AfterReturning(value = "restControllerCut()", returning = "returnObj")
-    public void afterReturnLog(Object returnObj) {
-        log.info("return type = {}", returnObj.getClass().getSimpleName());
-        log.info("return value = {}", returnObj);
-    }
+//    @AfterReturning(value = "restControllerCut()", returning = "returnObj")
+//    public void afterReturnLog(Object returnObj) {
+//        log.info("return type = {}", returnObj.getClass().getSimpleName());
+//        log.info("return value = {}", returnObj);
+//    }
 }

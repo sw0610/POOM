@@ -32,6 +32,6 @@ logging:
 jwt:
   header: Authorization
   #HS512 알고리즘을 사용할 것이기 때문에 512bit, 즉 64byte 이상의 secret key를 사용해야 한다.
-  #echo 'ssafy-8th-generation-class-2-team-9-jaewook-hyunju-hyunsu-taehyun-taesun-yuyoung-project-fighting-jwt-secret-secret-jwt-token'|base64
+  #echo 'ssafy-8th-generation-class-8-team-5-jaewook-hyunju-sowon-taehyun-taesun-jinsoo-project-fighting-jwt-secret-secret-jwt-token'|base64
   secret: c3NhZnk4dGgtOGdlbmVyYXRpb24tY2xhc3MtdGVhbS05LWphZXdvb2stcnVubnktcnVubnktdGFlc3QtdGFlc3VuLXl1eW9uZy1wcm9qZWN0LWZpZ2h0aW5nLWp3dC1zZWNyZXQtc2VjcmV0LXNlY3JldC1qd3QtdG9rZW4=
   token-validity-in-minutes: 30
