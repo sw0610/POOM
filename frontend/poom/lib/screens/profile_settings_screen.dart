@@ -80,8 +80,14 @@ class ProfileSettingsScreen extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
         child: Column(
           children: [
-            // MenuItem(title: "버전정보", onTapMenu),
-            // MenuItem(title: "오픈소스", onTapMenu),
+            MenuItem(
+              title: "버전정보",
+              onTapMenu: () {},
+            ),
+            MenuItem(
+              title: "오픈소스",
+              onTapMenu: () {},
+            ),
             MenuItem(
               title: "계정탈퇴",
               onTapMenu: () {
