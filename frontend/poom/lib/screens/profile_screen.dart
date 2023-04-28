@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:poom/screens/profile_settings_screen.dart';
+import 'package:poom/screens/profile_support_screen.dart';
 import 'package:poom/widgets/profile/profile_form.dart';
+import 'package:poom/widgets/profile/profile_menu.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -39,23 +41,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        foregroundColor: ProfileScreen._textColor,
-        shadowColor: const Color(0xFFE4E4E4),
-        centerTitle: true,
-        elevation: 1,
-        actions: [
-          IconButton(
-            onPressed: onTapSettingButton,
-            icon: const Icon(Icons.settings),
-          ),
-        ],
-        title: const Text(
-          "나의 프로필",
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(60),
+        child: AppBar(
+          backgroundColor: Colors.white,
+          foregroundColor: ProfileScreen._textColor,
+          shadowColor: const Color(0xFFE4E4E4),
+          centerTitle: true,
+          elevation: 1,
+          actions: [
+            IconButton(
+              onPressed: onTapSettingButton,
+              icon: const Icon(Icons.settings),
+            ),
+          ],
+          title: const Text(
+            "나의 프로필",
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+            ),
           ),
         ),
       ),
@@ -79,14 +84,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 isHideMenu
                     ? const SizedBox()
-                    : const Column(
+                    : Column(
                         children: [
-                          // MenuItem(icon: Icons.receipt, title: "나의 후원 내역"),
-                          // MenuItem(
-                          //   icon: Icons.night_shelter_rounded,
-                          //   title: "보호소 회원 인증",
-                          //   isShelter: true,
-                          // ),
+                          MenuItem(
+                            icon: Icons.receipt,
+                            title: "나의 후원 내역",
+                            onTapMenu: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const ProfileSupportScreen(),
+                                ),
+                              );
+                            },
+                          ),
+                          MenuItem(
+                            icon: Icons.night_shelter_rounded,
+                            title: "보호소 회원 인증",
+                            isShelter: true,
+                            onTapMenu: () {},
+                          ),
                         ],
                       ),
               ],

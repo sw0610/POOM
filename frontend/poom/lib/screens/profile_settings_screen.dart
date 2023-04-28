@@ -63,16 +63,19 @@ class ProfileSettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        centerTitle: true,
-        backgroundColor: Colors.white,
-        foregroundColor: _textColor,
-        elevation: 1,
-        title: const Text(
-          "설정",
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(60),
+        child: AppBar(
+          centerTitle: true,
+          backgroundColor: Colors.white,
+          foregroundColor: _textColor,
+          elevation: 1,
+          title: const Text(
+            "설정",
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+            ),
           ),
         ),
       ),
