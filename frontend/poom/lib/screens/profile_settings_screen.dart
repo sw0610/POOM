@@ -124,20 +124,21 @@ class DialogButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 130,
-      height: 42,
-      child: TextButton(
-        style: TextButton.styleFrom(
-          backgroundColor: primaryColor,
-          foregroundColor: textColor,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0),
-            side: BorderSide(color: primaryColor),
+    return Expanded(
+      child: SizedBox(
+        height: 42,
+        child: TextButton(
+          style: TextButton.styleFrom(
+            backgroundColor: primaryColor,
+            foregroundColor: textColor,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+              side: BorderSide(color: primaryColor),
+            ),
           ),
+          onPressed: () => Navigator.pop(context, isCancel ? "Cancel" : "Ok"),
+          child: Text(isCancel ? "취소" : "확인"),
         ),
-        onPressed: () => Navigator.pop(context, isCancel ? "Cancel" : "Ok"),
-        child: Text(isCancel ? "취소" : "확인"),
       ),
     );
   }
