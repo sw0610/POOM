@@ -15,7 +15,7 @@ public class IpfsService {
     private final IPFS ipfs;
 
     public IpfsService() {
-        ipfs = new IPFS(new MultiAddress("/ip4/127.0.0.1/tcp/5001"));
+        ipfs = new IPFS(new MultiAddress("/ip4/43.201.49.21/tcp/8901"));
     }
 
     public String saveJsonToIpfs(String json) throws IOException {

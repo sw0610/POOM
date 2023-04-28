@@ -4,7 +4,6 @@ import com.poom.backend.config.jwt.JwtAccessDeniedHandler;
 import com.poom.backend.config.jwt.JwtAuthenticationEntryPoint;
 import com.poom.backend.config.jwt.JwtSecurityConfig;
 import com.poom.backend.config.jwt.TokenProvider;
-import org.apache.catalina.filters.CorsFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -12,6 +11,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.web.filter.CorsFilter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -79,7 +79,7 @@ public class SecurityConfig {
                 // 인증된 사용자만 접근
                 .antMatchers("/api/auth/**").authenticated()
                 // 누구나 접근 가능하도록 설정
-                .antMatchers("/api/**").permitAll()
+                .antMatchers("/api/**").permitAll() // authenticated로 차후 변경
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                 .anyRequest().permitAll()
                 //  CORS(Cross-Origin Resource Sharing)를 허용
