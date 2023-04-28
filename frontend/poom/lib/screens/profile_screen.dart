@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:poom/screens/settings_screen.dart';
+import 'package:poom/screens/profile_settings_screen.dart';
 import 'package:poom/widgets/profile/profile_form.dart';
-import 'package:poom/widgets/profile/profile_menu.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -32,7 +31,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => const SettingsScreen(),
+          builder: (context) => const ProfileSettingsScreen(),
         ),
       );
     }
@@ -52,7 +51,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
             icon: const Icon(Icons.settings),
           ),
         ],
-        title: const Text("나의 프로필"),
+        title: const Text(
+          "나의 프로필",
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
@@ -76,12 +81,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ? const SizedBox()
                     : const Column(
                         children: [
-                          MenuItem(icon: Icons.receipt, title: "나의 후원 내역"),
-                          MenuItem(
-                            icon: Icons.night_shelter_rounded,
-                            title: "보호소 회원 인증",
-                            isShelter: true,
-                          ),
+                          // MenuItem(icon: Icons.receipt, title: "나의 후원 내역"),
+                          // MenuItem(
+                          //   icon: Icons.night_shelter_rounded,
+                          //   title: "보호소 회원 인증",
+                          //   isShelter: true,
+                          // ),
                         ],
                       ),
               ],
