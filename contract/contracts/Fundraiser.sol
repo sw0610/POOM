@@ -4,14 +4,6 @@ pragma solidity >= 0.8.0 <0.9.0;
 
 contract FundraiserContract {
 
-    struct Donation { // 후원
-        string memberId;
-        uint256 donationAmount; // 후원 금액
-        uint64 fundraiserId; // 모금 id
-        uint256 donationTime; // 모금 시간
-        bool isIssued; // nft 발급 여부
-    }
-
     struct Fundraiser { // 모금
         string shelterId;
         string hashString; // ipfs hash
@@ -21,12 +13,6 @@ contract FundraiserContract {
 
     uint64 private _fundraiserIdx; 
     mapping(uint64 => Fundraiser) public fundraisers; // 모금
-    // mapping(uint64 => uint64) public myFundraisers; // shelterid -> fundraiserid
-    // mapping(uint64 => uint256) public fundraiserCount; // fundraiserId => fundraiserCount
-
-    mapping(uint64 => uint256) public myFundraiserCount; // shelterId => my fundraiserCount
-    mapping(uint64 => mapping(uint256=>Donation)) public donations; // 모금 id -> 후원자들
-    mapping(uint64 => uint256) public donationsCount; // 모금 id -> 후원자 수
 
     /*
         모금
@@ -117,16 +103,6 @@ contract FundraiserContract {
         return fundraiser;
     }
 
-    // 후원자 목록
-    function _getDonationList(uint64 _fundraiserId) internal view returns (Donation[] memory) {
-        uint256 donationLength = donationsCount[_fundraiserId];
-        Donation[] memory donationList = new Donation[](donationLength);
 
-        for (uint256 i = 0; i < donationLength; i++) {
-            donationList[i] = donations[_fundraiserId][i];
-        }
-
-        return donationList;
-    }
 
 }
