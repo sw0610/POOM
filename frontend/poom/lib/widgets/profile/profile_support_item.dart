@@ -31,9 +31,12 @@ class SupportItem extends StatelessWidget {
           children: [
             Row(
               children: [
-                Image.network(
-                  "https://avatars.githubusercontent.com/u/38373150?v=4",
-                  width: 68,
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(4),
+                  child: Image.network(
+                    "https://avatars.githubusercontent.com/u/38373150?v=4",
+                    width: 68,
+                  ),
                 ),
                 const SizedBox(
                   width: 12,

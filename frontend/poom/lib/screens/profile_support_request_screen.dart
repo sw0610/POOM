@@ -68,9 +68,12 @@ class SupportRequestScreen extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(vertical: 24),
                         child: Row(
                           children: [
-                            Image.network(
-                              "https://avatars.githubusercontent.com/u/38373150?v=4",
-                              width: 100,
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(10.0),
+                              child: Image.network(
+                                "https://avatars.githubusercontent.com/u/38373150?v=4",
+                                width: 100,
+                              ),
                             ),
                             const SizedBox(
                               width: 14,
@@ -103,7 +106,7 @@ class SupportRequestScreen extends StatelessWidget {
                                     Text(
                                       "후원 마감일",
                                       style: TextStyle(
-                                        fontSize: 12,
+                                        fontSize: 14,
                                         color: Color(0xFF666666),
                                         fontWeight: FontWeight.w400,
                                       ),
@@ -126,7 +129,7 @@ class SupportRequestScreen extends StatelessWidget {
                                     Text(
                                       "현재 모금액",
                                       style: TextStyle(
-                                        fontSize: 12,
+                                        fontSize: 14,
                                         color: Color(0xFF666666),
                                         fontWeight: FontWeight.w400,
                                       ),
@@ -149,7 +152,7 @@ class SupportRequestScreen extends StatelessWidget {
                                     Text(
                                       "목표 후원금",
                                       style: TextStyle(
-                                        fontSize: 12,
+                                        fontSize: 14,
                                         color: Color(0xFF666666),
                                         fontWeight: FontWeight.w400,
                                       ),
