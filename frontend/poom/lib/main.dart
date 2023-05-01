@@ -19,6 +19,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSwatch(backgroundColor: Colors.white),
       ),
       home: const Scaffold(
+        resizeToAvoidBottomInset: false,
         body: PoomPageState(),
       ),
       debugShowCheckedModeBanner: false,
