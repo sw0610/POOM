@@ -5,14 +5,13 @@ import "./Fundraiser.sol";
 import "./Donation.sol";
 // import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "../node_modules/@openzeppelin/contracts/access/Ownable.sol";
-import "../node_modules/@openzeppelin/contracts/utils/Counters.sol";
 // import "../node_modules/@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "../node_modules/@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+
 contract NftProcess is ERC721URIStorage, Ownable, FundraiserProcess, DonationProcess  {
 
-    using Counters for Counters.Counter;
-    Counters.Counter private _nftIds;
-    mapping(string => uint256[]) nftList; // memberid -> nftid[]
+    uint64 private _nftIds;
+    mapping(string => NFT[]) nftList; // memberid -> nftid[]
 
     struct NFT{
         uint64 nftId;
@@ -35,41 +34,52 @@ contract NftProcess is ERC721URIStorage, Ownable, FundraiserProcess, DonationPro
     constructor() ERC721("PoomNFT", "POOM") {}
 
     // nft 발급
-    function _mintNft(string memory _memberId, uint64 _fundraiserId,  uint64 _donationId, string memory _metadataUri, string memory _imgUrl) internal returns (uint64) {
+    function _mintNft(string memory _memberId, uint64 _fundraiserId,  uint64 _donationId, string memory _metadataUri, string memory _imageUrl) internal returns (uint64) {
 
         require(_getFundraiserDetail(_fundraiserId).isEnded==true, "Fundraiser is not ended.");
         require(_getDonation(_donationId).isIssued==1, "Already issued.");
 
-        uint256 nftId = _nftIds.current();
-        _safeMint(msg.sender, nftId);
-         _setTokenURI(nftId, _metadataUri);
-        _nftIds.increment();
+        _safeMint(msg.sender, _nftIds);
+         _setTokenURI(_nftIds, _metadataUri);
 
 
-        NFT nft = NFT(
-            {nftId:_nftId,
+        NFT memory nft = NFT(
+            {nftId:_nftIds,
             memberId:_memberId,
             fundraiserId:_fundraiserId,
-            imgUrl:_imgUrl});
+            imageUrl:_imageUrl});
+
+        if (nftList[_memberId].length == 0) {
+            nftList[_memberId] = new NFT[](0);
+        }
+        // nftList[_memberId][nftList[_memberId].length - 1] = nft;
         nftList[_memberId].push(nft);
 
-        return nftId;
+        _nftIds++;
+
+        return _nftIds;
     }
 
+    // nft 발급 -> isIssued = 2
     function _setNftIssued(uint64 _donationId) internal{
         require(_getDonation(_donationId).isIssued==1, "Already issued.");
         donations[_donationId].isIssued = 2;
     }
 
+    // // nft 목록
+    function _getNftList(string memory _memberId, uint64 page, uint64 size) internal view returns(NFT[] memory){
+        uint256 nftCount = nftList[_memberId].length;
+        uint64 startIdx = page * size;
+        uint64 endIdx = startIdx + size;
+        uint256 length = endIdx > nftCount ? nftCount : endIdx;
 
+        NFT[] memory memberNftList = new NFT[](nftCount);
 
+        for(uint64 i = startIdx; i < length; i++){
+            memberNftList[i] = nftList[_memberId][i];
+        }
 
-
-
-    // nft 목록
-    function _getNftList(string memory _memberId) internal returns(){
-
-
+        return memberNftList;
     }
 
 
