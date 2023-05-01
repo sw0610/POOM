@@ -47,6 +47,14 @@ contract PoomContract is FundraiserProcess, DonationProcess, NftProcess{
         return myDonationList;
     }
     // 후원
+    function dontaion() external payable{
+
+    }
+
+    // 입금
+    function transferToShelter() external payable{
+
+    }
 
 
     /*
@@ -58,7 +66,7 @@ contract PoomContract is FundraiserProcess, DonationProcess, NftProcess{
     }
 
     // 마감된 후원 NFT 발급
-    function mintNft(string memory _memberId, uint64 _fundraiserId,  uint64 _donationId, string memory _metadataUri, string memory _imageUrl, uint64 _donationId) external{
+    function mintNft(string memory _memberId, uint64 _fundraiserId,  uint64 _donationId, string memory _metadataUri, string memory _imageUrl) external{
         _mintNft(_memberId, _fundraiserId, _donationId, _metadataUri, _imageUrl);
         _setNftIssued(_donationId);
     }
