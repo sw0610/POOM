@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:poom/widgets/main/main_card_widget.dart';
+import 'package:poom/widgets/dog_list_card_widget/dog_list_card_widget.dart';
 
 class HomeScreen extends StatelessWidget {
   final String nickname = '유후';
@@ -169,17 +169,7 @@ class HomeScreen extends StatelessWidget {
                   Text('최신순'),
                 ],
               ),
-              const HomeCardWidget(),
-              const HomeCardWidget(),
-              const HomeCardWidget(),
-              const HomeCardWidget(),
-              const HomeCardWidget(),
-              const HomeCardWidget(),
-              const HomeCardWidget(),
-              const HomeCardWidget(),
-              const HomeCardWidget(),
-              const HomeCardWidget(),
-              const HomeCardWidget(),
+              const DogListCardWidget(),
             ],
           ),
         ),
