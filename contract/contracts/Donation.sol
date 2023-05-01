@@ -129,7 +129,7 @@ contract DonationProcess is FundraiserProcess {
 
     }
 
-    function _transferToShelter(uint64 _fundraiserId) internal{
+    function _transferToShelter(uint64 _fundraiserId) public payable{
         Fundraiser memory fundraiser = _getFundraiserDetail(_fundraiserId);
         uint256 totalAmount = fundraiser.currentAmount;
         require(fundraiser.isEnded==true, "Fundraiser is not ended");
