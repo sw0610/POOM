@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:poom/screens/profile_settings_screen.dart';
 import 'package:poom/screens/profile_support_request_screen.dart';
 import 'package:poom/screens/profile_support_screen.dart';
+import 'package:poom/screens/shelter_auth_screen.dart';
 import 'package:poom/widgets/profile/profile_form.dart';
 import 'package:poom/widgets/profile/profile_menu.dart';
 
@@ -120,7 +121,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             icon: Icons.night_shelter_rounded,
                             title: "보호소 회원 인증",
                             isShelter: true,
-                            onTapMenu: () {},
+                            onTapMenu: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const ShelterAuthScreen(),
+                                ),
+                              );
+                            },
                           ),
                         ],
                       ),

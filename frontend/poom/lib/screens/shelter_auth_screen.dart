@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kpostal/kpostal.dart';
 import 'package:poom/widgets/profile/text_input.dart';
 
 class ShelterAuthScreen extends StatefulWidget {
@@ -97,21 +98,77 @@ class _ShelterAuthScreenState extends State<ShelterAuthScreen> {
               const SizedBox(
                 height: 24,
               ),
-              TextInput(
-                initValue: _shelterAddress,
-                title: "보호소 주소",
-                placeholder: "보호소 주소를 입력하세요.",
-                onSaved: (newValue) {
-                  setState(() {
-                    _shelterAddress = newValue;
-                  });
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "보호소 주소는 필수 입력 사항입니다.";
-                  }
-                  return null;
-                },
+              const Row(
+                children: [
+                  Text(
+                    "보호소 주소",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: _textColor,
+                    ),
+                  ),
+                  Text(
+                    "*",
+                    style: TextStyle(
+                      color: Color(
+                        0xFFFF4040,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                      padding: const EdgeInsets.only(left: 16),
+                      alignment: Alignment.centerLeft,
+                      height: 48,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFAFAFA),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: _shelterAddress == ""
+                          ? const Text(
+                              "보호소 주소를 찾아주세요.",
+                              style: TextStyle(
+                                color: Color(0xFF666666),
+                              ),
+                            )
+                          : Text(
+                              _shelterAddress,
+                              style: const TextStyle(
+                                color: Color(0xFF333333),
+                              ),
+                            ),
+                    ),
+                  ),
+                  TextButton(
+                      onPressed: () async {
+                        await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => KpostalView(
+                              useLocalServer: true,
+                              localPort: 8080,
+                              callback: (Kpostal result) {
+                                print("result: $result.address");
+                                setState(() {
+                                  _shelterAddress = result.address;
+                                });
+                              },
+                            ),
+                          ),
+                        );
+                      },
+                      child: const Text("주소 찾기"))
+                ],
               ),
               const SizedBox(
                 height: 24,
@@ -173,6 +230,7 @@ class _ShelterAuthScreenState extends State<ShelterAuthScreen> {
                 children: [
                   Expanded(
                     child: Container(
+                      height: 48,
                       decoration: BoxDecoration(
                         border: Border.all(
                           width: 0,
@@ -183,7 +241,6 @@ class _ShelterAuthScreenState extends State<ShelterAuthScreen> {
                       ),
                       child: TextButton(
                         onPressed: () {
-                          print("onPressed().. $_shelterName");
                           if (_formKey.currentState!.validate()) {
                             _formKey.currentState!.save(); // onSaved 콜백 실행
                           }
