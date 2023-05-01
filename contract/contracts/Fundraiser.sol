@@ -2,15 +2,26 @@
 pragma solidity >= 0.8.0 <0.9.0;
 
 
-contract FundraiserContract {
+contract FundraiserProcess {
 
     struct Fundraiser { // 모금
         string shelterId;
         address shelterWalet;
         string hashString; // ipfs hash
         uint256 currentAmount; // 현재 모인 금액
-        bool isEnded; // 종료 되었는지, defautl false
+        uint256 targetAmount;
+        // uint64[] donations;
+        // mapping(string => uint64) donations;
+        bool isEnded; // 종료 되었는지, default false
     }
+
+    /*
+        1. fundraiser안에 donation mapping -> memberid -> donationid?
+        2. fundraiserid -> string[]?
+        3. memberid -> fundraiserid[]
+            -
+
+    */
 
     uint64 private _fundraiserIdx;
     mapping(uint64 => Fundraiser) public fundraisers; // 모금
@@ -47,20 +58,20 @@ contract FundraiserContract {
     */
 
     // 모금 등록
-    function createFundraiser(string calldata _hashString) internal returns (uint64) {
-        uint64 _fundraiserId = _fundraiserIdx++;
-        fundraisers[_fundraiserIdx].hashString = _hashString;
+    function _createFundraiser(string calldata _hashString, uint256 _targetAmount) internal returns (uint64) {
+        fundraisers[_fundraiserIdx++].hashString = _hashString;
+        fundraisers[_fundraiserIdx++].targetAmount = _targetAmount;
 
-        return _fundraiserId;
+        return _fundraiserIdx;
     }
 
     // 모금 종료
-    function endFundraiser(uint64 _fundraiserId) internal {
+    function _endFundraiser(uint64 _fundraiserId) internal {
         fundraisers[_fundraiserId].isEnded = true;
     }
 
     // 모금 목록
-    function getFundraiserList(bool _isEnded, uint64 page, uint64 size) internal view returns(Fundraiser[] memory){
+    function _getFundraiserList(bool _isEnded, uint64 page, uint64 size) internal view returns(Fundraiser[] memory){
         uint64 startIdx = page * size;
         uint64 endIdx = startIdx + size;
         uint64 length = endIdx > _fundraiserIdx ? _fundraiserIdx : endIdx;
@@ -80,7 +91,7 @@ contract FundraiserContract {
     }
 
     // 내 모금 목록
-    function getMyFundraiserList(string memory _shelterId, bool _isEnded, uint64 page, uint64 size) internal view returns (Fundraiser[] memory){
+    function _getMyFundraiserList(string memory _shelterId, bool _isEnded, uint64 page, uint64 size) internal view returns (Fundraiser[] memory){
         uint64 startIdx = page * size;
         uint64 endIdx = startIdx + size;
         uint64 length = endIdx > _fundraiserIdx ? _fundraiserIdx : endIdx;
@@ -100,10 +111,11 @@ contract FundraiserContract {
     }
 
     // 모금 상세
-    function getFundraiserDetail(uint64 _fundraiserId) internal view returns (Fundraiser memory){
+    function _getFundraiserDetail(uint64 _fundraiserId) internal view returns (Fundraiser memory){
         Fundraiser memory fundraiser = fundraisers[_fundraiserId];
         return fundraiser;
     }
+
 
 
 
