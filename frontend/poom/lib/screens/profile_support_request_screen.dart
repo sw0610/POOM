@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:poom/widgets/profile/request_drop_down.dart';
 
 class SupportRequestScreen extends StatelessWidget {
   const SupportRequestScreen({super.key});
@@ -39,14 +40,7 @@ class SupportRequestScreen extends StatelessWidget {
                     color: _textColor,
                   ),
                 ),
-                Text(
-                  "최신순",
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: _textColor,
-                  ),
-                ),
+                RequestDropDown(),
               ],
             ),
             const SizedBox(
