@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:poom/widgets/home/home_specific_supporter.dart';
 
 class DogSpecificScreen extends StatelessWidget {
   const DogSpecificScreen({super.key});
@@ -21,7 +22,12 @@ class DogSpecificScreen extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 24),
+          padding: const EdgeInsets.only(
+            right: 30,
+            left: 30,
+            top: 24,
+            bottom: 100,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -141,14 +147,14 @@ class DogSpecificScreen extends StatelessWidget {
                     Column(
                       children: [
                         SummaryTitle(text: '현재 모금액'),
-                        SummaryValue(value: '112'),
+                        SummaryValue(value: '0.562'),
                       ],
                     ),
                     DivideLine(),
                     Column(
                       children: [
                         SummaryTitle(text: '목표액'),
-                        SummaryValue(value: '430'),
+                        SummaryValue(value: '1.111'),
                       ],
                     ),
                     Text(''),
@@ -159,7 +165,7 @@ class DogSpecificScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Text(
-                    '단위: MATIC',
+                    '단위: eth',
                     style: TextStyle(
                       color: Color(0xFF999999),
                     ),
@@ -187,51 +193,35 @@ class DogSpecificScreen extends StatelessWidget {
               const Title(
                 text: '후원자 목록',
               ),
-              Column(
-                children: [
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          clipBehavior: Clip.antiAlias,
-                          width: 35,
-                          height: 35,
-                          decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(50),
-                            ),
-                          ),
-                          child: Image.network(
-                            'https://img.segye.com/content/image/2020/07/01/20200701515451.JPG',
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        const Text(
-                          '닉네임',
-                          style: TextStyle(
-                            color: Color(0xFF666666),
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                        const Text(
-                          '3.333 eth',
-                          style: TextStyle(
-                            color: Color(0xFF333333),
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        )
-                      ]),
-                ],
+              const Supporter(
+                nickname: '닉네임',
+                imgPath:
+                    'https://img.segye.com/content/image/2020/07/01/20200701515451.JPG',
+                amount: 3.3,
               ),
             ],
           ),
         ),
       ),
+      floatingActionButton: Container(
+        width: MediaQuery.of(context).size.width - 48,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        child: FloatingActionButton.extended(
+          backgroundColor: Theme.of(context).primaryColor,
+          onPressed: () {},
+          elevation: 8,
+          label: const Text(
+            "Metamask로 후원하기",
+            style: TextStyle(
+              fontSize: 18.0,
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }
@@ -260,7 +250,7 @@ class DogInfo extends StatelessWidget {
             Align(
               alignment: Alignment.topRight,
               child: SizedBox(
-                width: 60,
+                width: 80,
                 child: Text(
                   title,
                   textAlign: TextAlign.right,

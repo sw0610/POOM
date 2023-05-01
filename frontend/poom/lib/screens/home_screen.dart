@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:poom/widgets/dog_list_card_widget/dog_list_card_widget.dart';
+import 'package:poom/widgets/home/home_dog_card.dart';
 
 class HomeScreen extends StatelessWidget {
   final String nickname = '유후';

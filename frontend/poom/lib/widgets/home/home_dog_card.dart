@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:poom/screens/dog_specific_screen.dart';
-import 'package:poom/widgets/dog_list_card_widget/dog_list_card_text_widget/classification_text_widget.dart';
-import 'package:poom/widgets/dog_list_card_widget/dog_list_card_text_widget/value_text_widget.dart';
+import 'package:poom/screens/home_specific_screen.dart';
 
 class DogListCardWidget extends StatelessWidget {
+
+  
+
   const DogListCardWidget({super.key});
 
   @override
@@ -167,6 +168,49 @@ class DogListCardWidget extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class ValueText extends StatelessWidget {
+  final String value;
+
+  const ValueText({
+    super.key,
+    required this.value,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      value,
+      style: const TextStyle(
+        color: Color(0xFF333333),
+        fontSize: 14,
+      ),
+    );
+  }
+}
+
+class ClassificationText extends StatelessWidget {
+  final String classification;
+
+  const ClassificationText({
+    super.key,
+    required this.classification,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 66,
+      child: Text(
+        classification,
+        style: const TextStyle(
+          color: Color(0xFF666666),
+          fontSize: 12,
+        ),
       ),
     );
   }
