@@ -6,7 +6,7 @@ contract FundraiserProcess {
 
     struct Fundraiser { // 모금
         string shelterId;
-        address shelterWalet;
+        address payable shelterAddress;
         string hashString; // ipfs hash
         uint256 currentAmount; // 현재 모인 금액
         uint256 targetAmount;

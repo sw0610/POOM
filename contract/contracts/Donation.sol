@@ -94,7 +94,7 @@ contract DonationProcess is FundraiserProcess {
     ////////////////////////송금 구현해야함//////////////////////////////////////////
 
     // 후원
-    function _donate(uint64 _fundraiserId, string memory _memberId, string memory _donateDate) public payable{
+    function _donate(uint64 _fundraiserId, string memory _memberId, string memory _donateDate) public payable returns (uint64){
         require(msg.value >0, "Value must be more then 0");
         require(msg.value <= fundraisers[_fundraiserId].targetAmount-fundraisers[_fundraiserId].currentAmount, "Value must be little then target amount");
         require(fundraisers[_fundraiserId].isEnded = false,"Fundraiser is ended");
@@ -116,27 +116,24 @@ contract DonationProcess is FundraiserProcess {
             donationsCount[_fundraiserId]+=1;
         }
 
-        // balances[msg.sender]-=msg.value;
-        // msg.sender.balances
 
         donations[memberToFundraiser[_memberId][_fundraiserId]].donateDate = _donateDate;
         donations[memberToFundraiser[_memberId][_fundraiserId]].donationAmount+=msg.value;
         fundraisers[_fundraiserId].currentAmount +=msg.value;
+        address payable shelterAddress = fundraisers[_fundraiserId].shelterAddress;
+        shelterAddress.transfer(msg.value);
+
 
         // 목표 금액을 넘겼으면 끝내기
         if(fundraisers[_fundraiserId].currentAmount== fundraisers[_fundraiserId].targetAmount){
             _endFundraiser(_fundraiserId);
         }
 
-    }
+        return _donationId-1;
 
-    function _transferToShelter(uint64 _fundraiserId) public payable{
-        Fundraiser memory fundraiser = _getFundraiserDetail(_fundraiserId);
-        uint256 totalAmount = fundraiser.currentAmount;
-        require(fundraiser.isEnded==true, "Fundraiser is not ended");
-        require(totalAmount > 0, "No pending payments to withdraw");
 
     }
+
     //////////////////////////////////////////////////////////////////
 
 
