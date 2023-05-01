@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:poom/screens/profile_settings_screen.dart';
+import 'package:poom/screens/profile_support_request_screen.dart';
 import 'package:poom/screens/profile_support_screen.dart';
 import 'package:poom/widgets/profile/profile_form.dart';
 import 'package:poom/widgets/profile/profile_menu.dart';
@@ -88,6 +89,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ? const SizedBox()
                     : Column(
                         children: [
+                          MenuItem(
+                            icon: Icons.request_page,
+                            title: "후원 요청 목록",
+                            isShelter: true,
+                            onTapMenu: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const SupportRequestScreen(),
+                                ),
+                              );
+                            },
+                          ),
                           MenuItem(
                             icon: Icons.receipt,
                             title: "나의 후원 내역",
