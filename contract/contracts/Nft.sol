@@ -8,7 +8,8 @@ import "../node_modules/@openzeppelin/contracts/token/ERC721/extensions/ERC721UR
 contract NftProcess is ERC721URIStorage, FundraiserProcess, DonationProcess  {
 
     uint64 private _nftIds;
-    mapping(string => NFT[]) nftList; // memberid -> nftid[]
+    mapping(string => uint64[]) private _memberNftList; // memberid -> nftid[]
+    mapping(uint64 => NFT) private _nftList;
 
     struct NFT{
         uint64 nftId;
@@ -46,11 +47,12 @@ contract NftProcess is ERC721URIStorage, FundraiserProcess, DonationProcess  {
             fundraiserId:_fundraiserId,
             imageUrl:_imageUrl});
 
-        if (nftList[_memberId].length == 0) {
-            nftList[_memberId] = new NFT[](0);
+        if (_memberNftList[_memberId].length == 0) {
+            _memberNftList[_memberId] = new uint64[](0);
         }
         // nftList[_memberId][nftList[_memberId].length - 1] = nft;
-        nftList[_memberId].push(nft);
+        _memberNftList[_memberId].push(_nftIds);
+        _nftList[_nftIds] = nft;
 
         _nftIds++;
 
@@ -65,36 +67,18 @@ contract NftProcess is ERC721URIStorage, FundraiserProcess, DonationProcess  {
 
     // // nft 목록
     function _getNftList(string memory _memberId, uint64 _page, uint64 _size) internal view returns(NFT[] memory){
-        uint256 nftCount = nftList[_memberId].length;
+        uint256 nftCount = _memberNftList[_memberId].length;
         uint64 startIdx = _page * _size;
         uint64 endIdx = startIdx + _size;
         uint256 length = endIdx > nftCount ? nftCount : endIdx;
 
-        NFT[] memory memberNftList = new NFT[](nftCount);
+        NFT[] memory nftListReponse = new NFT[](length);
 
         for(uint64 i = startIdx; i < length; i++){
-            memberNftList[i] = nftList[_memberId][i];
+            nftListReponse[i-startIdx] = _nftList[_memberNftList[_memberId][i]];
         }
 
-        return memberNftList;
+        return nftListReponse;
     }
-
-
-
-
-    // function mintNft(string memory name, string memory description, string memory image, string memory dogName, string memory shelterName) external  returns (uint256) {
-    //     uint256 tokenId = _tokenIds.current();
-    //     _safeMint(msg.sender, tokenId);
-    //     // _setTokenMetadata(tokenId, name, description, image, dogName, shelterName);
-    //     _tokenIds.increment();
-    //     return tokenId;
-    // }
-
-
-    // function getTokenURI(uint256 tokenId) public view returns (NFTMetadata memory) {
-    //     _requireMinted(tokenId); // 존재하는지 확인
-    //     return tokenURIs[tokenId];
-    // }
-
 
 }
