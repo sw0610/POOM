@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:poom/screens/profile_settings_screen.dart';
 import 'package:poom/screens/profile_support_request_screen.dart';
 import 'package:poom/screens/profile_support_screen.dart';
+import 'package:poom/screens/shelter_auth_form_screen.dart';
 import 'package:poom/screens/shelter_auth_screen.dart';
 import 'package:poom/widgets/profile/profile_form.dart';
 import 'package:poom/widgets/profile/profile_menu.dart';
@@ -22,6 +23,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String email = "songo427@gmail.com";
   String profileImgUrl = "https://avatars.githubusercontent.com/u/38373150?v=4";
   bool isHideMenu = false;
+  int authStatus = 1;
 
   void setHideMenu() {
     setState(() {
@@ -124,10 +126,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             onTapMenu: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      const ShelterAuthScreen(),
-                                ),
+                                MaterialPageRoute(builder: (context) {
+                                  if (authStatus == 1) {
+                                    // 인증 상태
+                                    return const ShelterAuthScreen();
+                                  }
+                                  return const ShelterAuthFormScreen();
+                                }),
                               );
                             },
                           ),
