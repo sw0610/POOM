@@ -3,12 +3,9 @@ pragma solidity >=0.8.0 <0.9.0;
 
 import "./Fundraiser.sol";
 import "./Donation.sol";
-// import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "../node_modules/@openzeppelin/contracts/access/Ownable.sol";
-// import "../node_modules/@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "../node_modules/@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 
-contract NftProcess is ERC721URIStorage, Ownable, FundraiserProcess, DonationProcess  {
+contract NftProcess is ERC721URIStorage, FundraiserProcess, DonationProcess  {
 
     uint64 private _nftIds;
     mapping(string => NFT[]) nftList; // memberid -> nftid[]
@@ -40,7 +37,7 @@ contract NftProcess is ERC721URIStorage, Ownable, FundraiserProcess, DonationPro
         require(_getDonation(_donationId).isIssued==1, "Already issued.");
 
         _safeMint(msg.sender, _nftIds);
-         _setTokenURI(_nftIds, _metadataUri);
+        _setTokenURI(_nftIds, _metadataUri);
 
 
         NFT memory nft = NFT(
@@ -57,7 +54,7 @@ contract NftProcess is ERC721URIStorage, Ownable, FundraiserProcess, DonationPro
 
         _nftIds++;
 
-        return _nftIds;
+        return _nftIds-1;
     }
 
     // nft 발급 -> isIssued = 2
@@ -67,10 +64,10 @@ contract NftProcess is ERC721URIStorage, Ownable, FundraiserProcess, DonationPro
     }
 
     // // nft 목록
-    function _getNftList(string memory _memberId, uint64 page, uint64 size) internal view returns(NFT[] memory){
+    function _getNftList(string memory _memberId, uint64 _page, uint64 _size) internal view returns(NFT[] memory){
         uint256 nftCount = nftList[_memberId].length;
-        uint64 startIdx = page * size;
-        uint64 endIdx = startIdx + size;
+        uint64 startIdx = _page * _size;
+        uint64 endIdx = startIdx + _size;
         uint256 length = endIdx > nftCount ? nftCount : endIdx;
 
         NFT[] memory memberNftList = new NFT[](nftCount);

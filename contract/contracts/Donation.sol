@@ -10,10 +10,10 @@ contract DonationProcess is FundraiserProcess {
         uint256 donationId;
         uint256 donationAmount; // 후원 금액
         uint64 fundraiserId; // 모금 id
-        string donationTime; // 모금 시간
+        string donateDate; // 모금 시간
+        string hashString;
         uint8 isIssued; // nft 발급 여부
     }
-
 
     uint64 private _donationId;
 
@@ -58,12 +58,12 @@ contract DonationProcess is FundraiserProcess {
 
 
     // 내 후원 목록 가져오기
-    function _getMyDonationList(string memory _memberId, uint64 page, uint64 size) internal view returns(Donation[] memory){
+    function _getMyDonationList(string memory _memberId, uint64 _page, uint64 _size) internal view returns(Donation[] memory){
 
         uint256 myDonationCount = memberDonationList[_memberId].length;
 
-        uint64 startIdx = page * size;
-        uint64 endIdx = startIdx + size;
+        uint64 startIdx = _page * _size;
+        uint64 endIdx = startIdx + _size;
         uint256 length = endIdx > myDonationCount ? myDonationCount : endIdx;
 
         Donation[] memory myDonaionList = new Donation[](myDonationCount);
@@ -94,7 +94,7 @@ contract DonationProcess is FundraiserProcess {
     ////////////////////////송금 구현해야함//////////////////////////////////////////
 
     // 후원
-    function _donate(uint64 _fundraiserId, string memory _memberId, string memory _donationTime) public payable{
+    function _donate(uint64 _fundraiserId, string memory _memberId, string memory _donateDate) public payable{
         require(msg.value >0, "Value must be more then 0");
         require(msg.value <= fundraisers[_fundraiserId].targetAmount-fundraisers[_fundraiserId].currentAmount, "Value must be little then target amount");
         require(fundraisers[_fundraiserId].isEnded = false,"Fundraiser is ended");
@@ -104,8 +104,9 @@ contract DonationProcess is FundraiserProcess {
                 {memberId:_memberId,
                 donationId:_donationId++,
                 fundraiserId:_fundraiserId,
+                hashString: fundraisers[_fundraiserId].hashString,
                 donationAmount:0,
-                donationTime:"",
+                donateDate:"",
                 isIssued: 0});
             donations[memberToFundraiser[_memberId][_fundraiserId]] = donation;
 
@@ -118,7 +119,7 @@ contract DonationProcess is FundraiserProcess {
         // balances[msg.sender]-=msg.value;
         // msg.sender.balances
 
-        donations[memberToFundraiser[_memberId][_fundraiserId]].donationTime = _donationTime;
+        donations[memberToFundraiser[_memberId][_fundraiserId]].donateDate = _donateDate;
         donations[memberToFundraiser[_memberId][_fundraiserId]].donationAmount+=msg.value;
         fundraisers[_fundraiserId].currentAmount +=msg.value;
 

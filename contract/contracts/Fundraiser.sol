@@ -10,9 +10,10 @@ contract FundraiserProcess {
         string hashString; // ipfs hash
         uint256 currentAmount; // 현재 모인 금액
         uint256 targetAmount;
+        bool isEnded; // 종료 되었는지, default false
+
         // uint64[] donations;
         // mapping(string => uint64) donations;
-        bool isEnded; // 종료 되었는지, default false
     }
 
     /*
@@ -58,12 +59,18 @@ contract FundraiserProcess {
     */
 
     // 모금 등록
-    function _createFundraiser(string calldata _hashString, uint256 _targetAmount) internal returns (uint64) {
-        fundraisers[_fundraiserIdx++].hashString = _hashString;
-        fundraisers[_fundraiserIdx++].targetAmount = _targetAmount;
+    // function _createFundraiser(string calldata _hashString, uint256 _targetAmount) internal returns (uint64) {
+    //     fundraisers[_fundraiserIdx++].hashString = _hashString;
+    //     fundraisers[_fundraiserIdx++].targetAmount = _targetAmount;
 
-        return _fundraiserIdx;
+    //     return _fundraiserIdx;
+    // }
+
+    function _createFundraiser(Fundraiser memory _fundraiser) internal returns (Fundraiser memory) {
+        fundraisers[_fundraiserIdx++] = _fundraiser;
+        return fundraisers[_fundraiserIdx-1];
     }
+
 
     // 모금 종료
     function _endFundraiser(uint64 _fundraiserId) internal {
@@ -71,15 +78,15 @@ contract FundraiserProcess {
     }
 
     // 모금 목록
-    function _getFundraiserList(bool _isEnded, uint64 page, uint64 size) internal view returns(Fundraiser[] memory){
-        uint64 startIdx = page * size;
-        uint64 endIdx = startIdx + size;
+    function _getFundraiserList(bool _isEnded, uint64 _page, uint64 _size) internal view returns(Fundraiser[] memory){
+        uint64 startIdx = _page * _size;
+        uint64 endIdx = startIdx + _size;
         uint64 length = endIdx > _fundraiserIdx ? _fundraiserIdx : endIdx;
         uint64 count = 0;
-        Fundraiser[] memory fundraiserList = new Fundraiser[](size);
+        Fundraiser[] memory fundraiserList = new Fundraiser[](_size);
 
         uint64 i = startIdx;
-        while (count < size && i < length) {
+        while (count < _size && i < length) {
             if (fundraisers[i].isEnded == _isEnded) {
                 fundraiserList[count] = fundraisers[i];
                 count++;
@@ -91,15 +98,15 @@ contract FundraiserProcess {
     }
 
     // 내 모금 목록
-    function _getMyFundraiserList(string memory _shelterId, bool _isEnded, uint64 page, uint64 size) internal view returns (Fundraiser[] memory){
-        uint64 startIdx = page * size;
-        uint64 endIdx = startIdx + size;
+    function _getMyFundraiserList(string memory _shelterId, bool _isEnded, uint64 _page, uint64 _size) internal view returns (Fundraiser[] memory){
+        uint64 startIdx = _page * _size;
+        uint64 endIdx = startIdx + _size;
         uint64 length = endIdx > _fundraiserIdx ? _fundraiserIdx : endIdx;
         uint64 count = 0;
-        Fundraiser[] memory myFundraiserList = new Fundraiser[](size);
+        Fundraiser[] memory myFundraiserList = new Fundraiser[](_size);
 
         uint64 i = startIdx;
-        while (count < size && i < length) {
+        while (count < _size && i < length) {
             if (fundraisers[i].isEnded == _isEnded  && keccak256(bytes(fundraisers[i].shelterId)) == keccak256(bytes(_shelterId))) {
                 myFundraiserList[count] = fundraisers[i];
                 count++;
