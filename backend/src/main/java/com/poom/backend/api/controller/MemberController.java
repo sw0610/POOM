@@ -64,7 +64,7 @@ public class MemberController {
         // redis에서 refresh 토큰을 삭제합니다.
         redisService.deleteToken(id);
         // db에서 회원의 상태를 탈퇴 상태로 변경합니다.
-        memberService.changeMemberStatus(id);
+        memberService.changeMemberStatusToWithdrawal(id);
         return ResponseEntity.status(200).build();
     }
 

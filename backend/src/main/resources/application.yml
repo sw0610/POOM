@@ -67,3 +67,5 @@ jwt:
   secret: c3NhZnk4dGgtOGdlbmVyYXRpb24tY2xhc3MtdGVhbS05LWphZXdvb2stcnVubnktcnVubnktdGFlc3QtdGFlc3VuLXl1eW9uZy1wcm9qZWN0LWZpZ2h0aW5nLWp3dC1zZWNyZXQtc2VjcmV0LXNlY3JldC1qd3QtdG9rZW4=
   token-validity-in-minutes: 30
 
+ipfs:
+  url: /ip4/43.201.49.21/tcp/8901
