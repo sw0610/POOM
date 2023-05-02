@@ -14,13 +14,17 @@ class _RegistScreenState extends State<RegistScreen> {
   int _selectedIndex = 0; // 선택된 인덱스
 
   void nextPage() {
-    setState(() {
-      _selectedIndex = _selectedIndex + 1;
-    });
+    if (_selectedIndex < 1) {
+      setState(() {
+        _selectedIndex = _selectedIndex + 1;
+      });
+    }
   }
 
   void prevPage() {
-    _selectedIndex = _selectedIndex - 1;
+    if (_selectedIndex > 0) {
+      _selectedIndex = _selectedIndex - 1;
+    }
   }
 
   @override
@@ -41,29 +45,6 @@ class _RegistScreenState extends State<RegistScreen> {
           const RegistSpecificInfo(),
         ],
       ),
-
-      // bottomNavigationBar: BottomNavigationBar(
-      //   currentIndex: _selectedIndex,
-      //   onTap: (int index) {
-      //     setState(() {
-      //       _selectedIndex = index;
-      //     });
-      //   },
-      //   items: const [
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.home),
-      //       label: '첫 번째',
-      //     ),
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.search),
-      //       label: '두 번째',
-      //     ),
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.settings),
-      //       label: '세 번째',
-      //     ),
-      //   ],
-      // ),
     );
   }
 }
