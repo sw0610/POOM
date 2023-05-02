@@ -3,7 +3,7 @@ pragma solidity >=0.8.0 <0.9.0;
 
 import "./Fundraiser.sol";
 import "./Donation.sol";
-import "../node_modules/@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "../../backend/src/main/resources/node_modules/@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 
 contract NftProcess is ERC721URIStorage, FundraiserProcess, DonationProcess  {
 

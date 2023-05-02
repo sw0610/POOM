@@ -39,7 +39,6 @@ contract DonationProcess is FundraiserProcess {
     모금 안에 후원 정보 저장
         - 후원자들 저장
         - 후원자 -> 후원 id
-        - ㅁㅂ1ㅈㅈㅂ1ㅈ
 
     */
 
@@ -91,7 +90,6 @@ contract DonationProcess is FundraiserProcess {
     }
 
 
-    ////////////////////////송금 구현해야함//////////////////////////////////////////
 
     // 후원
     function _donate(uint64 _fundraiserId, string memory _memberId, string memory _donateDate) public payable returns (uint64){
@@ -134,7 +132,6 @@ contract DonationProcess is FundraiserProcess {
 
     }
 
-    //////////////////////////////////////////////////////////////////
 
 
 }
