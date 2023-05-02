@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
-@Api(tags = "후원 모집 관련 컨트롤러")
+@Api(tags = "후원 모집 관련 API")
 @RequiredArgsConstructor
 public class FundraiserController {
     private final FundraiserService fundraiserService;

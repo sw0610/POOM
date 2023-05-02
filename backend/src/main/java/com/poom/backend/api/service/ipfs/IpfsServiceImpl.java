@@ -6,6 +6,7 @@ import io.ipfs.api.NamedStreamable;
 import io.ipfs.multiaddr.MultiAddress;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
@@ -15,10 +16,25 @@ public class IpfsServiceImpl implements IpfsService{
 
     private final IPFS ipfs;
 
-    public String saveJsonToIpfs(String json) throws IOException {
+    public String uploadJson(String json) throws IOException {
         NamedStreamable.ByteArrayWrapper byteArrayWrapper = new NamedStreamable.ByteArrayWrapper(json.getBytes());
         MerkleNode node = ipfs.add(byteArrayWrapper).get(0);
         return node.hash.toString();
+    }
+
+    @Override
+    public String downloadJson(String hash) {
+        return null;
+    }
+
+    @Override
+    public String uploadImage(MultipartFile file) {
+        return null;
+    }
+
+    @Override
+    public MultipartFile downloadFile(String hash) {
+        return null;
     }
 }
 
