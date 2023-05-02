@@ -17,7 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
-@Api(tags = "회원 API")
+@Api(tags = "회원 관련 API")
 @RequiredArgsConstructor
 @Slf4j
 public class MemberController {

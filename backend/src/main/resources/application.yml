@@ -68,4 +68,5 @@ jwt:
   token-validity-in-minutes: 30
 
 ipfs:
-  url: /ip4/43.201.49.21/tcp/8901
+  ipv4: 43.201.49.21
+  port: 8901
