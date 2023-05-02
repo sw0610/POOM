@@ -4,18 +4,16 @@ import io.ipfs.api.IPFS;
 import io.ipfs.api.MerkleNode;
 import io.ipfs.api.NamedStreamable;
 import io.ipfs.multiaddr.MultiAddress;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 
 @Service
+@RequiredArgsConstructor
 public class IpfsServiceImpl implements IpfsService{
 
     private final IPFS ipfs;
-
-    public IpfsServiceImpl() {
-        ipfs = new IPFS(new MultiAddress("/ip4/43.201.49.21/tcp/8901"));
-    }
 
     public String saveJsonToIpfs(String json) throws IOException {
         NamedStreamable.ByteArrayWrapper byteArrayWrapper = new NamedStreamable.ByteArrayWrapper(json.getBytes());

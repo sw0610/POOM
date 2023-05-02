@@ -60,7 +60,8 @@ public class MemberRepositoryTest {
 
         //when
         Member savedMember = memberRepository.save(member);
-        Member foundMember = memberRepository.findMemberByEmail(savedMember.getEmail());
+        Member foundMember = memberRepository.findMemberByEmail(savedMember.getEmail())
+                .get();
 
         //then
         assertThat(foundMember.getId()).isEqualTo(savedMember.getId());
