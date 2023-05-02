@@ -49,81 +49,109 @@ class _ShelterAuthScreenState extends State<ShelterAuthScreen> {
             Row(
               children: [
                 Expanded(
-                  child: Container(
-                    height: 178,
-                    decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.7),
-                          blurRadius: 4.0,
-                          spreadRadius: 0.0,
-                          offset: const Offset(0, 4),
-                        )
-                      ],
-                      gradient: const LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          Color(0xFFFF8E01),
-                          Color(0xFFFAC685),
-                        ],
-                      ),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: const Padding(
-                      padding: EdgeInsets.all(20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "동물사랑센터",
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
+                  child: Stack(
+                    children: [
+                      Container(
+                        height: 178,
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.7),
+                              blurRadius: 4.0,
+                              spreadRadius: 0.0,
+                              offset: const Offset(0, 4),
+                            )
+                          ],
+                          gradient: const LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              Color(0xFFFF8E01),
+                              Color(0xFFFFB75C),
+                            ],
                           ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Text(
-                            "서울특별시 서초구 양재1동 양재천로19길 22",
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.white,
-                            ),
-                          ),
-                          SizedBox(
-                            height: 4,
-                          ),
-                          Text(
-                            "02-6956-7890",
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.white,
-                            ),
-                          ),
-                          SizedBox(
-                            height: 48,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: const Padding(
+                          padding: EdgeInsets.all(20),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "등록일 2023.05.01",
+                                "동물사랑센터",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                "서울특별시 서초구 양재1동 양재천로19길 22",
                                 style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w400,
                                   color: Colors.white,
                                 ),
                               ),
+                              SizedBox(
+                                height: 4,
+                              ),
+                              Text(
+                                "02-6956-7890",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 48,
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    "등록일 2023.05.01",
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ],
                           ),
-                        ],
+                        ),
                       ),
-                    ),
+                      Positioned(
+                        top: 20,
+                        right: 54,
+                        child: Container(
+                          decoration: const BoxDecoration(
+                            color: Color.fromARGB(60, 251, 216, 152),
+                            shape: BoxShape.circle,
+                          ),
+                          width: 76,
+                          height: 76,
+                        ),
+                      ),
+                      Positioned(
+                        top: 48,
+                        right: 12,
+                        child: Container(
+                          decoration: const BoxDecoration(
+                            color: Color.fromARGB(70, 251, 216, 152),
+                            shape: BoxShape.circle,
+                          ),
+                          width: 76,
+                          height: 76,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
