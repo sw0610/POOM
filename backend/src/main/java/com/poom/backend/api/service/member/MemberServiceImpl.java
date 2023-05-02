@@ -2,6 +2,7 @@ package com.poom.backend.api.service.member;
 
 import com.poom.backend.api.dto.member.SignupCond;
 import com.poom.backend.api.dto.member.MemberInfoRes;
+import com.poom.backend.api.service.ipfs.IpfsService;
 import com.poom.backend.config.jwt.TokenProvider;
 import com.poom.backend.db.entity.Member;
 import com.poom.backend.db.entity.Shelter;
@@ -22,6 +23,7 @@ public class MemberServiceImpl implements MemberService{
     private final MemberRepository memberRepository;
     private final ShelterRepository shelterRepository;
     private final TokenProvider tokenProvider;
+    private final IpfsService ipfsService;
 
     @Override
     public Member signUp(SignupCond signupCond) {
@@ -66,6 +68,16 @@ public class MemberServiceImpl implements MemberService{
 
     @Override
     public MemberInfoRes updateMemberInfo(HttpServletRequest request, MultipartFile profileImage, String nickname) {
+        Member member = memberRepository.findById(getUserIdFromHeader(request))
+                .orElseThrow(()->new BadRequestException("회원 정보가 없습니다."));
+        if(profileImage != null || !profileImage.isEmpty()) {
+            String hash = ipfsService.uploadImage(profileImage);
+            member.setProfileImgUrl(hash);
+        }
+        if(nickname != null) {
+            member.setNickname(nickname);
+        }
+        memberRepository.save(member);
         return null;
     }
 

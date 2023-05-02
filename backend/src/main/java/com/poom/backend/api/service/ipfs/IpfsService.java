@@ -9,6 +9,6 @@ public interface IpfsService {
     String downloadJson(String hash); // NFT의 메타데이터 IPFS에서 가져오기
 
     String uploadImage(MultipartFile file);
-    MultipartFile downloadFile(String hash);
+    MultipartFile downloadImage(String hash);
     
 }

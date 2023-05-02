@@ -100,6 +100,7 @@ public class ipfsTest {
         if(result.size() == 0) System.out.println("데이터 오류");
 
         Multihash hash = result.get(0).hash;
+        System.out.println(hash);
 
         byte[] fileBytes = ipfs.cat(hash);
         // byte 배열을 MultipartFile로 변환

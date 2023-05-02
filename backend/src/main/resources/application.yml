@@ -68,5 +68,9 @@ jwt:
   token-validity-in-minutes: 30
 
 ipfs:
-  ipv4: 43.201.49.21
-  port: 8901
+  api:
+    ipv4: 43.201.49.21
+    port: 8901
+  gateway:
+    dns: k8a805.p.ssafy.io
+    port: 8900
