@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '2.7.11'
     id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id "org.web3j" version "4.9.8"
 }
 
 group = 'com.poom'
@@ -76,9 +77,26 @@ dependencies {
 
 
 
-
 }
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+sourceSets {
+    main {
+        solidity {
+            srcDir {
+                "$projectDir/../contract/contracts"
+            }
+
+        }
+    }
+}
+node {
+    nodeProjectDir = file("$projectDir/src/main/resources")
+}
+
+afterEvaluate {
+    tasks.build.dependsOn tasks.getByPath('generateContractWrappers')
 }
