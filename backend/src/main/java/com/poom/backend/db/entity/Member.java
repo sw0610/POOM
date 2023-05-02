@@ -30,4 +30,6 @@ public class Member {
     private String email;
 
     private List<Role> roles;
+
+    private boolean isWithdrawal;
 }
