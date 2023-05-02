@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:poom/widgets/home/home_specific_supporter.dart';
 
 class DogSpecificScreen extends StatelessWidget {
@@ -212,6 +213,10 @@ class DogSpecificScreen extends StatelessWidget {
           backgroundColor: Theme.of(context).primaryColor,
           onPressed: () {},
           elevation: 8,
+          icon: SvgPicture.asset(
+            'assets/icons/ic_metamask_color.svg',
+            height: 12.0,
+          ),
           label: const Text(
             "Metamask로 후원하기",
             style: TextStyle(
