@@ -14,7 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RestController
-@Api(tags = "보호소 관련 컨트롤러")
+@Api(tags = "보호소 관련 API")
 @RequiredArgsConstructor
 public class ShelterController {
 
