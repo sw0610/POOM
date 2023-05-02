@@ -36,7 +36,7 @@ public class MemberServiceImpl implements MemberService{
 
     @Override
     public String getUserIdFromHeader(HttpServletRequest request) {
-        String token = request.getHeader("Authrization");
+        String token = request.getHeader("Authorization");
         // 액세스 토큰 문자열에서 "Bearer " 문자열을 제거하고, 나머지 액세스 토큰 문자열을 인자로 전달
         Authentication authentication = tokenProvider.getAuthentication(token.substring(7));
         // 회원 컬렉션의 id
