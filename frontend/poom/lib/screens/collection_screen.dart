@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class CollectionScreen extends StatefulWidget {
   const CollectionScreen({super.key});
@@ -11,6 +12,7 @@ class CollectionScreen extends StatefulWidget {
 
 class _CollectionScreenState extends State<CollectionScreen> {
   bool _isGrid = false;
+  final bool _isOwner = false;
 
   @override
   Widget build(BuildContext context) {
@@ -81,22 +83,54 @@ class _CollectionScreenState extends State<CollectionScreen> {
               child: GridView.builder(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: _isGrid ? 2 : 1,
-                  mainAxisSpacing: 10,
+                  mainAxisSpacing: 20,
                   crossAxisSpacing: 5,
+                  childAspectRatio: _isGrid ? 1 : 1 / 1.32,
                 ),
                 itemCount: 10,
                 itemBuilder: (BuildContext context, int index) {
-                  return SizedBox(
-                    width: 146,
-                    height: 146,
-                    child: Card(
-                      clipBehavior: Clip.hardEdge,
-                      shape: RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(20.0), // 원하는 모서리 반지름 값 설정
-                      ),
-                      child: Image.network(
-                        "https://static.vecteezy.com/system/resources/previews/004/814/513/original/cute-dog-illustration-suitable-for-pet-shop-logo-vector.jpg",
+                  return Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    clipBehavior: Clip.hardEdge,
+                    child: SizedBox(
+                      child: Column(
+                        children: [
+                          Image.network(
+                            "https://img.freepik.com/premium-vector/cute-coton-de-tulear-puppy-cartoon-vector-illustration_42750-1173.jpg",
+                            width: MediaQuery.of(context).size.width,
+                          ),
+                          _isGrid & !_isOwner
+                              ? const SizedBox()
+                              : SizedBox(
+                                  width: MediaQuery.of(context).size.width,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      const SizedBox(
+                                        height: 32,
+                                      ),
+                                      SvgPicture.asset(
+                                        "assets/icons/ic _instagram.svg",
+                                        width: 20,
+                                        height: 20,
+                                      ),
+                                      const SizedBox(
+                                        height: 6,
+                                      ),
+                                      const Text(
+                                        "공유",
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                        ],
                       ),
                     ),
                   );
