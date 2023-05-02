@@ -1,0 +1,9 @@
+{
+    "name": "backend",
+    "description": " ",
+    "repository": " ",
+    "license": "UNLICENSED",
+    "dependencies": {
+        "@openzeppelin/contracts": "latest"
+    }
+}
