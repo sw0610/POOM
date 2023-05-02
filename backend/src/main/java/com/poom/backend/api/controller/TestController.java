@@ -22,7 +22,7 @@ public class TestController {
     private final MemberService memberService;
 
 
-    @GetMapping("/api/test/log")
+    @GetMapping("/test/log")
     @ApiOperation(value = "로그 테스트", notes = "<strong>로그 출력</strong>")
     @ApiResponses({
             @ApiResponse(code = 200, message = "OK(조회 성공)"),
