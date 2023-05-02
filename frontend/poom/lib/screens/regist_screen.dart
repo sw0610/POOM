@@ -41,7 +41,7 @@ class _RegistScreenState extends State<RegistScreen> {
         index: _selectedIndex,
         children: [
           RegistRepresentive(nextPage: nextPage),
-          const RegistNftPreview(),
+          RegistNftPreview(nextPage: nextPage, prevPage: prevPage),
           const RegistSpecificInfo(),
         ],
       ),
