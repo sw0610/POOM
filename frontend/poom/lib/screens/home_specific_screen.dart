@@ -126,6 +126,7 @@ class DogSpecificScreen extends StatelessWidget {
               ),
               Container(
                 height: 85,
+                width: MediaQuery.of(context).size.width,
                 decoration: const BoxDecoration(
                   color: Color(0xFFFFF4E6),
                   borderRadius: BorderRadius.all(
@@ -138,14 +139,15 @@ class DogSpecificScreen extends StatelessWidget {
                   children: [
                     Text(''),
                     Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         SummaryTitle(text: '후원 마감'),
                         SummaryValue(value: '23.01.01'),
-                        SummaryValue(value: '12:59'),
                       ],
                     ),
                     DivideLine(),
                     Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         SummaryTitle(text: '현재 모금액'),
                         SummaryValue(value: '0.562'),
@@ -153,6 +155,7 @@ class DogSpecificScreen extends StatelessWidget {
                     ),
                     DivideLine(),
                     Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         SummaryTitle(text: '목표액'),
                         SummaryValue(value: '1.111'),

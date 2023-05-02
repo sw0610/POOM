@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:poom/screens/home_specific_screen.dart';
 
 class DogListCardWidget extends StatelessWidget {
-
-  
-
   const DogListCardWidget({super.key});
 
   @override

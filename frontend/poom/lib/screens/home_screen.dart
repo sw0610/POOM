@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:poom/screens/regist_screen.dart';
 import 'package:poom/widgets/home/home_dog_card.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -8,10 +9,20 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    void goRegistScreen() {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const RegistScreen(),
+          fullscreenDialog: true,
+        ),
+      );
+    }
+
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(60.0), // here the desired height
+        preferredSize: const Size.fromHeight(60.0),
         child: AppBar(
           elevation: 0,
           backgroundColor: Colors.white,
@@ -47,7 +58,7 @@ class HomeScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(right: 8.0),
               child: IconButton(
-                onPressed: () {},
+                onPressed: goRegistScreen,
                 icon: const Icon(
                   Icons.add,
                   color: Color(0xFF333333),
