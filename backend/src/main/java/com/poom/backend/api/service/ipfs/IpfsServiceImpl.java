@@ -53,7 +53,7 @@ public class IpfsServiceImpl implements IpfsService{
         return url.substring(url.indexOf("ipfs/") + 5);
     }
 
-    private String hashToUrl(String hash){
+    public String hashToUrl(String hash){
         return "http://"+gateway+":"+gatewayPort+"/ipfs/"+hash;
     }
 }

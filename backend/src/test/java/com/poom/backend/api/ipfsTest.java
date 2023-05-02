@@ -1,6 +1,8 @@
 package com.poom.backend.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.poom.backend.api.service.ipfs.IpfsService;
+import com.poom.backend.api.service.ipfs.IpfsServiceImpl;
 import com.poom.backend.db.entity.Member;
 import com.poom.backend.enums.Role;
 import com.poom.backend.util.ByteArrayMultipartFile;
@@ -12,6 +14,7 @@ import io.ipfs.multihash.Multihash;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,6 +34,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 public class ipfsTest {
     private static final IPFS ipfs = new IPFS(new MultiAddress("/ip4/43.201.49.21/tcp/8901")).timeout(1000);
+    @Autowired
+    private IpfsServiceImpl ipfsService;
 
     @Test
     public void ipfsConnectionTest() {
@@ -101,6 +106,7 @@ public class ipfsTest {
 
         Multihash hash = result.get(0).hash;
         System.out.println(hash);
+        System.out.println(ipfsService.hashToUrl(hash.toString()));
 
         byte[] fileBytes = ipfs.cat(hash);
         // byte 배열을 MultipartFile로 변환
