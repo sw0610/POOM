@@ -16,7 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
-@Api(tags = "후원 관련 컨트롤러")
+@Api(tags = "후원 관련 API")
 @RequiredArgsConstructor
 public class DonateController {
 
