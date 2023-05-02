@@ -25,10 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 @DataMongoTest
 public class MemberRepositoryTest {
 
-    @Mock
-    private MongoTemplate mongoTemplate;
-
-    @Mock
+    @Autowired
     private MemberRepository memberRepository;
 
     @Test
@@ -49,5 +46,23 @@ public class MemberRepositoryTest {
         System.out.println(foundMember.get().getNickname());
         assertThat(foundMember).isPresent();
         assertThat(foundMember.get().getNickname()).isEqualTo(member.getNickname());
+    }
+
+    @Test
+    public void testFindMemberByEmail() {
+        //given
+        Member member = Member.builder()
+                .nickname("John2")
+                .email("john3@test.com")
+                .profileImgUrl("https://example.com/profile.png")
+                .roles(Arrays.asList(Role.ROLE_USER))
+                .build();
+
+        //when
+        Member savedMember = memberRepository.save(member);
+        Member foundMember = memberRepository.findMemberByEmail(savedMember.getEmail());
+
+        //then
+        assertThat(foundMember.getId()).isEqualTo(savedMember.getId());
     }
 }
