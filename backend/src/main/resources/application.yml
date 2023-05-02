@@ -1,5 +1,22 @@
 # MongoDB Connection
 spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            client-id: 16f9dc70727d623363f37d2a4e117611
+            redirect-uri: "http://localhost:8080/api/oauth/kakao"
+            client-authentication-method: POST
+            authorization-grant-type: authorization_code
+            scope: profile_nickname, profile_image, account_email,  #동의 항목
+            client-name: kakao
+        provider:
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
   data:
     mongodb:
 #      uri: mongodb://poom:poompwd1234@k8a805.p.ssafy.io:27017/poomdb
@@ -9,6 +26,14 @@ spring:
       database: testdb
       username: poom
       password: poompwd1234
+  redis:
+    host: localhost
+    port: 6379
+    lettuce:
+      pool:
+        max-active: 8
+        max-idle: 8
+        min-idle: 0
 
   # Spring MVC 경로 매칭
   mvc:
@@ -32,7 +57,7 @@ logging:
     root: info  # TRACE  <  DEBUG  <  INFO  <  WARN  <  ERROR
 
 oauth:
-  kakao: cd2efe918e29d2852de282fb31320ac3
+  kakao: 16f9dc70727d623363f37d2a4e117611
 
 
 jwt:
@@ -41,3 +66,4 @@ jwt:
   #echo 'ssafy-8th-generation-class-8-team-5-jaewook-hyunju-sowon-taehyun-taesun-jinsoo-project-fighting-jwt-secret-secret-jwt-token'|base64
   secret: c3NhZnk4dGgtOGdlbmVyYXRpb24tY2xhc3MtdGVhbS05LWphZXdvb2stcnVubnktcnVubnktdGFlc3QtdGFlc3VuLXl1eW9uZy1wcm9qZWN0LWZpZ2h0aW5nLWp3dC1zZWNyZXQtc2VjcmV0LXNlY3JldC1qd3QtdG9rZW4=
   token-validity-in-minutes: 30
+
