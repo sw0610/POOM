@@ -17,12 +17,14 @@ public class MemberInfoRes {
 //		- 1 : 인증
 //		- 2 : 거절
 //	"shelterId": ObjectId
+    private String memberId;
     private String nickname;
     private String profileImgUrl;
     private String email;
     private ShelterStatus shelterStatus;
     private String shelterId;
     public void setMemberInfo(Member member){
+        this.memberId = member.getId();
         this.nickname = member.getNickname();
         this.profileImgUrl = member.getProfileImgUrl();
         this.email = member.getEmail();
