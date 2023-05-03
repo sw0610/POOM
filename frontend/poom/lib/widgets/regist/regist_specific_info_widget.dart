@@ -6,7 +6,7 @@ class RegistSpecificInfo extends StatefulWidget {
   const RegistSpecificInfo({super.key});
 
   // static const Color inputBackground = Color(0xFFF9F9F9);
-  static const Color inputBackground = Color.fromARGB(255, 196, 196, 196);
+  static Color inputBackground = const Color(0xFFD9D9D9).withOpacity(0.15);
   static const Color textColor = Color(0xFF333333);
   static const Color textSecondaryColor = Color(0xFF666666);
 
@@ -70,8 +70,8 @@ class _RegistSpecificInfoState extends State<RegistSpecificInfo> {
             Container(
               height: 114,
               width: 114,
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.all(
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.all(
                   Radius.circular(10),
                 ),
                 color: RegistSpecificInfo.inputBackground,
