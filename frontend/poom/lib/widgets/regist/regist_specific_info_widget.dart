@@ -18,6 +18,8 @@ class _RegistSpecificInfoState extends State<RegistSpecificInfo> {
   int _dogGender = 0;
   bool _ageIsEstimated = false; //0: 암컷, 1: 수컷
 
+  DateTime _endDate = DateTime.now().add(const Duration(days: 3));
+
   final formKey = GlobalKey<FormState>();
 
   @override
@@ -199,6 +201,38 @@ class _RegistSpecificInfoState extends State<RegistSpecificInfo> {
               validator: (val) {
                 return null;
               },
+            ),
+            const Title(
+              title: '후원 마감',
+            ),
+            const Description(description: '지금으로부터 최소 3일 이후로 설정할 수 있어요!'),
+            TextButton(
+              onPressed: () async {
+                final selectedDate = await showDatePicker(
+                  context: context,
+                  // initialDate: DateTime.now().add(const Duration(days: 3)),
+                  initialDate: _endDate,
+                  firstDate: DateTime.now().add(const Duration(days: 3)),
+                  lastDate: DateTime.now().add(const Duration(days: 90)),
+                  initialEntryMode: DatePickerEntryMode.calendarOnly,
+                );
+                if (selectedDate != null) {
+                  setState(() {
+                    _endDate = selectedDate;
+                  });
+                }
+              },
+              style: ButtonStyle(
+                padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.zero),
+              ),
+              child: Text(
+                '${_endDate.year}.${_endDate.month.toString().padLeft(2, '0')}.${_endDate.day.toString().padLeft(2, '0')}',
+                style: const TextStyle(
+                  color: RegistSpecificInfo.textColor,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
             ),
 
             //------------------------------------------------------------------
