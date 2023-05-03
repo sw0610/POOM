@@ -99,34 +99,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
                     child: SizedBox(
                       child: Column(
                         children: [
-                          CachedNetworkImage(
-                            imageUrl:
-                                "https://img.freepik.com/premium-vector/cute-coton-de-tulear-puppy-cartoon-vector-illustration_42750-1173.jpg",
-                            width: MediaQuery.of(context).size.width,
-                            placeholder: (context, url) => Shimmer.fromColors(
-                              baseColor: Colors.grey.shade100,
-                              highlightColor: Colors.white,
-                              child: Container(
-                                width: double.infinity,
-                                decoration: BoxDecoration(
-                                    color: Colors.grey.shade100,
-                                    borderRadius: BorderRadius.circular(12)),
-                                child: LayoutBuilder(
-                                  builder: (BuildContext context,
-                                      BoxConstraints constraints) {
-                                    double height = constraints
-                                        .maxWidth; // width 값을 가져와서 height로 설정
-                                    return Container(
-                                      height: height,
-                                      color: Colors.blue,
-                                    );
-                                  },
-                                ),
-                              ),
-                            ),
-                            errorWidget: (context, url, error) =>
-                                const Icon(Icons.error),
-                          ),
+                          const CachedImage(),
                           _isGrid & !_isOwner
                               ? const SizedBox()
                               : SizedBox(
@@ -166,6 +139,40 @@ class _CollectionScreenState extends State<CollectionScreen> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class CachedImage extends StatelessWidget {
+  const CachedImage({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return CachedNetworkImage(
+      imageUrl:
+          "https://img.freepik.com/premium-vector/cute-coton-de-tulear-puppy-cartoon-vector-illustration_42750-1173.jpg",
+      width: MediaQuery.of(context).size.width,
+      placeholder: (context, url) => Shimmer.fromColors(
+        baseColor: Colors.grey.shade100,
+        highlightColor: Colors.white,
+        child: Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+              color: Colors.grey.shade100,
+              borderRadius: BorderRadius.circular(12)),
+          child: LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+              double height = constraints.maxWidth;
+              return Container(
+                height: height,
+              );
+            },
+          ),
+        ),
+      ),
+      errorWidget: (context, url, error) => const Icon(Icons.error),
     );
   }
 }
