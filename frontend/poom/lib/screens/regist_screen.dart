@@ -14,7 +14,7 @@ class _RegistScreenState extends State<RegistScreen> {
   int _selectedIndex = 0; // 선택된 인덱스
 
   void nextPage() {
-    if (_selectedIndex < 1) {
+    if (_selectedIndex < 2) {
       setState(() {
         _selectedIndex = _selectedIndex + 1;
       });
@@ -23,7 +23,9 @@ class _RegistScreenState extends State<RegistScreen> {
 
   void prevPage() {
     if (_selectedIndex > 0) {
-      _selectedIndex = _selectedIndex - 1;
+      setState(() {
+        _selectedIndex = _selectedIndex - 1;
+      });
     }
   }
 
@@ -41,7 +43,7 @@ class _RegistScreenState extends State<RegistScreen> {
         index: _selectedIndex,
         children: [
           RegistRepresentive(nextPage: nextPage),
-          const RegistNftPreview(),
+          RegistNftPreview(nextPage: nextPage, prevPage: prevPage),
           const RegistSpecificInfo(),
         ],
       ),
