@@ -1,12 +1,13 @@
 package com.poom.backend.api.service.member;
 
+import com.poom.backend.api.dto.member.MemberInfoRes;
 import com.poom.backend.api.dto.member.SignupCond;
 import com.poom.backend.api.service.ipfs.IpfsService;
 import com.poom.backend.config.jwt.TokenProvider;
 import com.poom.backend.db.entity.Member;
+import com.poom.backend.db.entity.Shelter;
 import com.poom.backend.db.repository.MemberRepository;
 import com.poom.backend.db.repository.ShelterRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,6 +41,7 @@ public class MemberServiceImplTest {
     @InjectMocks
     private MemberServiceImpl memberService;
 
+    @Mock
     private HttpServletRequest request;
 
     @BeforeEach
@@ -69,7 +71,7 @@ public class MemberServiceImplTest {
         Mockito.when(tokenProvider.getAuthentication("abc123")).thenReturn(authentication);
         Mockito.when(authentication.getName()).thenReturn(memberId);
 
-        String result = memberService.getUserIdFromHeader(request);
+        String result = memberService.getMemberIdFromHeader(request);
 
         System.out.println(result);
         System.out.println(memberId);
@@ -86,5 +88,36 @@ public class MemberServiceImplTest {
         memberService.changeMemberStatusToWithdrawal(memberId);
 
         assertThat(member.isWithdrawal()).isTrue();
+    }
+
+    @Test
+    public void testGetMemberInfo(){
+        // Given
+        String accessToken = "Bearer abc123";
+        String memberId = "testuser";
+        Authentication authentication = Mockito.mock(Authentication.class);
+        Member member = Member.builder()
+                .id(memberId)
+                .email("example@gmail.com")
+                .nickname("hihi")
+                .build();
+        Shelter shelter = Shelter.builder()
+                .shelterName("example shelter name")
+                .adminId(memberId)
+                .build();
+        Mockito.when(request.getHeader("Authorization")).thenReturn(accessToken);
+        Mockito.when(tokenProvider.getAuthentication("abc123")).thenReturn(authentication);
+        Mockito.when(authentication.getName()).thenReturn(memberId);
+        Mockito.when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
+        Mockito.when(shelterRepository.findShelterByAdminId(memberId)).thenReturn(Optional.of(shelter));
+
+        // When
+        MemberInfoRes result = memberService.getMemberInfo(request);
+
+        // then
+        assertThat(member.getEmail()).isEqualTo(result.getEmail());
+        Mockito.verify(memberRepository).findById(memberId); // memberRepository.findById(memberId)가 한번 호출됐는지 확인합니다.
+        Mockito.verify(shelterRepository).findShelterByAdminId(memberId);
+
     }
 }
