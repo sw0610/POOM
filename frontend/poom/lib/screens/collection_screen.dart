@@ -6,6 +6,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:social_share/social_share.dart';
+import 'package:http/http.dart' as http;
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 
 class CollectionScreen extends StatefulWidget {
   const CollectionScreen({super.key});
@@ -20,19 +23,17 @@ class _CollectionScreenState extends State<CollectionScreen> {
   bool _isGrid = false;
   final bool _isOwner = false;
   final _appId = "542113181199892";
-  File? _image;
   final imagePicker = ImagePicker();
 
-  Future getProfileImage(ImageSource imageSource) async {
-    final profileImage = await imagePicker.pickImage(source: imageSource);
+  // 이미지 URL -> File path
+  void fileFromImageUrl(String imageUrl) async {
+    final response = await http.get(Uri.parse(imageUrl));
+    final documentDirectory = await getApplicationDocumentsDirectory();
+    final file = File(join(documentDirectory.path, 'img_my_nft.png'));
+    file.writeAsBytesSync(response.bodyBytes);
 
-    if (profileImage != null) {
-      _image = File(profileImage.path);
-
-      print("이미지 path : ${_image!.path}, appId : $_appId");
-      SocialShare.shareInstagramStory(appId: _appId, imagePath: _image!.path)
-          .then((value) => print("value ? $value"));
-    }
+    // 인스타그램 스토리 공유
+    SocialShare.shareInstagramStory(appId: _appId, imagePath: file.path);
   }
 
   @override
@@ -110,6 +111,9 @@ class _CollectionScreenState extends State<CollectionScreen> {
                 ),
                 itemCount: 10,
                 itemBuilder: (BuildContext context, int index) {
+                  var testImageUrl =
+                      "https://img.freepik.com/premium-vector/cute-coton-de-tulear-puppy-cartoon-vector-illustration_42750-1173.jpg";
+
                   return Card(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
@@ -118,13 +122,15 @@ class _CollectionScreenState extends State<CollectionScreen> {
                     child: SizedBox(
                       child: Column(
                         children: [
-                          const CachedImage(),
+                          CachedImage(
+                            imageUrl: testImageUrl,
+                          ),
                           _isGrid & !_isOwner
                               ? const SizedBox()
                               : GestureDetector(
                                   onTap: () {
                                     print("onTap()");
-                                    getProfileImage(ImageSource.gallery);
+                                    fileFromImageUrl(testImageUrl);
                                   },
                                   child: SizedBox(
                                     width: MediaQuery.of(context).size.width,
@@ -169,15 +175,16 @@ class _CollectionScreenState extends State<CollectionScreen> {
 }
 
 class CachedImage extends StatelessWidget {
+  final String imageUrl;
   const CachedImage({
     super.key,
+    required this.imageUrl,
   });
 
   @override
   Widget build(BuildContext context) {
     return CachedNetworkImage(
-      imageUrl:
-          "https://img.freepik.com/premium-vector/cute-coton-de-tulear-puppy-cartoon-vector-illustration_42750-1173.jpg",
+      imageUrl: imageUrl,
       width: MediaQuery.of(context).size.width,
       placeholder: (context, url) => Shimmer.fromColors(
         baseColor: Colors.grey.shade100,
