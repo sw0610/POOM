@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:poom/screens/profile_settings_screen.dart';
+import 'package:poom/screens/profile_support_request_screen.dart';
 import 'package:poom/screens/profile_support_screen.dart';
+import 'package:poom/screens/shelter_auth_form_screen.dart';
+import 'package:poom/screens/shelter_auth_screen.dart';
 import 'package:poom/widgets/profile/profile_form.dart';
 import 'package:poom/widgets/profile/profile_menu.dart';
 
@@ -20,6 +23,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String email = "songo427@gmail.com";
   String profileImgUrl = "https://avatars.githubusercontent.com/u/38373150?v=4";
   bool isHideMenu = false;
+  int authStatus = 1;
 
   void setHideMenu() {
     setState(() {
@@ -89,6 +93,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     : Column(
                         children: [
                           MenuItem(
+                            icon: Icons.request_page,
+                            title: "후원 요청 목록",
+                            isShelter: true,
+                            onTapMenu: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const SupportRequestScreen(),
+                                ),
+                              );
+                            },
+                          ),
+                          MenuItem(
                             icon: Icons.receipt,
                             title: "나의 후원 내역",
                             onTapMenu: () {
@@ -105,7 +123,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             icon: Icons.night_shelter_rounded,
                             title: "보호소 회원 인증",
                             isShelter: true,
-                            onTapMenu: () {},
+                            onTapMenu: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) {
+                                  if (authStatus == 1) {
+                                    // 인증 상태
+                                    return const ShelterAuthScreen();
+                                  }
+                                  return const ShelterAuthFormScreen();
+                                }),
+                              );
+                            },
                           ),
                         ],
                       ),
