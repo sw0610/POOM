@@ -129,7 +129,6 @@ class _CollectionScreenState extends State<CollectionScreen> {
                               ? const SizedBox()
                               : GestureDetector(
                                   onTap: () {
-                                    print("onTap()");
                                     fileFromImageUrl(testImageUrl);
                                   },
                                   child: SizedBox(
