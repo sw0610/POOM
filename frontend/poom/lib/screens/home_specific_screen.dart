@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:poom/screens/donate_screen.dart';
 import 'package:poom/widgets/home/home_specific_supporter.dart';
 
 class DogSpecificScreen extends StatelessWidget {
@@ -7,6 +8,16 @@ class DogSpecificScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    void goDonateScreen() {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const DonateScreen(),
+          fullscreenDialog: true,
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.background,
@@ -214,7 +225,7 @@ class DogSpecificScreen extends StatelessWidget {
         ),
         child: FloatingActionButton.extended(
           backgroundColor: Theme.of(context).primaryColor,
-          onPressed: () {},
+          onPressed: goDonateScreen,
           elevation: 8,
           icon: SvgPicture.asset(
             'assets/icons/ic_metamask_color.svg',
