@@ -14,6 +14,7 @@ class CollectionScreen extends StatefulWidget {
   const CollectionScreen({super.key});
 
   static const Color _textColor = Color(0xFF333333);
+  static const _primaryColor = Color(0xFFFF8E01);
 
   @override
   State<CollectionScreen> createState() => _CollectionScreenState();
@@ -22,18 +23,89 @@ class CollectionScreen extends StatefulWidget {
 class _CollectionScreenState extends State<CollectionScreen> {
   bool _isGrid = false;
   final bool _isOwner = false;
+  bool _isDialogOpen = false;
   final _appId = "542113181199892";
   final imagePicker = ImagePicker();
 
   // 이미지 URL -> File path
-  void fileFromImageUrl(String imageUrl) async {
+  Future<bool?> fileFromImageUrl(String imageUrl) async {
     final response = await http.get(Uri.parse(imageUrl));
     final documentDirectory = await getApplicationDocumentsDirectory();
     final file = File(join(documentDirectory.path, 'img_my_nft.png'));
     file.writeAsBytesSync(response.bodyBytes);
 
     // 인스타그램 스토리 공유
-    SocialShare.shareInstagramStory(appId: _appId, imagePath: file.path);
+    var result = await SocialShare.shareInstagramStory(
+            appId: _appId, imagePath: file.path)
+        .then((value) {
+      // 인스타그램 설치 여부에 따른 처리
+      return value == "error" ? false : true;
+    });
+
+    return result;
+  }
+
+  // 다이얼로그 안내
+  Future<void> showCustomDialog(BuildContext context) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          insetPadding:
+              const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
+          elevation: 1,
+          title: const Text(
+            "NFT 컬렉션 공유",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          content: const Text(
+            "인스타그램을 먼저 설치해주세요.",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 14,
+            ),
+          ),
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(20),
+            ),
+          ),
+          buttonPadding:
+              const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
+          actions: <Widget>[
+            Container(
+              decoration: const BoxDecoration(
+                color: CollectionScreen._primaryColor,
+                borderRadius: BorderRadius.all(
+                  Radius.circular(10),
+                ),
+              ),
+              width: MediaQuery.of(context).size.width,
+              height: 42,
+              child: TextButton(
+                child: const Text(
+                  '확인',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                onPressed: () {
+                  _isDialogOpen = false;
+                  Navigator.of(context).pop();
+                },
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -127,12 +199,19 @@ class _CollectionScreenState extends State<CollectionScreen> {
                           ),
                           _isGrid & !_isOwner
                               ? const SizedBox()
-                              : GestureDetector(
-                                  onTap: () {
-                                    fileFromImageUrl(testImageUrl);
-                                  },
-                                  child: SizedBox(
-                                    width: MediaQuery.of(context).size.width,
+                              : SizedBox(
+                                  width: MediaQuery.of(context).size.width,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      fileFromImageUrl(testImageUrl)
+                                          .then((result) {
+                                        if (result == false &&
+                                            _isDialogOpen == false) {
+                                          _isDialogOpen = true;
+                                          showCustomDialog(context);
+                                        }
+                                      });
+                                    },
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.center,
@@ -142,8 +221,8 @@ class _CollectionScreenState extends State<CollectionScreen> {
                                         ),
                                         SvgPicture.asset(
                                           "assets/icons/ic _instagram.svg",
-                                          width: 20,
-                                          height: 20,
+                                          width: 24,
+                                          height: 24,
                                         ),
                                         const SizedBox(
                                           height: 6,
