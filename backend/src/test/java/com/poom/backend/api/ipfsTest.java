@@ -1,6 +1,8 @@
 package com.poom.backend.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.poom.backend.api.service.ipfs.IpfsService;
+import com.poom.backend.api.service.ipfs.IpfsServiceImpl;
 import com.poom.backend.db.entity.Member;
 import com.poom.backend.enums.Role;
 import com.poom.backend.util.ByteArrayMultipartFile;
@@ -12,6 +14,7 @@ import io.ipfs.multihash.Multihash;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,6 +34,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 public class ipfsTest {
     private static final IPFS ipfs = new IPFS(new MultiAddress("/ip4/43.201.49.21/tcp/8901")).timeout(1000);
+    @Autowired
+    private IpfsServiceImpl ipfsService;
 
     @Test
     public void ipfsConnectionTest() {
@@ -63,9 +68,13 @@ public class ipfsTest {
         Multihash multihash = merkleNode.hash;
 
         System.out.println(multihash);
+        System.out.println(multihash.toString());
+        System.out.println(multihash.toBase58());
+        System.out.println(multihash.toHex());
+        Multihash mh = Multihash.fromHex(multihash.toString());
 
         // IPFS에서 데이터 가져오기
-        byte[] data = ipfs.get(multihash);
+        byte[] data = ipfs.get(mh);
 
         // 데이터를 문자열로 변환
         String sub = new String(data);
@@ -81,6 +90,7 @@ public class ipfsTest {
         Member member2 = objectMapper.readValue(result, Member.class);
 
         // 닉네임 출력
+        assertThat(member.getNickname()).isEqualTo(member2.getNickname());
         System.out.println(member2.getNickname());
     }
 
@@ -100,6 +110,8 @@ public class ipfsTest {
         if(result.size() == 0) System.out.println("데이터 오류");
 
         Multihash hash = result.get(0).hash;
+        System.out.println(hash);
+        System.out.println(ipfsService.hashToUrl(hash.toString()));
 
         byte[] fileBytes = ipfs.cat(hash);
         // byte 배열을 MultipartFile로 변환

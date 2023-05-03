@@ -15,7 +15,7 @@ public class AppConfig {
     }
 
     @Bean
-    public IPFS ipfs(@Value("${ipfs.ipv4}") String ip, @Value("${ipfs.port}") String port){
+    public IPFS ipfs(@Value("${ipfs.api.ipv4}") String ip, @Value("${ipfs.api.port}") String port){
         return new IPFS(new MultiAddress(getUrl(ip,port)));
     }
 
