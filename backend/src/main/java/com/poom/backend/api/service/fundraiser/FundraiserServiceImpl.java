@@ -3,25 +3,39 @@ package com.poom.backend.api.service.fundraiser;
 import com.poom.backend.api.dto.fundraiser.*;
 import com.poom.backend.api.service.ipfs.IpfsService;
 import com.poom.backend.api.service.member.MemberService;
+import com.poom.backend.config.Web3jConfig;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.web3j.poomcontract.PoomContract;
+import org.web3j.protocol.core.RemoteFunctionCall;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.List;
 import java.util.stream.Collectors;
+
+
 
 @Service
 @RequiredArgsConstructor
 public class FundraiserServiceImpl implements FundraiserService{
     private final MemberService memberService;
     private final IpfsService ipfsService;
+//    private final PoomContract poomContract;
+
 
     @Override
     public MyFundraiserListRes getMyFundraiserList(HttpServletRequest request, int size, int page, boolean isClosed) {
         String memberId = memberService.getMemberIdFromHeader(request);
+        String shelterId = null;
         // 스마트 컨트랙트 호출 부분
+//        RemoteFunctionCall<List> myFundraiserList = poomContract.getMyFundraiserList(shelterId, isClosed, BigInteger.valueOf(page), BigInteger.valueOf(size));
+
+
+
         return null;
     }
 
@@ -50,17 +64,24 @@ public class FundraiserServiceImpl implements FundraiserService{
 
         // 스마트 컨트랙트 호출해 저장한다.
 
+
     }
 
     @Override
     public List<FundraiserDto> getFundraiserList(int size, int page, boolean isClosed) {
         // 스마트 컨트랙트 호출 부분
+        try{
+//            List<PoomContract.Fundraiser> fundraiserList = poomContract.getFundraiserList(isClosed, BigInteger.valueOf(page), BigInteger.valueOf(size)).send();
+        }catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         return null;
     }
 
     @Override
     public FundraiserDetailRes getFundraiserDetail(Long fundraiserId) {
         // 스마트 컨트랙트 호출 부분
+//        poomContract.getFundraiserDetail(BigInteger.valueOf(fundraiserId));
         return null;
     }
 }
