@@ -78,7 +78,7 @@ contract FundraiserProcess {
     }
 
     // 모금 목록
-    function _getFundraiserList(bool _isEnded, uint64 _page, uint64 _size) internal view returns(Fundraiser[] memory){
+    function _getFundraiserList(bool _isEnded, uint16 _page, uint16 _size) internal view returns(Fundraiser[] memory){
         uint64 startIdx = _page * _size;
         uint64 endIdx = startIdx + _size;
         uint64 length = endIdx > _fundraiserIdx ? _fundraiserIdx : endIdx;
@@ -98,7 +98,7 @@ contract FundraiserProcess {
     }
 
     // 내 모금 목록
-    function _getMyFundraiserList(string memory _shelterId, bool _isEnded, uint64 _page, uint64 _size) internal view returns (Fundraiser[] memory){
+    function _getMyFundraiserList(string memory _shelterId, bool _isEnded, uint16 _page, uint16 _size) internal view returns (Fundraiser[] memory){
         uint64 startIdx = _page * _size;
         uint64 endIdx = startIdx + _size;
         uint64 length = endIdx > _fundraiserIdx ? _fundraiserIdx : endIdx;

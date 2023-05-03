@@ -16,12 +16,12 @@ contract PoomContract is FundraiserProcess, DonationProcess, NftProcess{
     }
 
     // 모든 후원 요청 목록 조회
-    function getFundraiserList(bool _isEnded, uint64 _page, uint64 _size) external view returns(Fundraiser[] memory){
+    function getFundraiserList(bool _isEnded, uint16 _page, uint16 _size) external view returns(Fundraiser[] memory){
         return _getFundraiserList(_isEnded, _page, _size);
     }
 
     // 내 후원 요청 목록 조회
-    function getMyFundraiserList(string memory _shelterId, bool _isEnded, uint64 _page, uint64 _size) external view returns (Fundraiser[] memory){
+    function getMyFundraiserList(string memory _shelterId, bool _isEnded, uint16 _page, uint16 _size) external view returns (Fundraiser[] memory){
         return _getMyFundraiserList(_shelterId, _isEnded, _page, _size);
     }
 
@@ -42,7 +42,7 @@ contract PoomContract is FundraiserProcess, DonationProcess, NftProcess{
         Donation
     */
     // 나의 후원 목록 조회
-    function getMyDonationList(string memory _memberId, uint64 _page, uint64 _size) external view returns(Donation[] memory){
+    function getMyDonationList(string memory _memberId, uint16 _page, uint16 _size) external view returns(Donation[] memory){
         Donation[] memory myDonationList = _getMyDonationList(_memberId, _page, _size);
         return myDonationList;
     }
@@ -56,7 +56,7 @@ contract PoomContract is FundraiserProcess, DonationProcess, NftProcess{
         NFT
     */
     // NFT 리스트 조회
-    function getNftList(string memory _memberId,  uint64 _page, uint64 _size) external view returns(NFT[] memory){
+    function getNftList(string memory _memberId,  uint16 _page, uint16 _size) external view returns(NFT[] memory){
         return _getNftList(_memberId, _page, _size);
     }
 

@@ -57,7 +57,7 @@ contract DonationProcess is FundraiserProcess {
 
 
     // 내 후원 목록 가져오기
-    function _getMyDonationList(string memory _memberId, uint64 _page, uint64 _size) internal view returns(Donation[] memory){
+    function _getMyDonationList(string memory _memberId, uint16 _page, uint16 _size) internal view returns(Donation[] memory){
 
         uint256 myDonationCount = memberDonationList[_memberId].length;
 
