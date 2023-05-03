@@ -68,9 +68,13 @@ public class ipfsTest {
         Multihash multihash = merkleNode.hash;
 
         System.out.println(multihash);
+        System.out.println(multihash.toString());
+        System.out.println(multihash.toBase58());
+        System.out.println(multihash.toHex());
+        Multihash mh = Multihash.fromHex(multihash.toString());
 
         // IPFS에서 데이터 가져오기
-        byte[] data = ipfs.get(multihash);
+        byte[] data = ipfs.get(mh);
 
         // 데이터를 문자열로 변환
         String sub = new String(data);
@@ -86,6 +90,7 @@ public class ipfsTest {
         Member member2 = objectMapper.readValue(result, Member.class);
 
         // 닉네임 출력
+        assertThat(member.getNickname()).isEqualTo(member2.getNickname());
         System.out.println(member2.getNickname());
     }
 

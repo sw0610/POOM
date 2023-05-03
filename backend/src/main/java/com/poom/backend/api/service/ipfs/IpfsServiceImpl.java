@@ -4,6 +4,7 @@ import io.ipfs.api.IPFS;
 import io.ipfs.api.MerkleNode;
 import io.ipfs.api.NamedStreamable;
 import io.ipfs.multiaddr.MultiAddress;
+import io.ipfs.multihash.Multihash;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -30,8 +31,12 @@ public class IpfsServiceImpl implements IpfsService{
 //    }
 
     @Override
-    public String uploadJson(String json) throws IOException {
-        return null;
+    public String uploadJson(String jsonString) throws IOException {
+        // JSON 문자열을 IPFS 노드에 저장
+        NamedStreamable.ByteArrayWrapper byteArrayWrapper = new NamedStreamable.ByteArrayWrapper(jsonString.getBytes());
+        MerkleNode merkleNode = ipfs.add(byteArrayWrapper).get(0);
+        Multihash multihash = merkleNode.hash;
+        return String.valueOf(multihash);
     }
 
     @Override
@@ -49,7 +54,7 @@ public class IpfsServiceImpl implements IpfsService{
         return null;
     }
 
-    private String urlToHash(String url) {
+    public String urlToHash(String url) {
         return url.substring(url.indexOf("ipfs/") + 5);
     }
 

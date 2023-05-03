@@ -10,5 +10,8 @@ public interface IpfsService {
 
     String uploadImage(MultipartFile file);
     MultipartFile downloadImage(String hash);
+
+    String hashToUrl(String hash);
+    String urlToHash(String hash);
     
 }

@@ -53,12 +53,14 @@ public class FundraiserServiceImpl implements FundraiserService{
     }
 
     @Override
-    public List<FundraiserDto> getFundraiserList(HttpServletRequest request, int size, int page, boolean isClosed) {
+    public List<FundraiserDto> getFundraiserList(int size, int page, boolean isClosed) {
+        // 스마트 컨트랙트 호출 부분
         return null;
     }
 
     @Override
     public FundraiserDetailRes getFundraiserDetail(Long fundraiserId) {
+        // 스마트 컨트랙트 호출 부분
         return null;
     }
 }

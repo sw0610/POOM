@@ -77,15 +77,14 @@ public class FundraiserController {
             @ApiResponse(code = 401, message = "UNAUTHORIZED(권한 없음)"),
             @ApiResponse(code = 500, message = "서버에러")
     })
-    public ResponseEntity<?> getFundraiserList(HttpServletRequest request,
-                                               @RequestParam int size,
+    public ResponseEntity<?> getFundraiserList(@RequestParam int size,
                                                @RequestParam int page,
                                                @RequestParam boolean isClosed){
-        return ResponseEntity.status(200).body(fundraiserService.getFundraiserList(request, size, page, isClosed));
+        return ResponseEntity.status(200).body(fundraiserService.getFundraiserList(size, page, isClosed));
     }
 
     @GetMapping("/fundraisers/{fundraiserId}")
-    @ApiOperation(value = "후원 모집 목록 조회", notes = "<strong>페이지 검색 조건</strong>을 입력받아 후원 모집을 조회합니다.")
+    @ApiOperation(value = "후원 모집 상세 조회", notes = "<strong>페이지 검색 조건</strong>을 입력받아 후원 모집을 조회합니다.")
     @ApiResponses({
             @ApiResponse(code = 200, message = "OK(조회 성공)"),
             @ApiResponse(code = 204, message = "NO CONTENT(후원 모집 없음)"),
