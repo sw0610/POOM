@@ -1,0 +1,84 @@
+# MongoDB Connection
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            client-id: 16f9dc70727d623363f37d2a4e117611
+            redirect-uri: "http://localhost:8080/api/oauth/kakao"
+            client-authentication-method: POST
+            authorization-grant-type: authorization_code
+            scope: profile_nickname, profile_image, account_email,  #동의 항목
+            client-name: kakao
+        provider:
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
+  data:
+    mongodb:
+#      uri: mongodb://poom:poompwd1234@k8a805.p.ssafy.io:27017/poomdb
+      host: k8a805.p.ssafy.io
+      port: 27017
+      authentication-database: admin
+      database: testdb
+      username: poom
+      password: poompwd1234
+  redis:
+    host: localhost
+    port: 6379
+    lettuce:
+      pool:
+        max-active: 8
+        max-idle: 8
+        min-idle: 0
+
+  # Spring MVC 경로 매칭
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+# swagger setting
+springfox:
+  documentation:
+    swagger:
+      v2:
+        use-model-v3: false
+
+server:
+  servlet:
+    contextPath : /api
+
+# loggin level
+logging:
+  level:
+    root: info  # TRACE  <  DEBUG  <  INFO  <  WARN  <  ERROR
+
+oauth:
+  kakao: 16f9dc70727d623363f37d2a4e117611
+
+
+jwt:
+  header: Authorization
+  #HS512 알고리즘을 사용할 것이기 때문에 512bit, 즉 64byte 이상의 secret key를 사용해야 한다.
+  #echo 'ssafy-8th-generation-class-8-team-5-jaewook-hyunju-sowon-taehyun-taesun-jinsoo-project-fighting-jwt-secret-secret-jwt-token'|base64
+  secret: c3NhZnk4dGgtOGdlbmVyYXRpb24tY2xhc3MtdGVhbS05LWphZXdvb2stcnVubnktcnVubnktdGFlc3QtdGFlc3VuLXl1eW9uZy1wcm9qZWN0LWZpZ2h0aW5nLWp3dC1zZWNyZXQtc2VjcmV0LXNlY3JldC1qd3QtdG9rZW4=
+  token-validity-in-minutes: 30
+
+ipfs:
+  api:
+    ipv4: 43.201.49.21
+    port: 8901
+  gateway:
+    dns: k8a805.p.ssafy.io
+    port: 8900
+
+eth:
+  address: '0x288fB136C9291a4b62f1620bEE5901BEB2B0ffD7'
+  privateKey: '9c63b31a88c410c7d33265876407b31aea175c589ec82fff8d0bc4aa2baf150d'
+  # test
+  rpcUtil : 'https://polygon-mumbai.infura.io/v3/ac3a17c914fd47a29cb5ed54315f746a'
+  applicationAddress : '0xb4787A11745AfC48D76c2E603164118502447EC6'
+  chainId : 80001
