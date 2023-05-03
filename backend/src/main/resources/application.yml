@@ -68,5 +68,17 @@ jwt:
   token-validity-in-minutes: 30
 
 ipfs:
-  ipv4: 43.201.49.21
-  port: 8901
+  api:
+    ipv4: 43.201.49.21
+    port: 8901
+  gateway:
+    dns: k8a805.p.ssafy.io
+    port: 8900
+
+eth:
+  address: '0x288fB136C9291a4b62f1620bEE5901BEB2B0ffD7'
+  privateKey: '9c63b31a88c410c7d33265876407b31aea175c589ec82fff8d0bc4aa2baf150d'
+  # test
+  rpcUtil : 'https://polygon-mumbai.infura.io/v3/ac3a17c914fd47a29cb5ed54315f746a'
+  applicationAddress : '0xb4787A11745AfC48D76c2E603164118502447EC6'
+  chainId : 80001

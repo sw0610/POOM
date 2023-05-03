@@ -2,6 +2,7 @@ package com.poom.backend.api.service.member;
 
 import com.poom.backend.api.dto.member.SignupCond;
 import com.poom.backend.api.dto.member.MemberInfoRes;
+import com.poom.backend.api.service.ipfs.IpfsService;
 import com.poom.backend.config.jwt.TokenProvider;
 import com.poom.backend.db.entity.Member;
 import com.poom.backend.db.entity.Shelter;
@@ -22,6 +23,7 @@ public class MemberServiceImpl implements MemberService{
     private final MemberRepository memberRepository;
     private final ShelterRepository shelterRepository;
     private final TokenProvider tokenProvider;
+    private final IpfsService ipfsService;
 
     @Override
     public Member signUp(SignupCond signupCond) {
@@ -33,8 +35,8 @@ public class MemberServiceImpl implements MemberService{
     }
 
     @Override
-    public String getUserIdFromHeader(HttpServletRequest request) {
-        String token = request.getHeader("Authrization");
+    public String getMemberIdFromHeader(HttpServletRequest request) {
+        String token = request.getHeader("Authorization");
         // 액세스 토큰 문자열에서 "Bearer " 문자열을 제거하고, 나머지 액세스 토큰 문자열을 인자로 전달
         Authentication authentication = tokenProvider.getAuthentication(token.substring(7));
         // 회원 컬렉션의 id
@@ -53,7 +55,7 @@ public class MemberServiceImpl implements MemberService{
 
     @Override
     public MemberInfoRes getMemberInfo(HttpServletRequest request) {
-        String memberId = getUserIdFromHeader(request);
+        String memberId = getMemberIdFromHeader(request);
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(()-> new BadRequestException("회원 정보가 없습니다."));
         Optional<Shelter> shelter = shelterRepository.findShelterByAdminId(memberId);
@@ -66,6 +68,16 @@ public class MemberServiceImpl implements MemberService{
 
     @Override
     public MemberInfoRes updateMemberInfo(HttpServletRequest request, MultipartFile profileImage, String nickname) {
+        Member member = memberRepository.findById(getMemberIdFromHeader(request))
+                .orElseThrow(()->new BadRequestException("회원 정보가 없습니다."));
+        if(profileImage != null || !profileImage.isEmpty()) {
+            String hash = ipfsService.uploadImage(profileImage);
+            member.setProfileImgUrl(hash);
+        }
+        if(nickname != null) {
+            member.setNickname(nickname);
+        }
+        memberRepository.save(member);
         return null;
     }
 

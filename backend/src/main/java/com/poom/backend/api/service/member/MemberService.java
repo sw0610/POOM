@@ -9,11 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 
 public interface MemberService {
     Member signUp(SignupCond signupCond);
-    String getUserIdFromHeader(HttpServletRequest request);
-
+    String getMemberIdFromHeader(HttpServletRequest request);
     void changeMemberStatusToWithdrawal(String id);
-
     MemberInfoRes getMemberInfo(HttpServletRequest request);
-
     MemberInfoRes updateMemberInfo(HttpServletRequest request, MultipartFile profileImage, String nickname);
 }

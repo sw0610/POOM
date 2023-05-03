@@ -35,6 +35,6 @@ public class DonateController {
                                               @RequestParam int size,
                                               @RequestParam int page){
         return ResponseEntity.status(200)
-                .body(donationService.getMyDonationList(size, page));
+                .body(donationService.getMyDonationList(request, size, page));
     }
 }
