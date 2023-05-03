@@ -205,7 +205,8 @@ class _RegistSpecificInfoState extends State<RegistSpecificInfo> {
             const Title(
               title: '후원 마감',
             ),
-            const Description(description: '지금으로부터 최소 3일 이후로 설정할 수 있어요!'),
+            const Description(
+                description: '지금으로부터 최소 3일 이후, 최대 3달 이내로 설정할 수 있어요!'),
             TextButton(
               onPressed: () async {
                 final selectedDate = await showDatePicker(
