@@ -15,7 +15,8 @@ class RegistSpecificInfo extends StatefulWidget {
 }
 
 class _RegistSpecificInfoState extends State<RegistSpecificInfo> {
-  int _gender = 0; //0: 암컷, 1: 수컷
+  int _dogGender = 0;
+  bool _ageIsEstimated = false; //0: 암컷, 1: 수컷
 
   final formKey = GlobalKey<FormState>();
 
@@ -112,6 +113,34 @@ class _RegistSpecificInfoState extends State<RegistSpecificInfo> {
                 return null;
               },
             ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                SizedBox(
+                  width: 30,
+                  height: 30,
+                  child: Checkbox(
+                    value: _ageIsEstimated,
+                    onChanged: ((value) {
+                      setState(() {
+                        _ageIsEstimated = value!;
+                      });
+                    }),
+                    activeColor: Theme.of(context).primaryColor,
+                    visualDensity:
+                        const VisualDensity(horizontal: 0, vertical: 0),
+                  ),
+                ),
+                const Text(
+                  '추정',
+                  style: TextStyle(
+                    color: RegistSpecificInfo.textColor,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w300,
+                  ),
+                )
+              ],
+            ),
             const Title(title: '성별'),
             Row(
               children: [
@@ -120,10 +149,10 @@ class _RegistSpecificInfoState extends State<RegistSpecificInfo> {
                   child: RadioListTile(
                     title: const Text('암컷'),
                     value: 0,
-                    groupValue: _gender,
+                    groupValue: _dogGender,
                     onChanged: (value) {
                       setState(() {
-                        _gender = value!;
+                        _dogGender = value!;
                       });
                     },
                     contentPadding: EdgeInsets.zero,
@@ -136,10 +165,10 @@ class _RegistSpecificInfoState extends State<RegistSpecificInfo> {
                   child: RadioListTile(
                     title: const Text('수컷'),
                     value: 1,
-                    groupValue: _gender,
+                    groupValue: _dogGender,
                     onChanged: (value) {
                       setState(() {
-                        _gender = value!;
+                        _dogGender = value!;
                       });
                     },
                     contentPadding: EdgeInsets.zero,
