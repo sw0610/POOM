@@ -73,9 +73,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'io.lettuce:lettuce-core'
 
-
-
-
+    // to file upload
+    implementation 'commons-fileupload:commons-fileupload:1.4'
 
 }
 
