@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:social_share/social_share.dart';
 
 class CollectionScreen extends StatefulWidget {
   const CollectionScreen({super.key});
@@ -15,6 +19,21 @@ class CollectionScreen extends StatefulWidget {
 class _CollectionScreenState extends State<CollectionScreen> {
   bool _isGrid = false;
   final bool _isOwner = false;
+  final _appId = "542113181199892";
+  File? _image;
+  final imagePicker = ImagePicker();
+
+  Future getProfileImage(ImageSource imageSource) async {
+    final profileImage = await imagePicker.pickImage(source: imageSource);
+
+    if (profileImage != null) {
+      _image = File(profileImage.path);
+
+      print("이미지 path : ${_image!.path}, appId : $_appId");
+      SocialShare.shareInstagramStory(appId: _appId, imagePath: _image!.path)
+          .then((value) => print("value ? $value"));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -102,31 +121,37 @@ class _CollectionScreenState extends State<CollectionScreen> {
                           const CachedImage(),
                           _isGrid & !_isOwner
                               ? const SizedBox()
-                              : SizedBox(
-                                  width: MediaQuery.of(context).size.width,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      const SizedBox(
-                                        height: 32,
-                                      ),
-                                      SvgPicture.asset(
-                                        "assets/icons/ic _instagram.svg",
-                                        width: 20,
-                                        height: 20,
-                                      ),
-                                      const SizedBox(
-                                        height: 6,
-                                      ),
-                                      const Text(
-                                        "공유",
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w500,
+                              : GestureDetector(
+                                  onTap: () {
+                                    print("onTap()");
+                                    getProfileImage(ImageSource.gallery);
+                                  },
+                                  child: SizedBox(
+                                    width: MediaQuery.of(context).size.width,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        const SizedBox(
+                                          height: 32,
                                         ),
-                                      ),
-                                    ],
+                                        SvgPicture.asset(
+                                          "assets/icons/ic _instagram.svg",
+                                          width: 20,
+                                          height: 20,
+                                        ),
+                                        const SizedBox(
+                                          height: 6,
+                                        ),
+                                        const Text(
+                                          "공유",
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                         ],
