@@ -11,7 +11,6 @@ contract DonationProcess is FundraiserProcess {
         uint256 donationAmount; // 후원 금액
         uint64 fundraiserId; // 모금 id
         uint256 donationTime; // 모금 시간
-        string hashString;
         uint8 isIssued; // nft 발급 여부
     }
 
@@ -86,7 +85,6 @@ contract DonationProcess is FundraiserProcess {
                 {memberId:_memberId,
                 donationId:++_donationId,
                 fundraiserId:_fundraiserId,
-                hashString: fundraisers[_fundraiserId].hashString,
                 donationAmount:0,
                 donationTime:_donationTime,
                 isIssued: 0});
