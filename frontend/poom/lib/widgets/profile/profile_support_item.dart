@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:poom/screens/collection_screen.dart';
 
 class SupportItem extends StatelessWidget {
   static const _primaryColor = Color(0xFFFF8E01);
@@ -33,9 +34,12 @@ class SupportItem extends StatelessWidget {
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(4),
-                  child: Image.network(
-                    "https://avatars.githubusercontent.com/u/38373150?v=4",
+                  child: const SizedBox(
                     width: 68,
+                    child: CachedImage(
+                      imageUrl:
+                          "https://i1.sndcdn.com/artworks-000660272461-rmfvxq-t500x500.jpg",
+                    ),
                   ),
                 ),
                 const SizedBox(
