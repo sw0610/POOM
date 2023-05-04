@@ -29,6 +29,7 @@ public class FundraiserDto {
     private String dogGender;
     private String mainImgUrl;
     private String nftImgUrl;
+    private String shelterName;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yy.MM.dd", timezone = "Asia/Seoul")
     private LocalDate endDate;
     private Double currentAmount;

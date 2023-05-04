@@ -1,7 +1,7 @@
 package com.poom.backend.solidity.fundraiser;
 
 import com.poom.backend.api.dto.fundraiser.SmartContractFundraiserDto;
-import com.poom.backend.solidity.Fundraiser.FundraiserInteract;
+import com.poom.backend.solidity.Fundraiser.FundraiserContractServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,7 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 public class FundraiserInteractTest {
 
   @Autowired
-  private FundraiserInteract fundraiserInteract;
+  private FundraiserContractServiceImpl fundraiserInteract;
 
   @Test
   void createFundraiserTest(){
@@ -34,6 +34,6 @@ public class FundraiserInteractTest {
 
   @Test
   void getFundraiserDetailTest(){
-    System.out.println(fundraiserInteract.getFundraiserDetail(2).getShelterId());
+    System.out.println(fundraiserInteract.getFundraiserDetail(2L).getShelterId());
   }
 }

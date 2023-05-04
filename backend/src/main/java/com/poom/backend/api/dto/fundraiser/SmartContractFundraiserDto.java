@@ -34,9 +34,8 @@ public class SmartContractFundraiserDto {
     private Double targetAmount;
     private Boolean isEnded;
 
-    public static SmartContractFundraiserDto from(OpenFundraiserCond cond, String hash) {
+    public static SmartContractFundraiserDto from(OpenFundraiserCond cond, String hash, String shelterId) {
         return SmartContractFundraiserDto.builder()
-                .shelterId(cond.getShelterId())
                 .shelterAddress(cond.getShelterEthWalletAddress())
                 .hashString(hash)
                 .currentAmount(0.0)
@@ -47,18 +46,7 @@ public class SmartContractFundraiserDto {
 
     // contract -> java
     public static SmartContractFundraiserDto fromFundraiserSolidity(PoomContract.Fundraiser fundraiser){
-//
-//        return SmartContractFundraiserDto.builder()
-//            .shelterId(new String(fundraiser.shelterId))
-//            .build();
-//        return new SmartContractFundraiserDto(
-//            fundraiser.fundraiserId.longValue(),
-//            fundraiser.shelterId,
-//            fundraiser.shelterAddress,
-//            fundraiser.hashString,
-//            EtherUtil.weiToEther(fundraiser.currentAmount),
-//            EtherUtil.weiToEther(fundraiser.targetAmount),
-//            fundraiser.isEnded);
+
         return SmartContractFundraiserDto.builder()
             .fundraiserId(fundraiser.fundraiserId.longValue())
             .shelterId(fundraiser.shelterId)

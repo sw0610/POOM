@@ -20,7 +20,6 @@ public class OpenFundraiserCond {
 //        "dogFeature" : Text,
 //            "walletAddress" : String,
 //    }
-    private String shelterId;
     private String shelterEthWalletAddress;
     private String dogName;
     private LocalDate endDate;
