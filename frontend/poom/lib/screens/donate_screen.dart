@@ -14,7 +14,7 @@ class _DonateScreenState extends State<DonateScreen> {
   double ethPerKRW = 0.00040;
   final String _shelterName = "용인시 보호소";
   final String _dogName = "쿵이";
-  final String _inputEth = "";
+  final String _inputEth = "0.75";
 
   @override
   Widget build(BuildContext context) {
@@ -119,6 +119,57 @@ class _DonateScreenState extends State<DonateScreen> {
                   fontWeight: FontWeight.w700,
                 ),
               ),
+            if (_inputEth != "")
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '$_inputEth eth',
+                    style: const TextStyle(
+                      color: DonateScreen._textColor,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 20,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 4,
+                  ),
+                  const Text(
+                    '7077원',
+                    style: TextStyle(
+                      color: DonateScreen._secondaryTextColor,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 16,
+                    ),
+                  )
+                ],
+              ),
+            const Expanded(child: SizedBox()),
+            GestureDetector(
+              onTap: () {
+                print('후원하기 버튼 클릭');
+              },
+              child: Container(
+                height: 50,
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(10)),
+                  color: Theme.of(context).primaryColor,
+                ),
+                child: Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                    'MetaMask로 후원',
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.background,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const Text('data'),
           ],
         ),
       ),
