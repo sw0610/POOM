@@ -80,5 +80,5 @@ eth:
   privateKey: 'f34821d258dad290929525336226f31ef928f6efe1d3be14b5dc1d35552cc4aa'
   # test
   rpcUtil : 'https://sepolia.infura.io/v3/0be8b78f1cad416a80f5d523b264e437'
-  applicationAddress : '0x4AFcF2a33FBfe66166eDcB643cb76CF6AeaF31b3'
+  applicationAddress : '0xDa59C3455162c8Dbaf2d51BD2adf2941a960080b'
   chainId : 11155111

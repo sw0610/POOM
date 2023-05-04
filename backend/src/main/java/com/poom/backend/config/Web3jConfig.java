@@ -58,6 +58,8 @@ public class Web3jConfig {
     return Web3j.build(new HttpService(url));
   }
 
+  public PoomContract getContractApi(){return poomContract;}
+
   private PoomContract loadContract(Web3j web3j) {
     Credentials credentials = Credentials.create(masterPrivateKey);
 
