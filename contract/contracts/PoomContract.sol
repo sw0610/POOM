@@ -20,11 +20,6 @@ contract PoomContract is FundraiserProcess, DonationProcess, NftProcess{
         return _getFundraiserList();
     }
 
-    // 내 후원 요청 목록 조회
-    // function getMyFundraiserList(string memory _shelterId) external view returns (Fundraiser[] memory){
-    //     return _getMyFundraiserList(_shelterId);
-    // }
-
     // 후원 요청 상세 조회
     function getFundraiserDetail(uint64 _fundraiserId) external view returns(Fundraiser memory){
         Fundraiser memory fundraiser = _getFundraiserDetail(_fundraiserId);
@@ -43,6 +38,8 @@ contract PoomContract is FundraiserProcess, DonationProcess, NftProcess{
         _setNftFundraiserEnded(_fundraiserId); // isIssued 1로 변경
     }
 
+
+
     /*
         Donation
     */
@@ -52,9 +49,10 @@ contract PoomContract is FundraiserProcess, DonationProcess, NftProcess{
         return myDonationList;
     }
     // 후원
-    function donate(uint64 _fundraiserId, string memory _memberId, string memory _donateDate) external payable returns (uint64){
-        return _donate(_fundraiserId, _memberId, _donateDate);
+    function donate(uint64 _fundraiserId, string memory _memberId, uint256 _donationTime) external payable returns (uint64){
+        return _donate(_fundraiserId, _memberId, _donationTime);
     }
+
 
 
     /*

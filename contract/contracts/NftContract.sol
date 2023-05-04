@@ -18,16 +18,6 @@ contract NftProcess is ERC721URIStorage, FundraiserProcess, DonationProcess  {
         string imageUrl;
     }
 
-    // mapping(uint256 => NFTMetadata) tokenURIs;
-
-
-    /*
-        nft 발급
-            - metadata 생성해서 uri 받아오기
-        발급 받은 후 isIssued 변경
-        회원별 nft 목록
-    */
-
 
     constructor() ERC721("PoomNFT", "POOM") {}
 
@@ -38,8 +28,8 @@ contract NftProcess is ERC721URIStorage, FundraiserProcess, DonationProcess  {
 
         _nftIds++;
 
-        _safeMint(msg.sender, _nftIds);
-        _setTokenURI(_nftIds, _metadataUri);
+        _safeMint(msg.sender, _nftIds); // nft 발급
+        _setTokenURI(_nftIds, _metadataUri); // nft TokenURI 저장
 
 
         NFT memory nft = NFT(
@@ -51,9 +41,8 @@ contract NftProcess is ERC721URIStorage, FundraiserProcess, DonationProcess  {
         if (_memberNftList[_memberId].length == 0) {
             _memberNftList[_memberId] = new uint64[](0);
         }
-        // nftList[_memberId][nftList[_memberId].length - 1] = nft;
-        _memberNftList[_memberId].push(_nftIds);
-        _nftList[_nftIds] = nft;
+        _memberNftList[_memberId].push(_nftIds); // 멤버 id별 저장
+        _nftList[_nftIds] = nft; 
 
 
         return _nftIds-1;
@@ -65,12 +54,9 @@ contract NftProcess is ERC721URIStorage, FundraiserProcess, DonationProcess  {
         donations[_donationId].isIssued = 2;
     }
 
-    // // nft 목록
+    // nft 목록
     function _getNftList(string memory _memberId) internal view returns(NFT[] memory){
         uint256 nftCount = _memberNftList[_memberId].length;
-        // uint64 startIdx = _page * _size;
-        // uint64 endIdx = startIdx + _size;
-        // uint256 length = endIdx > nftCount ? nftCount : endIdx;
 
         NFT[] memory nftListReponse = new NFT[](nftCount);
 

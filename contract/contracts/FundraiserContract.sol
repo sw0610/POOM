@@ -30,25 +30,6 @@ contract FundraiserProcess {
         fundraisers[_fundraiserId].isEnded = true;
     }
 
-    // 모금 목록
-    // function _getFundraiserList(bool _isEnded, uint16 _page, uint16 _size) internal view returns(Fundraiser[] memory){
-    //     uint64 startIdx = _page * _size;
-    //     uint64 endIdx = startIdx + _size;
-    //     uint64 length = endIdx > _fundraiserIdx ? _fundraiserIdx : endIdx;
-    //     uint64 count = 0;
-    //     Fundraiser[] memory fundraiserList = new Fundraiser[](_size);
-
-    //     uint64 i = startIdx;
-    //     while (count < _size && i < length) {
-    //         if (fundraisers[i].isEnded == _isEnded) {
-    //             fundraiserList[count] = fundraisers[i];
-    //             count++;
-    //         }
-    //         i++;
-    //     }
-
-    //         return fundraiserList;
-    // }
 
     function _getFundraiserList() internal view returns(Fundraiser[] memory){
 
@@ -60,45 +41,6 @@ contract FundraiserProcess {
 
         return fundraiserList;
     }
-
-    // 내 모금 목록
-    // function _getMyFundraiserList(string memory _shelterId, bool _isEnded, uint16 _page, uint16 _size) internal view returns (Fundraiser[] memory){
-    //     uint64 startIdx = _page * _size;
-    //     uint64 endIdx = startIdx + _size;
-    //     uint64 length = endIdx > _fundraiserIdx ? _fundraiserIdx : endIdx;
-    //     uint64 count = 0;
-    //     Fundraiser[] memory myFundraiserList = new Fundraiser[](_size);
-
-    //     uint64 i = startIdx;
-    //     while (count < _size && i < length) {
-    //         if (fundraisers[i].isEnded == _isEnded  && keccak256(bytes(fundraisers[i].shelterId)) == keccak256(bytes(_shelterId))) {
-    //             myFundraiserList[count] = fundraisers[i];
-    //             count++;
-    //         }
-    //         i++;
-    //     }
-
-    //     return myFundraiserList;
-    // }
-
-    // function _getMyFundraiserList(string memory _shelterId) internal view returns (Fundraiser[] memory){
-    //     uint64 startIdx = _page * _size;
-    //     uint64 endIdx = startIdx + _size;
-    //     uint64 length = endIdx > _fundraiserIdx ? _fundraiserIdx : endIdx;
-    //     uint64 count = 0;
-    //     Fundraiser[] memory myFundraiserList = new Fundraiser[](_size);
-
-    //     uint64 i = startIdx;
-    //     while (count < _size && i < length) {
-    //         if (fundraisers[i].isEnded == _isEnded  && keccak256(bytes(fundraisers[i].shelterId)) == keccak256(bytes(_shelterId))) {
-    //             myFundraiserList[count] = fundraisers[i];
-    //             count++;
-    //         }
-    //         i++;
-    //     }
-
-    //     return myFundraiserList;
-    // }
 
 
 

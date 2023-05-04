@@ -16,11 +16,8 @@ contract DonationProcess is FundraiserProcess {
 
     uint64 private _donationId;
 
-    // mapping(address => uint256) public balances;
-
     mapping(string => uint64[]) public memberDonationList; // memberid -> 후원id[]
     mapping(string => mapping(uint64=>uint64)) public memberToFundraiser; // memberid => fundraiserid -> 후원 id
-    // mapping(uint64 => uint256) public myFundraiserCount; // shelterId => my fundraiserCount
     mapping(uint64=>Donation) public donations; //  후원 id -> 후원 내역
     mapping(uint64 => mapping(uint64=>Donation)) public fundraiserDonationList; // 모금 id -> 후원자들
     mapping(uint64 => uint256) public donationsCount; // 모금 id -> 후원자 수
@@ -43,10 +40,6 @@ contract DonationProcess is FundraiserProcess {
     function _getMyDonationList(string memory _memberId) internal view returns(Donation[] memory){
 
         uint256 myDonationCount = memberDonationList[_memberId].length;
-
-        // uint64 startIdx = _page * _size;
-        // uint64 endIdx = startIdx + _size;
-        // uint256 length = endIdx > myDonationCount ? myDonationCount : endIdx;
 
         Donation[] memory myDonaionList = new Donation[](myDonationCount);
 
