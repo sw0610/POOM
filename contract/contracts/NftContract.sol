@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0 <0.9.0;
 
-import "./Fundraiser.sol";
-import "./Donation.sol";
+import "./FundraiserContract.sol";
+import "./DonationContract.sol";
 import "../../backend/src/main/resources/node_modules/@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 
 contract NftProcess is ERC721URIStorage, FundraiserProcess, DonationProcess  {
@@ -33,9 +33,10 @@ contract NftProcess is ERC721URIStorage, FundraiserProcess, DonationProcess  {
 
     // nft 발급
     function _mintNft(string memory _memberId, uint64 _fundraiserId,  uint64 _donationId, string memory _metadataUri, string memory _imageUrl) internal returns (uint64) {
-
         require(_getFundraiserDetail(_fundraiserId).isEnded==true, "Fundraiser is not ended.");
         require(_getDonation(_donationId).isIssued==1, "Already issued.");
+
+        _nftIds++;
 
         _safeMint(msg.sender, _nftIds);
         _setTokenURI(_nftIds, _metadataUri);
@@ -54,7 +55,6 @@ contract NftProcess is ERC721URIStorage, FundraiserProcess, DonationProcess  {
         _memberNftList[_memberId].push(_nftIds);
         _nftList[_nftIds] = nft;
 
-        _nftIds++;
 
         return _nftIds-1;
     }
@@ -66,16 +66,16 @@ contract NftProcess is ERC721URIStorage, FundraiserProcess, DonationProcess  {
     }
 
     // // nft 목록
-    function _getNftList(string memory _memberId, uint64 _page, uint64 _size) internal view returns(NFT[] memory){
+    function _getNftList(string memory _memberId) internal view returns(NFT[] memory){
         uint256 nftCount = _memberNftList[_memberId].length;
-        uint64 startIdx = _page * _size;
-        uint64 endIdx = startIdx + _size;
-        uint256 length = endIdx > nftCount ? nftCount : endIdx;
+        // uint64 startIdx = _page * _size;
+        // uint64 endIdx = startIdx + _size;
+        // uint256 length = endIdx > nftCount ? nftCount : endIdx;
 
-        NFT[] memory nftListReponse = new NFT[](length);
+        NFT[] memory nftListReponse = new NFT[](nftCount);
 
-        for(uint64 i = startIdx; i < length; i++){
-            nftListReponse[i-startIdx] = _nftList[_memberNftList[_memberId][i]];
+        for(uint64 i = 0; i < nftCount; i++){
+            nftListReponse[i] = _nftList[_memberNftList[_memberId][i]];
         }
 
         return nftListReponse;

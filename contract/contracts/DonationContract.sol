@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >= 0.8.0 <0.9.0;
 
-import "./Fundraiser.sol";
+import "./FundraiserContract.sol";
 
 contract DonationProcess is FundraiserProcess {
 
@@ -26,22 +26,6 @@ contract DonationProcess is FundraiserProcess {
     mapping(uint64 => mapping(uint64=>Donation)) public fundraiserDonationList; // 모금 id -> 후원자들
     mapping(uint64 => uint256) public donationsCount; // 모금 id -> 후원자 수
 
-    /*
-     후원자 가져오려면
-     멤버별 따로 빼기
-
-    내 후원
-
-    모금별 후원
-
-    후원할 때 내가 했는지 안했는지 확인해야 한다 => memberid로
-
-    모금 안에 후원 정보 저장
-        - 후원자들 저장
-        - 후원자 -> 후원 id
-
-    */
-
 
     // 후원자 목록
     function _getDonationList(uint64 _fundraiserId) internal view returns (Donation[] memory) {
@@ -57,18 +41,18 @@ contract DonationProcess is FundraiserProcess {
 
 
     // 내 후원 목록 가져오기
-    function _getMyDonationList(string memory _memberId, uint16 _page, uint16 _size) internal view returns(Donation[] memory){
+    function _getMyDonationList(string memory _memberId) internal view returns(Donation[] memory){
 
         uint256 myDonationCount = memberDonationList[_memberId].length;
 
-        uint64 startIdx = _page * _size;
-        uint64 endIdx = startIdx + _size;
-        uint256 length = endIdx > myDonationCount ? myDonationCount : endIdx;
+        // uint64 startIdx = _page * _size;
+        // uint64 endIdx = startIdx + _size;
+        // uint256 length = endIdx > myDonationCount ? myDonationCount : endIdx;
 
         Donation[] memory myDonaionList = new Donation[](myDonationCount);
 
-        for(uint64 i = startIdx; i < length; i++){
-            myDonaionList[i-startIdx] = donations[memberDonationList[_memberId][i]];
+        for(uint64 i = 0; i < myDonationCount; i++){
+            myDonaionList[i] = donations[memberDonationList[_memberId][i]];
         }
         return myDonaionList;
 
@@ -100,7 +84,7 @@ contract DonationProcess is FundraiserProcess {
         if(donations[memberToFundraiser[_memberId][_fundraiserId]].donationAmount==0){
             Donation memory donation = Donation(
                 {memberId:_memberId,
-                donationId:_donationId++,
+                donationId:++_donationId,
                 fundraiserId:_fundraiserId,
                 hashString: fundraisers[_fundraiserId].hashString,
                 donationAmount:0,

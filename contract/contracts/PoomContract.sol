@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0 <0.9.0;
 
-import "./Fundraiser.sol";
-import "./Donation.sol";
-import "./Nft.sol";
+import "./FundraiserContract.sol";
+import "./DonationContract.sol";
+import "./NftContract.sol";
 
 contract PoomContract is FundraiserProcess, DonationProcess, NftProcess{
 
@@ -11,25 +11,30 @@ contract PoomContract is FundraiserProcess, DonationProcess, NftProcess{
         fundraiser
     */
     // 후원 요청 등록
-    function createFundraiser(Fundraiser memory _fundraiser) external returns(Fundraiser memory){
-        return _createFundraiser(_fundraiser);
+    function createFundraiser(Fundraiser memory _fundraiser) external{
+        _createFundraiser(_fundraiser);
     }
 
     // 모든 후원 요청 목록 조회
-    function getFundraiserList(bool _isEnded, uint16 _page, uint16 _size) external view returns(Fundraiser[] memory){
-        return _getFundraiserList(_isEnded, _page, _size);
+    function getFundraiserList() external view returns(Fundraiser[] memory){
+        return _getFundraiserList();
     }
 
     // 내 후원 요청 목록 조회
-    function getMyFundraiserList(string memory _shelterId, bool _isEnded, uint16 _page, uint16 _size) external view returns (Fundraiser[] memory){
-        return _getMyFundraiserList(_shelterId, _isEnded, _page, _size);
-    }
+    // function getMyFundraiserList(string memory _shelterId) external view returns (Fundraiser[] memory){
+    //     return _getMyFundraiserList(_shelterId);
+    // }
 
     // 후원 요청 상세 조회
-    function getFundraiserDetail(uint64 _fundraiserId) external view returns(Fundraiser memory, Donation[] memory){
+    function getFundraiserDetail(uint64 _fundraiserId) external view returns(Fundraiser memory){
         Fundraiser memory fundraiser = _getFundraiserDetail(_fundraiserId);
+        return fundraiser;
+    }
+
+    // 한 후원에 대한 후원자 목록 조회
+    function getDontaionList(uint64 _fundraiserId) external view returns(Donation[] memory){
         Donation[] memory donationList = _getDonationList(_fundraiserId);
-        return (fundraiser, donationList);
+        return donationList;
     }
 
     // 후원 요청 종료
@@ -42,8 +47,8 @@ contract PoomContract is FundraiserProcess, DonationProcess, NftProcess{
         Donation
     */
     // 나의 후원 목록 조회
-    function getMyDonationList(string memory _memberId, uint16 _page, uint16 _size) external view returns(Donation[] memory){
-        Donation[] memory myDonationList = _getMyDonationList(_memberId, _page, _size);
+    function getMyDonationList(string memory _memberId) external view returns(Donation[] memory){
+        Donation[] memory myDonationList = _getMyDonationList(_memberId);
         return myDonationList;
     }
     // 후원
@@ -56,8 +61,8 @@ contract PoomContract is FundraiserProcess, DonationProcess, NftProcess{
         NFT
     */
     // NFT 리스트 조회
-    function getNftList(string memory _memberId,  uint16 _page, uint16 _size) external view returns(NFT[] memory){
-        return _getNftList(_memberId, _page, _size);
+    function getNftList(string memory _memberId) external view returns(NFT[] memory){
+        return _getNftList(_memberId);
     }
 
     // 마감된 후원 NFT 발급
