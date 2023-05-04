@@ -13,15 +13,16 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-public class FundraiserInteract {
+public class FundraiserContractServiceImpl implements FundraiserContractService {
     private PoomContract poomContract;
 
     @Autowired
-    private FundraiserInteract(Web3jConfig web3jConfig){
+    private FundraiserContractServiceImpl(Web3jConfig web3jConfig){
         poomContract = web3jConfig.getContractApi();
     }
 
     // 모금 등록
+    @Override
     public void createFundraiser(SmartContractFundraiserDto smartContractFundraiserDto){
 
         SmartContractFundraiserDto fundraiser = new SmartContractFundraiserDto();
@@ -34,6 +35,7 @@ public class FundraiserInteract {
     }
 
     // 모금 목록
+    @Override
     public List<SmartContractFundraiserDto> getFundraiserList(){
 
         List<SmartContractFundraiserDto> fundraiserContractList = null;
@@ -54,7 +56,8 @@ public class FundraiserInteract {
     }
     
     // 모금 상세
-    public SmartContractFundraiserDto getFundraiserDetail(int fundraiserId){
+    @Override
+    public SmartContractFundraiserDto getFundraiserDetail(Long fundraiserId){
         SmartContractFundraiserDto fundraiser = null;
         try {
              fundraiser = SmartContractFundraiserDto.fromFundraiserSolidity(poomContract.getFundraiserDetail(BigInteger.valueOf(fundraiserId)).send());
