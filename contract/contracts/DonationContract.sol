@@ -10,7 +10,7 @@ contract DonationProcess is FundraiserProcess {
         uint256 donationId;
         uint256 donationAmount; // 후원 금액
         uint64 fundraiserId; // 모금 id
-        string donateDate; // 모금 시간
+        uint256 donationTime; // 모금 시간
         string hashString;
         uint8 isIssued; // nft 발급 여부
     }
@@ -76,7 +76,7 @@ contract DonationProcess is FundraiserProcess {
 
 
     // 후원
-    function _donate(uint64 _fundraiserId, string memory _memberId, string memory _donateDate) public payable returns (uint64){
+    function _donate(uint64 _fundraiserId, string memory _memberId, uint256 _donationTime) public payable returns (uint64){
         require(msg.value >0, "Value must be more then 0");
         require(msg.value <= fundraisers[_fundraiserId].targetAmount-fundraisers[_fundraiserId].currentAmount, "Value must be little then target amount");
         require(fundraisers[_fundraiserId].isEnded = false,"Fundraiser is ended");
@@ -88,7 +88,7 @@ contract DonationProcess is FundraiserProcess {
                 fundraiserId:_fundraiserId,
                 hashString: fundraisers[_fundraiserId].hashString,
                 donationAmount:0,
-                donateDate:"",
+                donationTime:_donationTime,
                 isIssued: 0});
             donations[memberToFundraiser[_memberId][_fundraiserId]] = donation;
 
@@ -99,7 +99,7 @@ contract DonationProcess is FundraiserProcess {
         }
 
 
-        donations[memberToFundraiser[_memberId][_fundraiserId]].donateDate = _donateDate;
+        donations[memberToFundraiser[_memberId][_fundraiserId]].donationTime = _donationTime;
         donations[memberToFundraiser[_memberId][_fundraiserId]].donationAmount+=msg.value;
         fundraisers[_fundraiserId].currentAmount +=msg.value;
         address payable shelterAddress = fundraisers[_fundraiserId].shelterAddress;
