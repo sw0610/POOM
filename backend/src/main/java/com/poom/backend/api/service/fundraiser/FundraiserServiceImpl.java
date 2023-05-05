@@ -1,14 +1,15 @@
 package com.poom.backend.api.service.fundraiser;
 
+import com.poom.backend.api.dto.donation.FundraiserDonationDto;
 import com.poom.backend.api.dto.fundraiser.*;
+import com.poom.backend.api.service.donation.DonationService;
 import com.poom.backend.api.service.ipfs.IpfsService;
 import com.poom.backend.api.service.member.MemberService;
 import com.poom.backend.db.entity.Shelter;
 import com.poom.backend.db.repository.ShelterRepository;
 import com.poom.backend.enums.DogGender;
 import com.poom.backend.exception.BadRequestException;
-import com.poom.backend.solidity.Fundraiser.FundraiserContractService;
-import com.poom.backend.solidity.Fundraiser.FundraiserContractServiceImpl;
+import com.poom.backend.solidity.fundraiser.FundraiserContractService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,9 +28,11 @@ public class FundraiserServiceImpl implements FundraiserService{
     private final MemberService memberService;
     private final IpfsService ipfsService;
     private final FundraiserContractService fundraiserContractService;
+    private final DonationService donationService;
     private final ShelterRepository shelterRepository;
 
 
+    // TODO: 정렬해서 반환하기 -> 정렬 기준 설정하기 (시작 시간 데이터 받아야함)
     @Override
     public MyFundraiserListRes getMyFundraiserList(HttpServletRequest request, int size, int page, boolean isClosed) {
         String memberId = memberService.getMemberIdFromHeader(request);
@@ -105,7 +108,7 @@ public class FundraiserServiceImpl implements FundraiserService{
         String hashString = null;
         try {
             // 이미지 해시, 후원 정보들을 합쳐 저장
-            IPFSFundraiserDto ipfsDto = IPFSFundraiserDto.toIPFSFundraiseDto(openFundraiserCond, dogImageHash, nftImageHash, mainImageHash);
+            IPFSFundraiserDto ipfsDto = IPFSFundraiserDto.toIPFSFundraiseDto(openFundraiserCond, dogImageHash, nftImageHash, mainImageHash);// TODO : 이미지 해시, 후원 정보들을 합쳐 저장해야한다.
             hashString = ipfsService.uploadJson(ipfsDto.toJson());
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -119,6 +122,7 @@ public class FundraiserServiceImpl implements FundraiserService{
 
     }
 
+    // TODO: 정렬해서 반환하기 -> 정렬 기준 설정하기 (시작 시간 데이터 받아야함)
     @Override
     public List<FundraiserDto> getFundraiserList(int size, int page, boolean isClosed) {
         // 스마트 컨트랙트 호출 부분
@@ -190,6 +194,8 @@ public class FundraiserServiceImpl implements FundraiserService{
             throw new RuntimeException(e);
         }
 
+        List<FundraiserDonationDto> donationList = donationService.getFundraiserDonationList(fundraiserId);
+
         FundraiserDetailRes fundraiserDetailRes =
                 FundraiserDetailRes.builder()
                         .shelterId(smartContractFundraiserDto.getShelterId())
@@ -204,10 +210,10 @@ public class FundraiserServiceImpl implements FundraiserService{
                         .dogFeature(ipfsFundraiserDto.getDogFeature())
                         .currentAmount(smartContractFundraiserDto.getCurrentAmount())
                         .targetAmount(smartContractFundraiserDto.getTargetAmount())
-//                        donation 추가
+                        .donations(donationList)
                         .build();
 
-        return null;
+        return fundraiserDetailRes;
     }
 
     // 후원 종료

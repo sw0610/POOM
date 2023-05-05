@@ -1,12 +1,10 @@
 package com.poom.backend.api.dto.fundraiser;
 
-import com.poom.backend.util.EtherUtil;
+import com.poom.backend.util.ConvertUtil;
 import lombok.*;
 import org.web3j.poomcontract.PoomContract;
 
 import java.math.BigInteger;
-import java.util.List;
-import java.util.stream.Collector;
 
 @Builder
 @Setter
@@ -45,28 +43,28 @@ public class SmartContractFundraiserDto {
     }
 
     // contract -> java
-    public static SmartContractFundraiserDto fromFundraiserSolidity(PoomContract.Fundraiser fundraiser){
+    public static SmartContractFundraiserDto fromFundraiserContract(PoomContract.Fundraiser fundraiser){
 
         return SmartContractFundraiserDto.builder()
             .fundraiserId(fundraiser.fundraiserId.longValue())
             .shelterId(fundraiser.shelterId)
             .shelterAddress(fundraiser.shelterAddress)
             .hashString(fundraiser.hashString)
-            .currentAmount(EtherUtil.weiToEther(fundraiser.currentAmount))
-            .targetAmount(EtherUtil.weiToEther(fundraiser.targetAmount))
+            .currentAmount(ConvertUtil.weiToEther(fundraiser.currentAmount))
+            .targetAmount(ConvertUtil.weiToEther(fundraiser.targetAmount))
             .isEnded(fundraiser.isEnded)
             .build();
     }
 
     // java -> contract
-    public PoomContract.Fundraiser toFundraiserSolidity(SmartContractFundraiserDto smartContractFundraiserDto) {
+    public PoomContract.Fundraiser toFundraiserContract(SmartContractFundraiserDto smartContractFundraiserDto) {
         return new PoomContract.Fundraiser(
             BigInteger.valueOf(0L),
             smartContractFundraiserDto.getShelterId(),
             smartContractFundraiserDto.getShelterAddress(),
             smartContractFundraiserDto.getHashString(),
-            EtherUtil.etherToWei(smartContractFundraiserDto.getCurrentAmount()),
-            EtherUtil.etherToWei(smartContractFundraiserDto.getTargetAmount()),
+            ConvertUtil.etherToWei(smartContractFundraiserDto.getCurrentAmount()),
+            ConvertUtil.etherToWei(smartContractFundraiserDto.getTargetAmount()),
             smartContractFundraiserDto.getIsEnded()
         );}
 
