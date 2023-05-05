@@ -27,7 +27,7 @@ contract PoomContract is FundraiserProcess, DonationProcess, NftProcess{
     }
 
     // 한 후원에 대한 후원자 목록 조회
-    function getDontaionList(uint64 _fundraiserId) external view returns(Donation[] memory){
+    function getDonationList(uint64 _fundraiserId) external view returns(Donation[] memory){
         Donation[] memory donationList = _getDonationList(_fundraiserId);
         return donationList;
     }
