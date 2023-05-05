@@ -68,9 +68,9 @@ contract DonationProcess is FundraiserProcess {
 
 
     // 후원
-    function _donate(uint64 _fundraiserId, string memory _memberId, uint256 _donationTime) public payable returns (uint64){
-        require(msg.value >0, "Value must be more then 0");
-        require(msg.value <= fundraisers[_fundraiserId].targetAmount-fundraisers[_fundraiserId].currentAmount, "Value must be little then target amount");
+    function _donate(uint64 _fundraiserId, string memory _memberId, uint256 _donationTime, uint256 _value) internal{
+        require(_value >0, "Value must be more then 0");
+        require(_value <= fundraisers[_fundraiserId].targetAmount-fundraisers[_fundraiserId].currentAmount, "Value must be little then target amount");
         require(fundraisers[_fundraiserId].isEnded = false,"Fundraiser is ended");
 
         if(donations[memberToFundraiser[_memberId][_fundraiserId]].donationAmount==0){
@@ -91,19 +91,16 @@ contract DonationProcess is FundraiserProcess {
 
 
         donations[memberToFundraiser[_memberId][_fundraiserId]].donationTime = _donationTime;
-        donations[memberToFundraiser[_memberId][_fundraiserId]].donationAmount+=msg.value;
-        fundraisers[_fundraiserId].currentAmount +=msg.value;
+        donations[memberToFundraiser[_memberId][_fundraiserId]].donationAmount+=_value;
+        fundraisers[_fundraiserId].currentAmount +=_value;
         address payable shelterAddress = fundraisers[_fundraiserId].shelterAddress;
-        shelterAddress.transfer(msg.value);
+        shelterAddress.transfer(_value);
 
 
         // 목표 금액을 넘겼으면 끝내기
         if(fundraisers[_fundraiserId].currentAmount== fundraisers[_fundraiserId].targetAmount){
             _endFundraiser(_fundraiserId);
         }
-
-        return _donationId-1;
-
 
     }
 

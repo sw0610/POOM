@@ -49,8 +49,8 @@ contract PoomContract is FundraiserProcess, DonationProcess, NftProcess{
         return myDonationList;
     }
     // 후원
-    function donate(uint64 _fundraiserId, string memory _memberId, uint256 _donationTime) external payable returns (uint64){
-        return _donate(_fundraiserId, _memberId, _donationTime);
+    function donate(uint64 _fundraiserId, string memory _memberId, uint256 _donationTime) external payable{
+        _donate(_fundraiserId, _memberId, _donationTime, msg.value);
     }
 
 
