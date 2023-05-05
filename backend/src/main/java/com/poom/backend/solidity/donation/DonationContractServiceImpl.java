@@ -48,11 +48,4 @@ public class DonationContractServiceImpl implements DonationContractService{
         return myDonationList;
     }
 
-    @Override
-    public Long donate(Long fundraiserId, String memberId, LocalDateTime donationTime) throws Exception {
-
-        poomContract.donate(BigInteger.valueOf(fundraiserId), memberId, ConvertUtil.dateTimeToBigInteger(donationTime)).send();
-
-        return null;
-    }
 }
