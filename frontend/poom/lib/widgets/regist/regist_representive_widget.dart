@@ -98,25 +98,22 @@ class RegistRepresentive extends StatelessWidget {
           const Expanded(
             child: SizedBox(),
           ),
-          GestureDetector(
-            onTap: nextPage,
-            child: Container(
-              height: 50,
-              width: MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.all(Radius.circular(10)),
-                color: Theme.of(context).primaryColor,
+          ElevatedButton(
+            onPressed: representImage != null ? nextPage : null,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).primaryColor,
+              minimumSize: Size(MediaQuery.of(context).size.width, 50),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
               ),
-              child: Align(
-                alignment: Alignment.center,
-                child: Text(
-                  'NFT 미리보기',
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.background,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
+              elevation: 0,
+            ),
+            child: Text(
+              'NFT 미리보기',
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.background,
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
               ),
             ),
           ),
