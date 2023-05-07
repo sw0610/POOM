@@ -35,6 +35,12 @@ class _DonateScreenState extends State<DonateScreen> {
     });
   }
 
+  void _doDonate() {
+    double ethAmount = double.parse(_inputEth);
+    print(ethAmount.runtimeType);
+    print(ethAmount);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -167,9 +173,7 @@ class _DonateScreenState extends State<DonateScreen> {
                 ),
               const Expanded(child: SizedBox()),
               GestureDetector(
-                onTap: () {
-                  print('후원하기 버튼 클릭');
-                },
+                onTap: _doDonate,
                 child: Container(
                   height: 50,
                   width: MediaQuery.of(context).size.width,
