@@ -42,7 +42,7 @@ public class DonationContractServiceImpl implements DonationContractService{
     @Override
     public List<SmartContractDonationDto> getMyDonationList(String memberId) throws Exception {
         List<PoomContract.Donation> myDonationContractList =
-                poomContract.getMyDonationList(memberId).send();;
+                poomContract.getMyDonationList(memberId).send();
 
         List<SmartContractDonationDto> myDonationList
                 = myDonationContractList.stream()

@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -32,7 +33,7 @@ public class FundraiserServiceImpl implements FundraiserService{
     private final ShelterRepository shelterRepository;
 
 
-    // TODO: 정렬해서 반환하기 -> 정렬 기준 설정하기 (시작 시간 데이터 받아야함)
+    // TODO: 정렬해서 반환하기 -> 정렬 기준 설정하기 (시작 시간 데이터 블록체인에 저장하기)
     @Override
     public MyFundraiserListRes getMyFundraiserList(HttpServletRequest request, int size, int page, boolean isClosed) {
         String memberId = memberService.getMemberIdFromHeader(request);
@@ -40,7 +41,8 @@ public class FundraiserServiceImpl implements FundraiserService{
                 .orElseThrow(()->new BadRequestException("보호소 정보가 없습니다"));
 
         // 스마트 컨트랙트 호출 부분
-        List<SmartContractFundraiserDto> smartContractFundraiserDtoList= fundraiserContractService.getFundraiserList();
+        List<SmartContractFundraiserDto> smartContractFundraiserDtoList= fundraiserContractService.getFundraiserList()
+                .orElseThrow(()->new RuntimeException());
 
         // 페이지네이션
         int startIdx = page*size;
@@ -122,11 +124,12 @@ public class FundraiserServiceImpl implements FundraiserService{
 
     }
 
-    // TODO: 정렬해서 반환하기 -> 정렬 기준 설정하기 (시작 시간 데이터 받아야함)
+    // TODO: 정렬해서 반환하기 -> 정렬 기준 설정하기 (시작 시간 데이터 블록체인에 저장하기)
     @Override
     public List<FundraiserDto> getFundraiserList(int size, int page, boolean isClosed) {
         // 스마트 컨트랙트 호출 부분
-        List<SmartContractFundraiserDto> smartContractFundraiserDtoList= fundraiserContractService.getFundraiserList();
+        List<SmartContractFundraiserDto> smartContractFundraiserDtoList= fundraiserContractService.getFundraiserList()
+                .orElseThrow(()->new RuntimeException());
 
         // 페이지네이션
         int startIdx = page*size;
@@ -183,7 +186,8 @@ public class FundraiserServiceImpl implements FundraiserService{
     @Override
     public FundraiserDetailRes getFundraiserDetail(Long fundraiserId) {
         // 스마트 컨트랙트 호출 부분
-        SmartContractFundraiserDto smartContractFundraiserDto = fundraiserContractService.getFundraiserDetail(fundraiserId);
+        SmartContractFundraiserDto smartContractFundraiserDto =
+                fundraiserContractService.getFundraiserDetail(fundraiserId).orElseThrow(() -> new BadRequestException("모금 정보가 없습니다."));
 
         // IPFS에 저장된 정보들 -> 객체로
         IPFSFundraiserDto ipfsFundraiserDto = null;

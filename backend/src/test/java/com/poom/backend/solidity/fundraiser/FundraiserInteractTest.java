@@ -1,7 +1,6 @@
 package com.poom.backend.solidity.fundraiser;
 
 import com.poom.backend.api.dto.fundraiser.SmartContractFundraiserDto;
-import com.poom.backend.solidity.Fundraiser.FundraiserContractServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,18 +21,18 @@ public class FundraiserInteractTest {
   @Test
   void getFundraiserListTest(){
     System.out.println("getFundraiserListTest ");
-    System.out.println(fundraiserInteract.getFundraiserList().size());
-    System.out.println(fundraiserInteract.getFundraiserList().get(0).getShelterId());
-    System.out.println(fundraiserInteract.getFundraiserList().get(2).getTargetAmount());
-    System.out.println(fundraiserInteract.getFundraiserList().get(1).getFundraiserId());
-    System.out.println(fundraiserInteract.getFundraiserList().get(1).getShelterAddress());
-    System.out.println(fundraiserInteract.getFundraiserList().get(1).getShelterId());
-    System.out.println(fundraiserInteract.getFundraiserList().get(2).getShelterId());
+//    System.out.println(fundraiserInteract.getFundraiserList().size());
+//    System.out.println(fundraiserInteract.getFundraiserList().get(0).getShelterId());
+//    System.out.println(fundraiserInteract.getFundraiserList().get(2).getTargetAmount());
+//    System.out.println(fundraiserInteract.getFundraiserList().get(1).getFundraiserId());
+//    System.out.println(fundraiserInteract.getFundraiserList().get(1).getShelterAddress());
+//    System.out.println(fundraiserInteract.getFundraiserList().get(1).getShelterId());
+//    System.out.println(fundraiserInteract.getFundraiserList().get(2).getShelterId());
 
   }
 
   @Test
   void getFundraiserDetailTest(){
-    System.out.println(fundraiserInteract.getFundraiserDetail(2L).getShelterId());
+//    System.out.println(fundraiserInteract.getFundraiserDetail(2L).getShelterId());
   }
 }

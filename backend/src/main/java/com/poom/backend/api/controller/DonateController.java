@@ -7,10 +7,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,7 +20,7 @@ public class DonateController {
     private final DonationService donationService;
 
     // 1. 내가 한 후원의 목록을 조회합니다.
-    @PutMapping("/api/members/donations")
+    @GetMapping("/api/members/donations")
     @ApiOperation(value = "나의 후원 내역 조회", notes = "<strong>페이지의 크기와 순번</strong>을 입력받아 나의 후원 내역을 조회합니다.")
     @ApiResponses({
             @ApiResponse(code = 200, message = "OK(조회 성공)"),
