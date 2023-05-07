@@ -102,6 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     const Text(
                       '도움이 필요해요!',
@@ -112,6 +113,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     DropdownButton(
+                        isDense: true,
+                        alignment: Alignment.bottomRight,
+                        underline: Container(
+                          height: 0,
+                        ),
                         value: _selectedSortType,
                         items: _sortType
                             .map((e) => DropdownMenuItem(
