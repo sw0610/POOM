@@ -2,10 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:poom/screens/regist_screen.dart';
 import 'package:poom/widgets/home/home_dog_card.dart';
 
-class HomeScreen extends StatelessWidget {
-  final String nickname = '유후';
-
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final String nickname = '유후';
+  final _sortType = ['최신순', '모집완료'];
+  String? _selectedSortType;
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      _selectedSortType = _sortType[0];
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,8 +94,8 @@ class HomeScreen extends StatelessWidget {
             }
             //두번째 자식요소
             else if (index == 1) {
-              return const Padding(
-                padding: EdgeInsets.only(
+              return Padding(
+                padding: const EdgeInsets.only(
                   left: 24,
                   right: 24,
                   top: 30,
@@ -88,7 +103,7 @@ class HomeScreen extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
+                    const Text(
                       '도움이 필요해요!',
                       style: TextStyle(
                         fontSize: 20,
@@ -96,7 +111,19 @@ class HomeScreen extends StatelessWidget {
                         fontWeight: FontWeight.w700,
                       ),
                     ),
-                    Text('최신순'),
+                    DropdownButton(
+                        value: _selectedSortType,
+                        items: _sortType
+                            .map((e) => DropdownMenuItem(
+                                  value: e,
+                                  child: Text(e),
+                                ))
+                            .toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedSortType = value;
+                          });
+                        })
                   ],
                 ),
               );
