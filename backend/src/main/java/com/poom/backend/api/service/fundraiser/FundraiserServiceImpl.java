@@ -35,9 +35,9 @@ public class FundraiserServiceImpl implements FundraiserService{
     // TODO: 정렬해서 반환하기 -> 정렬 기준 설정하기 (시작 시간 데이터 받아야함)
     @Override
     public MyFundraiserListRes getMyFundraiserList(HttpServletRequest request, int size, int page, boolean isClosed) {
-//        String memberId = memberService.getMemberIdFromHeader(request);
-//        Shelter shelter = shelterRepository.findShelterByAdminId(memberId)
-//                .orElseThrow(()->new BadRequestException("보호소 정보가 없습니다"));
+        String memberId = memberService.getMemberIdFromHeader(request);
+        Shelter shelter = shelterRepository.findShelterByAdminId(memberId)
+                .orElseThrow(()->new BadRequestException("보호소 정보가 없습니다"));
 
         // 스마트 컨트랙트 호출 부분
         List<SmartContractFundraiserDto> smartContractFundraiserDtoList= fundraiserContractService.getFundraiserList();
@@ -56,7 +56,7 @@ public class FundraiserServiceImpl implements FundraiserService{
             SmartContractFundraiserDto smartContractFundraiserDto = smartContractFundraiserDtoList.get(listIdx);
             count++;
             // 모집중, 종료 구분, 나의 후원 요청만 반환
-            if(smartContractFundraiserDto.getIsEnded()==isClosed && smartContractFundraiserDto.getShelterId().equals("test1")){
+            if(smartContractFundraiserDto.getIsEnded()==isClosed && smartContractFundraiserDto.getShelterId().equals(shelter.getId())){
 
                 // IPFS에 저장된 정보들 -> 객체로
                 IPFSFundraiserDto ipfsFundraiserDto = null;
@@ -86,16 +86,16 @@ public class FundraiserServiceImpl implements FundraiserService{
 
         }
 
-        MyFundraiserListRes myFundraiserListRes = new MyFundraiserListRes("테스트", fundraiserDtoList);
+        MyFundraiserListRes myFundraiserListRes = new MyFundraiserListRes(shelter.getShelterName(), fundraiserDtoList);
 
         return myFundraiserListRes;
     }
 
     @Override
     public void createFundraiser(HttpServletRequest request, List<MultipartFile> dogImages, MultipartFile nftImage, MultipartFile mainImage, OpenFundraiserCond openFundraiserCond) {
-//        String memberId = memberService.getMemberIdFromHeader(request);
-//        Shelter shelter = shelterRepository.findShelterByAdminId(memberId)
-//                .orElseThrow(()->new BadRequestException("보호소 정보가 없습니다"));
+        String memberId = memberService.getMemberIdFromHeader(request);
+        Shelter shelter = shelterRepository.findShelterByAdminId(memberId)
+                .orElseThrow(()->new BadRequestException("보호소 정보가 없습니다"));
 
         // 이미지들을 IPFS에 저장한다.
         List<String> dogImageHash = dogImages.stream().map(file ->
@@ -115,7 +115,7 @@ public class FundraiserServiceImpl implements FundraiserService{
         }
 
         // 스마트 컨트랙트에 등록하기 위한 객체 생성
-        SmartContractFundraiserDto sc = SmartContractFundraiserDto.from(openFundraiserCond, hashString, "test1");
+        SmartContractFundraiserDto sc = SmartContractFundraiserDto.from(openFundraiserCond, hashString, shelter.getId());
 
         // 스마트 컨트랙트 호출해 저장한다.
         fundraiserContractService.createFundraiser(sc);
@@ -152,9 +152,9 @@ public class FundraiserServiceImpl implements FundraiserService{
                     throw new RuntimeException(e);
                 }
 
-//                Shelter shelter = shelterRepository.findShelterByAdminId(smartContractFundraiserDto.getShelterId())
-//                        .orElseThrow(()->new BadRequestException("보호소 정보가 없습니다"));
-                String shelterName = "테스트";
+                Shelter shelter = shelterRepository.findShelterByAdminId(smartContractFundraiserDto.getShelterId())
+                        .orElseThrow(()->new BadRequestException("보호소 정보가 없습니다"));
+                String shelterName = shelter.getShelterName();
 
 
                 // FundraiserDto에 담기
