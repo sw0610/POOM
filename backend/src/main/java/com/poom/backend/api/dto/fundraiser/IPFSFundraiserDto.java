@@ -46,7 +46,7 @@ public class IPFSFundraiserDto {
 
     public String toJson() throws JsonProcessingException { // 객체를 JSON으로 변환합니다.
         ObjectMapper mapper = new ObjectMapper();
-        return mapper.writeValueAsString(this); //LocalDate 형 변환이 안돼서 .registerModule(new JavaTimeModule()) 추가
+        return mapper.registerModule(new JavaTimeModule()).writeValueAsString(this); //LocalDate 형 변환이 안돼서 .registerModule(new JavaTimeModule()) 추가
     }
 
     public static IPFSFundraiserDto fromJson(String json) throws IOException { // JSON을 받아 객체를 리턴합니다.

@@ -10,6 +10,7 @@ import org.web3j.poomcontract.PoomContract;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,17 +23,20 @@ public class DonationContractServiceImpl implements DonationContractService{
     }
 
     @Override
-    public List<SmartContractDonationDto> getDonationList(Long fundraiserId) throws Exception {
+    public Optional<List<SmartContractDonationDto>> getDonationList(Long fundraiserId){
 
-        List<PoomContract.Donation> donationContractList =
-                poomContract.getDonationList(BigInteger.valueOf(fundraiserId)).send();
+        List<SmartContractDonationDto> donationList = null;
 
-        List<SmartContractDonationDto> donationList
-                 = donationContractList.stream()
-                .map(donation -> SmartContractDonationDto.fromDonationContract(donation))
-                .collect(Collectors.toList());
+        try {
+            List<PoomContract.Donation> donationContractList = poomContract.getDonationList(BigInteger.valueOf(fundraiserId)).send();
+            donationList = donationContractList.stream()
+                    .map(donation -> SmartContractDonationDto.fromDonationContract(donation))
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
 
-        return donationList;
+        return Optional.ofNullable(donationList);
     }
 
     @Override

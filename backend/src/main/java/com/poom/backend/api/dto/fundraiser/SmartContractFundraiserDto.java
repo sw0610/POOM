@@ -34,6 +34,7 @@ public class SmartContractFundraiserDto {
 
     public static SmartContractFundraiserDto from(OpenFundraiserCond cond, String hash, String shelterId) {
         return SmartContractFundraiserDto.builder()
+                .shelterId(shelterId)
                 .shelterAddress(cond.getShelterEthWalletAddress())
                 .hashString(hash)
                 .currentAmount(0.0)

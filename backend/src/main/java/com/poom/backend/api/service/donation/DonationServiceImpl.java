@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,17 +48,14 @@ public class DonationServiceImpl implements DonationService {
     // 한 후원에 대한 후원자 목록
     @Override
     public List<FundraiserDonationDto> getFundraiserDonationList(Long fundraiserId) {
-        List<SmartContractDonationDto> donationList = null;
-        try {
-            donationList = donationContractService.getDonationList(fundraiserId);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        Optional<List<SmartContractDonationDto>> donationList = donationList = donationContractService.getDonationList(fundraiserId);
+
 
         // 최대 10개 반환
         // 어떤 기준으로 정렬 해야하는지??
         List<FundraiserDonationDto> fundraiserDonationList = donationList.stream()
                 .limit(10)
+                .flatMap(List::stream)
                 .map(donation ->
                         FundraiserDonationDto.toFundraiserDonationDto(donation,
                                 memberRepository.findById(donation.getMemberId()).orElseThrow(() -> new BadRequestException("회원 정보가 없습니다."))))

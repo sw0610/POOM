@@ -63,7 +63,7 @@ public class FundraiserController {
                                             @RequestPart("dogImages") List<MultipartFile> dogImages,
                                             @RequestPart("nftImage") MultipartFile nftImage,
                                             @RequestPart("mainImage") MultipartFile mainImage,
-                                            @RequestBody OpenFundraiserCond openFundraiserCond){
+                                            @RequestPart OpenFundraiserCond openFundraiserCond){
         fundraiserService.createFundraiser(request, dogImages, nftImage, mainImage, openFundraiserCond);
         return ResponseEntity.status(200).build();
     }
