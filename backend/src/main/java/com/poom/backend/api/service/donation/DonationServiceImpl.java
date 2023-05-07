@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class DonationServiceImpl implements DonationService{
+public class DonationServiceImpl implements DonationService {
     private final MemberService memberService;
     private final DonationContractService donationContractService;
     private final MemberRepository memberRepository;
@@ -25,15 +25,23 @@ public class DonationServiceImpl implements DonationService{
     @Override
     public DonationRes getMyDonationList(HttpServletRequest request, int size, int page) {
         String memberId = memberService.getMemberIdFromHeader(request);
+        List<SmartContractDonationDto> donationList = null;
 
         // 스마트 컨트랙트 호출 부분 (_getMyDonationList)
         try {
-//            donationContractService.getMyDonationList(memberId);
+            donationList = donationContractService.getMyDonationList(memberId);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
-        return null;
+        int startIdx = size * page;
+        int endIdx = startIdx + size > donationList.size() ? donationList.size() : startIdx + size;
+
+        for (int i = startIdx; i < endIdx; i++){
+
+        }
+
+            return null;
     }
 
     // 한 후원에 대한 후원자 목록
@@ -53,7 +61,8 @@ public class DonationServiceImpl implements DonationService{
                 .map(donation ->
                         FundraiserDonationDto.toFundraiserDonationDto(donation,
                                 memberRepository.findById(donation.getMemberId()).orElseThrow(() -> new BadRequestException("회원 정보가 없습니다."))))
-                .collect(Collectors.toList());;
+                .collect(Collectors.toList());
+        ;
 
         return fundraiserDonationList;
     }

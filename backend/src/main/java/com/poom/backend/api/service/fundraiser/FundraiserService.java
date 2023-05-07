@@ -14,4 +14,6 @@ public interface FundraiserService {
     List<FundraiserDto> getFundraiserList(int size, int page, boolean isClosed);
 
     FundraiserDetailRes getFundraiserDetail(Long fundraiserId);
+
+    void endFundraiser(Long fundraiserId);
 }
