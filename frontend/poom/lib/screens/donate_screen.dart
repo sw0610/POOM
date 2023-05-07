@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:poom/services/eth_per_krw_api.dart';
 
 class DonateScreen extends StatefulWidget {
@@ -12,7 +13,8 @@ class DonateScreen extends StatefulWidget {
 }
 
 class _DonateScreenState extends State<DonateScreen> {
-  dynamic ethPerKRW = '0.000000'; //초기값은 string -> api 받아오면 double 타입으로 변경
+  double ethPerKRW = 0.0; //초기값은 string -> api 받아오면 double 타입으로 변경
+  String krw = '';
 
   final String _shelterName = "용인시 보호소";
   final String _dogName = "쿵이";
@@ -39,15 +41,25 @@ class _DonateScreenState extends State<DonateScreen> {
         if (_inputEth != '') {
           String newEth = _inputEth.substring(0, _inputEth.length - 1);
           _inputEth = newEth;
+          if (newEth == '') {
+            krw = '';
+          } else {
+            int intKrw = (double.parse(_inputEth) / ethPerKRW * 1000).toInt();
+            krw = NumberFormat('#,###').format(intKrw);
+          }
         }
       } else if (num == '.') {
         if (_inputEth.contains('.')) {
           return;
         } else {
           _inputEth += num;
+          int intKrw = (double.parse(_inputEth) / ethPerKRW * 1000).toInt();
+          krw = NumberFormat('#,###').format(intKrw);
         }
       } else {
         _inputEth += num;
+        int intKrw = (double.parse(_inputEth) / ethPerKRW * 1000).toInt();
+        krw = NumberFormat('#,###').format(intKrw);
       }
     });
   }
@@ -178,9 +190,9 @@ class _DonateScreenState extends State<DonateScreen> {
                     const SizedBox(
                       height: 4,
                     ),
-                    const Text(
-                      '7077원',
-                      style: TextStyle(
+                    Text(
+                      '$krw원',
+                      style: const TextStyle(
                         color: DonateScreen._secondaryTextColor,
                         fontWeight: FontWeight.w700,
                         fontSize: 16,
