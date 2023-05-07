@@ -18,7 +18,20 @@ class _DonateScreenState extends State<DonateScreen> {
 
   void _updateInputEth(String num) {
     setState(() {
-      _inputEth += num;
+      if (num == '<') {
+        if (_inputEth != '') {
+          String newEth = _inputEth.substring(0, _inputEth.length - 1);
+          _inputEth = newEth;
+        }
+      } else if (num == '.') {
+        if (_inputEth.contains('.')) {
+          return;
+        } else {
+          _inputEth += num;
+        }
+      } else {
+        _inputEth += num;
+      }
     });
   }
 
