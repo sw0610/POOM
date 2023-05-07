@@ -15,6 +15,7 @@ class RegistScreen extends StatefulWidget {
 
 class _RegistScreenState extends State<RegistScreen> {
   File? representImage;
+  List<File> dogPhotoList = [];
 
   void _pickRepresentImage() async {
     final pickedFile =
@@ -22,6 +23,18 @@ class _RegistScreenState extends State<RegistScreen> {
     setState(() {
       if (pickedFile != null) {
         representImage = File(pickedFile.path);
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
+  void _pickDogPhotoImage() async {
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+    setState(() {
+      if (pickedFile != null) {
+        dogPhotoList.add(File(pickedFile.path));
       } else {
         print('No image selected.');
       }
@@ -60,11 +73,18 @@ class _RegistScreenState extends State<RegistScreen> {
         index: _selectedIndex,
         children: [
           RegistRepresentive(
-              nextPage: nextPage,
-              pickRepresentImage: () => _pickRepresentImage(),
-              representImage: representImage),
-          RegistNftPreview(nextPage: nextPage, prevPage: prevPage),
-          const RegistSpecificInfo(),
+            nextPage: nextPage,
+            representImage: representImage,
+            pickRepresentImage: () => _pickRepresentImage(),
+          ),
+          RegistNftPreview(
+            nextPage: nextPage,
+            prevPage: prevPage,
+          ),
+          RegistSpecificInfo(
+            dogPhotoList: dogPhotoList,
+            pickDogPhotoImage: () => _pickDogPhotoImage(),
+          ),
         ],
       ),
     );

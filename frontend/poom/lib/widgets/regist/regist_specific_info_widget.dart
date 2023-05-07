@@ -1,9 +1,18 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:poom/widgets/regist/regist_input_form_widget.dart';
 
 class RegistSpecificInfo extends StatefulWidget {
-  const RegistSpecificInfo({super.key});
+  final List<File> dogPhotoList;
+  final void Function() pickDogPhotoImage;
+
+  const RegistSpecificInfo({
+    super.key,
+    required this.dogPhotoList,
+    required this.pickDogPhotoImage,
+  });
 
   // static const Color inputBackground = Color(0xFFF9F9F9);
   static Color inputBackground = const Color(0xFFD9D9D9).withOpacity(0.15);
@@ -15,8 +24,8 @@ class RegistSpecificInfo extends StatefulWidget {
 }
 
 class _RegistSpecificInfoState extends State<RegistSpecificInfo> {
-  int _dogGender = 0;
-  bool _ageIsEstimated = false; //0: 암컷, 1: 수컷
+  int _dogGender = 0; //0: 암컷, 1: 수컷
+  bool _ageIsEstimated = false;
 
   DateTime _endDate = DateTime.now().add(const Duration(days: 3));
 
@@ -67,37 +76,68 @@ class _RegistSpecificInfoState extends State<RegistSpecificInfo> {
               ),
             ),
             const SizedBox(height: 10),
-            Container(
+            SizedBox(
               height: 114,
-              width: 114,
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(10),
-                ),
-                color: RegistSpecificInfo.inputBackground,
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SvgPicture.asset(
-                    "assets/icons/ic_camera.svg",
-                    color: RegistSpecificInfo.textSecondaryColor,
-                  ),
-                  const SizedBox(
-                    height: 12,
-                  ),
-                  const Text(
-                    '대표사진',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w300,
-                      color: RegistSpecificInfo.textSecondaryColor,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: widget.dogPhotoList.length + 1, //사진 추가 컨테이너까지 포함
+                itemBuilder: (BuildContext context, int index) {
+                  if (index == widget.dogPhotoList.length) {
+                    if (index == 4) return null;
+                    return GestureDetector(
+                      onTap: widget.pickDogPhotoImage,
+                      child: Container(
+                        height: 114,
+                        width: 114,
+                        decoration: BoxDecoration(
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(10),
+                          ),
+                          color: RegistSpecificInfo.inputBackground,
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SvgPicture.asset(
+                              "assets/icons/ic_camera.svg",
+                              color: RegistSpecificInfo.textSecondaryColor,
+                            ),
+                            const SizedBox(
+                              height: 12,
+                            ),
+                            const Text(
+                              '사진 등록',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w300,
+                                color: RegistSpecificInfo.textSecondaryColor,
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    );
+                  }
+                  return SizedBox(
+                    width: 114,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(10),
+                        ),
+                        image: DecorationImage(
+                          image: FileImage(widget.dogPhotoList[index]),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
                     ),
-                  )
-                ],
+                  );
+                },
+                separatorBuilder: (context, index) => const SizedBox(width: 10),
               ),
             ),
+
             RegistInputForm(
               title: '강아지 이름',
               placeholder: '강아지의 이름을 입력하세요.',
