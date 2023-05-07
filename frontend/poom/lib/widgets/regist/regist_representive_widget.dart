@@ -1,9 +1,19 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class RegistRepresentive extends StatelessWidget {
   final VoidCallback nextPage;
-  const RegistRepresentive({super.key, required this.nextPage});
+  final VoidCallback pickRepresentImage;
+  File? representImage;
+
+  RegistRepresentive({
+    super.key,
+    required this.nextPage,
+    required this.pickRepresentImage,
+    this.representImage,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -37,59 +47,73 @@ class RegistRepresentive extends StatelessWidget {
           const SizedBox(
             height: 24,
           ),
-          Container(
-            height: 114,
-            width: 114,
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.all(
-                Radius.circular(10),
-              ),
-              color: Color(0xFFFFF4E6),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SvgPicture.asset(
-                  "assets/icons/ic_camera.svg",
-                  color: const Color(0xFF666666),
-                ),
-                const SizedBox(
-                  height: 12,
-                ),
-                const Text(
-                  '대표사진',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w300,
-                    color: Color(0xFF666666),
+          GestureDetector(
+            onTap: pickRepresentImage,
+            child: representImage == null
+                ? Container(
+                    height: 114,
+                    width: 114,
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(10),
+                      ),
+                      color: Color(0xFFFFF4E6),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SvgPicture.asset(
+                          "assets/icons/ic_camera.svg",
+                          color: const Color(0xFF666666),
+                        ),
+                        const SizedBox(
+                          height: 12,
+                        ),
+                        const Text(
+                          '대표사진',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w300,
+                            color: Color(0xFF666666),
+                          ),
+                        )
+                      ],
+                    ),
+                  )
+                : Container(
+                    height: 114,
+                    width: 114,
+                    decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(10),
+                      ),
+                      image: DecorationImage(
+                        image: FileImage(representImage!),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
-                )
-              ],
-            ),
           ),
           const Expanded(
             child: SizedBox(),
           ),
-          GestureDetector(
-            onTap: nextPage,
-            child: Container(
-              height: 50,
-              width: MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.all(Radius.circular(10)),
-                color: Theme.of(context).primaryColor,
+          ElevatedButton(
+            onPressed: representImage != null ? nextPage : null,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).primaryColor,
+              minimumSize: Size(MediaQuery.of(context).size.width, 50),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
               ),
-              child: Align(
-                alignment: Alignment.center,
-                child: Text(
-                  'NFT 미리보기',
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.background,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
+              elevation: 0,
+            ),
+            child: Text(
+              'NFT 미리보기',
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.background,
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
               ),
             ),
           ),
