@@ -73,8 +73,33 @@ class HomeScreen extends StatelessWidget {
         width: MediaQuery.of(context).size.width,
         child: ListView.separated(
           itemBuilder: (context, index) {
+            //첫번째 자식요소
             if (index == 0) {
               return HomeIntroWidget(nickname: nickname);
+            }
+            //두번째 자식요소
+            else if (index == 1) {
+              return const Padding(
+                padding: EdgeInsets.only(
+                  left: 24,
+                  right: 24,
+                  top: 30,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      '도움이 필요해요!',
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Color(0xFF333333),
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    Text('최신순'),
+                  ],
+                ),
+              );
             }
             return const Padding(
               padding: EdgeInsets.symmetric(
@@ -85,7 +110,7 @@ class HomeScreen extends StatelessWidget {
           },
           separatorBuilder: (context, index) {
             return const SizedBox(
-              height: 10,
+              height: 0,
             );
           },
           itemCount: 10 + 2,
@@ -113,8 +138,7 @@ class HomeIntroWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Padding(
-            padding:
-                const EdgeInsets.only(top: 24, right: 24, left: 24),
+            padding: const EdgeInsets.only(top: 24, right: 24, left: 24),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
