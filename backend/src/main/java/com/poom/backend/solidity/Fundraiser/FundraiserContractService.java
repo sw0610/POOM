@@ -1,4 +1,4 @@
-package com.poom.backend.solidity.Fundraiser;
+package com.poom.backend.solidity.fundraiser;
 
 import com.poom.backend.api.dto.fundraiser.SmartContractFundraiserDto;
 

@@ -1,8 +1,7 @@
-package com.poom.backend.solidity.Fundraiser;
+package com.poom.backend.solidity.fundraiser;
 
 import com.poom.backend.api.dto.fundraiser.SmartContractFundraiserDto;
 import com.poom.backend.config.Web3jConfig;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.web3j.poomcontract.PoomContract;
@@ -12,7 +11,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Slf4j
 public class FundraiserContractServiceImpl implements FundraiserContractService {
     private PoomContract poomContract;
 
@@ -28,7 +26,7 @@ public class FundraiserContractServiceImpl implements FundraiserContractService 
         SmartContractFundraiserDto fundraiser = new SmartContractFundraiserDto();
 
         try {
-            poomContract.createFundraiser(fundraiser.toFundraiserSolidity(smartContractFundraiserDto)).send();
+            poomContract.createFundraiser(fundraiser.toFundraiserContract(smartContractFundraiserDto)).send();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -43,7 +41,7 @@ public class FundraiserContractServiceImpl implements FundraiserContractService 
         try {
             List<PoomContract.Fundraiser> fundraiserList =  poomContract.getFundraiserList().send();
             fundraiserContractList = fundraiserList.stream()
-                .map(fundraiser ->SmartContractFundraiserDto.fromFundraiserSolidity(fundraiser))
+                .map(fundraiser ->SmartContractFundraiserDto.fromFundraiserContract(fundraiser))
                 .collect(Collectors.toList());;
 
         } catch (Exception e) {
@@ -60,7 +58,7 @@ public class FundraiserContractServiceImpl implements FundraiserContractService 
     public SmartContractFundraiserDto getFundraiserDetail(Long fundraiserId){
         SmartContractFundraiserDto fundraiser = null;
         try {
-             fundraiser = SmartContractFundraiserDto.fromFundraiserSolidity(poomContract.getFundraiserDetail(BigInteger.valueOf(fundraiserId)).send());
+             fundraiser = SmartContractFundraiserDto.fromFundraiserContract(poomContract.getFundraiserDetail(BigInteger.valueOf(fundraiserId)).send());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

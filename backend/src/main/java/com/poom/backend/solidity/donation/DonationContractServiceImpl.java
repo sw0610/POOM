@@ -25,7 +25,7 @@ public class DonationContractServiceImpl implements DonationContractService{
     public List<SmartContractDonationDto> getDonationList(Long fundraiserId) throws Exception {
 
         List<PoomContract.Donation> donationContractList =
-                poomContract.getDontaionList(BigInteger.valueOf(fundraiserId)).send();
+                poomContract.getDonationList(BigInteger.valueOf(fundraiserId)).send();
 
         List<SmartContractDonationDto> donationList
                  = donationContractList.stream()
