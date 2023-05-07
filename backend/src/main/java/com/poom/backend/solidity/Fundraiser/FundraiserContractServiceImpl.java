@@ -2,12 +2,15 @@ package com.poom.backend.solidity.fundraiser;
 
 import com.poom.backend.api.dto.fundraiser.SmartContractFundraiserDto;
 import com.poom.backend.config.Web3jConfig;
+import com.poom.backend.exception.BadRequestException;
+import com.poom.backend.exception.NoContentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.web3j.poomcontract.PoomContract;
 
 import java.math.BigInteger;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,7 +37,7 @@ public class FundraiserContractServiceImpl implements FundraiserContractService 
 
     // 모금 목록
     @Override
-    public List<SmartContractFundraiserDto> getFundraiserList(){
+    public Optional<List<SmartContractFundraiserDto>> getFundraiserList(){
 
         List<SmartContractFundraiserDto> fundraiserContractList = null;
 
@@ -42,28 +45,29 @@ public class FundraiserContractServiceImpl implements FundraiserContractService 
             List<PoomContract.Fundraiser> fundraiserList =  poomContract.getFundraiserList().send();
             fundraiserContractList = fundraiserList.stream()
                 .map(fundraiser ->SmartContractFundraiserDto.fromFundraiserContract(fundraiser))
-                .collect(Collectors.toList());;
+                .collect(Collectors.toList());
 
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-//        System.out.println(fundraiserList.size());
-//        System.out.println(SmartContractFundraiserDto.fromFundraiserSolidity(fundraiserList.get(0)));
 
-        return fundraiserContractList;
+        return Optional.ofNullable(fundraiserContractList);
     }
     
     // 모금 상세
     @Override
-    public SmartContractFundraiserDto getFundraiserDetail(Long fundraiserId){
+    public Optional<SmartContractFundraiserDto> getFundraiserDetail(Long fundraiserId){
         SmartContractFundraiserDto fundraiser = null;
         try {
              fundraiser = SmartContractFundraiserDto.fromFundraiserContract(poomContract.getFundraiserDetail(BigInteger.valueOf(fundraiserId)).send());
+             if(fundraiser.getFundraiserId().longValue()!=fundraiserId){
+                 throw new BadRequestException("모금 정보가 없습니다.");
+             }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
-        return fundraiser;
+        return Optional.ofNullable(fundraiser);
     }
 
 
