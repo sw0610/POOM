@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:poom/screens/home_specific_screen.dart';
 
-class DogListCardWidget extends StatelessWidget {
-  const DogListCardWidget({super.key});
+class HomeDogCard extends StatelessWidget {
+  const HomeDogCard({super.key});
 
   @override
   Widget build(BuildContext context) {
