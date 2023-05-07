@@ -7,11 +7,13 @@ import 'package:poom/widgets/regist/regist_input_form_widget.dart';
 class RegistSpecificInfo extends StatefulWidget {
   final List<File> dogPhotoList;
   final void Function() pickDogPhotoImage;
+  final void Function(int) deleteDogPhotoImage;
 
   const RegistSpecificInfo({
     super.key,
     required this.dogPhotoList,
     required this.pickDogPhotoImage,
+    required this.deleteDogPhotoImage,
   });
 
   // static const Color inputBackground = Color(0xFFF9F9F9);
@@ -121,16 +123,41 @@ class _RegistSpecificInfoState extends State<RegistSpecificInfo> {
                   }
                   return SizedBox(
                     width: 114,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.all(
-                          Radius.circular(10),
+                    child: Stack(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(10),
+                            ),
+                            image: DecorationImage(
+                              image: FileImage(widget.dogPhotoList[index]),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
                         ),
-                        image: DecorationImage(
-                          image: FileImage(widget.dogPhotoList[index]),
-                          fit: BoxFit.cover,
+                        Positioned(
+                          top: 2,
+                          right: 2,
+                          child: GestureDetector(
+                            onTap: () => widget.deleteDogPhotoImage(index),
+                            child: Container(
+                              width: 24,
+                              height: 24,
+                              decoration: const BoxDecoration(
+                                  color: Colors.red,
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(20),
+                                  )),
+                              child: const Icon(
+                                Icons.close_outlined,
+                                size: 20,
+                                color: Color.fromARGB(176, 255, 255, 255),
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
+                      ],
                     ),
                   );
                 },

@@ -41,6 +41,12 @@ class _RegistScreenState extends State<RegistScreen> {
     });
   }
 
+  void _deleteDogPhotoImage(int index) {
+    setState(() {
+      dogPhotoList.removeAt(index);
+    });
+  }
+
   int _selectedIndex = 0; // 선택된 인덱스
 
   void nextPage() {
@@ -83,7 +89,8 @@ class _RegistScreenState extends State<RegistScreen> {
           ),
           RegistSpecificInfo(
             dogPhotoList: dogPhotoList,
-            pickDogPhotoImage: () => _pickDogPhotoImage(),
+            pickDogPhotoImage: _pickDogPhotoImage,
+            deleteDogPhotoImage: _deleteDogPhotoImage,
           ),
         ],
       ),
