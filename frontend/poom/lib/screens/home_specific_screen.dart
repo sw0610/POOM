@@ -43,57 +43,11 @@ class DogSpecificScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Stack(
-                children: [
-                  Expanded(
-                    child: AspectRatio(
-                      aspectRatio: 312 / 269,
-                      child: Container(
-                        clipBehavior: Clip.antiAlias,
-                        height: 269,
-                        decoration: BoxDecoration(
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(10),
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                blurRadius: 20,
-                                spreadRadius: 5,
-                                color:
-                                    const Color(0xFF000000).withOpacity(0.25),
-                              )
-                            ]),
-                        child: Image.network(
-                          'https://image.dongascience.com/Photo/2020/03/5bddba7b6574b95d37b6079c199d7101.jpg',
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    bottom: 10,
-                    right: 10,
-                    child: Container(
-                      clipBehavior: Clip.antiAlias,
-                      width: 46,
-                      height: 46,
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10),
-                        ),
-                      ),
-                      child: Image.network(
-                        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRm5q9thkNI7sXmH0ysGnn4_ugIwQxgoec3WQ&usqp=CAU',
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  )
-                ],
-              ),
               const SizedBox(
                 height: 20,
               ),
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -129,7 +83,21 @@ class DogSpecificScreen extends StatelessWidget {
                         ),
                       )
                     ],
-                  )
+                  ),
+                  Container(
+                    clipBehavior: Clip.antiAlias,
+                    width: 46,
+                    height: 46,
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(10),
+                      ),
+                    ),
+                    child: Image.network(
+                      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRm5q9thkNI7sXmH0ysGnn4_ugIwQxgoec3WQ&usqp=CAU',
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ],
               ),
               const SizedBox(
