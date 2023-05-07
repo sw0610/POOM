@@ -19,6 +19,7 @@ class _DonateScreenState extends State<DonateScreen> {
   final String _shelterName = "용인시 보호소";
   final String _dogName = "쿵이";
   String _inputEth = '';
+  bool isEnabled = false;
 
   // ethPerKRW = EthPerKrwApi.getEthPerKrw();
 
@@ -60,6 +61,12 @@ class _DonateScreenState extends State<DonateScreen> {
         _inputEth += num;
         int intKrw = (double.parse(_inputEth) / ethPerKRW * 1000).toInt();
         krw = NumberFormat('#,###').format(intKrw);
+      }
+
+      if (_inputEth != '' && double.parse(_inputEth) != 0) {
+        isEnabled = true;
+      } else {
+        isEnabled = false;
       }
     });
   }
@@ -201,25 +208,22 @@ class _DonateScreenState extends State<DonateScreen> {
                   ],
                 ),
               const Expanded(child: SizedBox()),
-              GestureDetector(
-                onTap: _doDonate,
-                child: Container(
-                  height: 50,
-                  width: MediaQuery.of(context).size.width,
-                  decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.all(Radius.circular(10)),
-                    color: Theme.of(context).primaryColor,
+              ElevatedButton(
+                onPressed: isEnabled ? _doDonate : null,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).primaryColor,
+                  minimumSize: Size(MediaQuery.of(context).size.width, 50),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
                   ),
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      'MetaMask로 후원',
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.background,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
+                  elevation: 0,
+                ),
+                child: Text(
+                  'Metamask로 후원하기',
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.background,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ),
