@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:poom/services/eth_per_krw_api.dart';
 
 class DonateScreen extends StatefulWidget {
   const DonateScreen({super.key});
@@ -11,10 +12,26 @@ class DonateScreen extends StatefulWidget {
 }
 
 class _DonateScreenState extends State<DonateScreen> {
-  double ethPerKRW = 0.00040;
+  dynamic ethPerKRW = '0.000000'; //초기값은 string -> api 받아오면 double 타입으로 변경
+
   final String _shelterName = "용인시 보호소";
   final String _dogName = "쿵이";
-  String _inputEth = "";
+  String _inputEth = '';
+
+  // ethPerKRW = EthPerKrwApi.getEthPerKrw();
+
+  Future<void> _fetchEthPerKrw() async {
+    double value = await EthPerKrwApi.getEthPerKrw();
+    setState(() {
+      ethPerKRW = value;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchEthPerKrw();
+  }
 
   void _updateInputEth(String num) {
     setState(() {
