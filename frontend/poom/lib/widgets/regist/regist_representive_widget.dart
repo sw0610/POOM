@@ -1,9 +1,19 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class RegistRepresentive extends StatelessWidget {
   final VoidCallback nextPage;
-  const RegistRepresentive({super.key, required this.nextPage});
+  final VoidCallback pickRepresentImage;
+  File? representImage;
+
+  RegistRepresentive({
+    super.key,
+    required this.nextPage,
+    required this.pickRepresentImage,
+    this.representImage,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -37,36 +47,53 @@ class RegistRepresentive extends StatelessWidget {
           const SizedBox(
             height: 24,
           ),
-          Container(
-            height: 114,
-            width: 114,
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.all(
-                Radius.circular(10),
-              ),
-              color: Color(0xFFFFF4E6),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SvgPicture.asset(
-                  "assets/icons/ic_camera.svg",
-                  color: const Color(0xFF666666),
-                ),
-                const SizedBox(
-                  height: 12,
-                ),
-                const Text(
-                  '대표사진',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w300,
-                    color: Color(0xFF666666),
+          GestureDetector(
+            onTap: pickRepresentImage,
+            child: representImage == null
+                ? Container(
+                    height: 114,
+                    width: 114,
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(10),
+                      ),
+                      color: Color(0xFFFFF4E6),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SvgPicture.asset(
+                          "assets/icons/ic_camera.svg",
+                          color: const Color(0xFF666666),
+                        ),
+                        const SizedBox(
+                          height: 12,
+                        ),
+                        const Text(
+                          '대표사진',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w300,
+                            color: Color(0xFF666666),
+                          ),
+                        )
+                      ],
+                    ),
+                  )
+                : Container(
+                    height: 114,
+                    width: 114,
+                    decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(10),
+                      ),
+                      image: DecorationImage(
+                        image: FileImage(representImage!),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
-                )
-              ],
-            ),
           ),
           const Expanded(
             child: SizedBox(),
