@@ -14,7 +14,13 @@ class _DonateScreenState extends State<DonateScreen> {
   double ethPerKRW = 0.00040;
   final String _shelterName = "용인시 보호소";
   final String _dogName = "쿵이";
-  final String _inputEth = "0.75";
+  String _inputEth = "";
+
+  void _updateInputEth(String num) {
+    setState(() {
+      _inputEth += num;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -177,19 +183,55 @@ class _DonateScreenState extends State<DonateScreen> {
                 childAspectRatio: 52 / 35,
                 // padding: const EdgeInsets.all(20),
                 crossAxisCount: 3,
-                children: const [
-                  NumButton(number: '1'),
-                  NumButton(number: '2'),
-                  NumButton(number: '3'),
-                  NumButton(number: '4'),
-                  NumButton(number: '5'),
-                  NumButton(number: '6'),
-                  NumButton(number: '7'),
-                  NumButton(number: '8'),
-                  NumButton(number: '9'),
-                  NumButton(number: '.'),
-                  NumButton(number: '0'),
-                  NumButton(number: '<'),
+                children: [
+                  NumButton(
+                    number: '1',
+                    onPressed: () => _updateInputEth('1'),
+                  ),
+                  NumButton(
+                    number: '2',
+                    onPressed: () => _updateInputEth('2'),
+                  ),
+                  NumButton(
+                    number: '3',
+                    onPressed: () => _updateInputEth('3'),
+                  ),
+                  NumButton(
+                    number: '4',
+                    onPressed: () => _updateInputEth('4'),
+                  ),
+                  NumButton(
+                    number: '5',
+                    onPressed: () => _updateInputEth('5'),
+                  ),
+                  NumButton(
+                    number: '6',
+                    onPressed: () => _updateInputEth('6'),
+                  ),
+                  NumButton(
+                    number: '7',
+                    onPressed: () => _updateInputEth('7'),
+                  ),
+                  NumButton(
+                    number: '8',
+                    onPressed: () => _updateInputEth('8'),
+                  ),
+                  NumButton(
+                    number: '9',
+                    onPressed: () => _updateInputEth('9'),
+                  ),
+                  NumButton(
+                    number: '.',
+                    onPressed: () => _updateInputEth('.'),
+                  ),
+                  NumButton(
+                    number: '0',
+                    onPressed: () => _updateInputEth('0'),
+                  ),
+                  NumButton(
+                    number: '<',
+                    onPressed: () => _updateInputEth('<'),
+                  ),
                 ],
               )
             ],
@@ -202,16 +244,18 @@ class _DonateScreenState extends State<DonateScreen> {
 
 class NumButton extends StatelessWidget {
   final String number;
+  final VoidCallback onPressed;
 
   const NumButton({
     super.key,
     required this.number,
+    required this.onPressed,
   });
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: () {},
+      onPressed: onPressed,
       style: ElevatedButton.styleFrom(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(0.0),
