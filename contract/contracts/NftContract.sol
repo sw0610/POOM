@@ -22,13 +22,13 @@ contract NftProcess is ERC721URIStorage, FundraiserProcess, DonationProcess  {
     constructor() ERC721("PoomNFT", "POOM") {}
 
     // nft 발급
-    function _mintNft(string memory _memberId, uint64 _fundraiserId,  uint64 _donationId, string memory _metadataUri, string memory _imageUrl) internal returns (uint64) {
+    function _mintNft(string memory _memberId, uint64 _fundraiserId,  uint64 _donationId, string memory _metadataUri, string memory _imageUrl, address memberAddress) internal returns (uint64) {
         require(_getFundraiserDetail(_fundraiserId).isEnded==true, "Fundraiser is not ended.");
         require(_getDonation(_donationId).isIssued==1, "Already issued.");
 
         _nftIds++;
 
-        _safeMint(msg.sender, _nftIds); // nft 발급
+        _safeMint(memberAddress, _nftIds); // nft 발급
         _setTokenURI(_nftIds, _metadataUri); // nft TokenURI 저장
 
 
