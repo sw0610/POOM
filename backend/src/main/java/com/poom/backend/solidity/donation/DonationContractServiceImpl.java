@@ -9,6 +9,7 @@ import org.web3j.poomcontract.PoomContract;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -40,16 +41,22 @@ public class DonationContractServiceImpl implements DonationContractService{
     }
 
     @Override
-    public List<SmartContractDonationDto> getMyDonationList(String memberId) throws Exception {
-        List<PoomContract.Donation> myDonationContractList =
-                poomContract.getMyDonationList(memberId).send();
+    public Optional<List<SmartContractDonationDto>> getMyDonationList(String memberId){
 
-        List<SmartContractDonationDto> myDonationList
-                = myDonationContractList.stream()
-                .map(donation -> SmartContractDonationDto.fromDonationContract(donation))
-                .collect(Collectors.toList());
+        List<SmartContractDonationDto> myDonationList = null;
 
-        return myDonationList;
+        try {
+            List<PoomContract.Donation> myDonationContractList = poomContract.getMyDonationList(memberId).send();
+            myDonationList
+                    = myDonationContractList.stream()
+                    .map(donation -> SmartContractDonationDto.fromDonationContract(donation))
+                    .sorted(Comparator.comparing(SmartContractDonationDto::getDonationTime).reversed()) // 최신순 정렬
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        return Optional.ofNullable(myDonationList);
     }
 
 }

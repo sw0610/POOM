@@ -27,19 +27,18 @@ public class DonationServiceImpl implements DonationService {
     @Override
     public DonationRes getMyDonationList(HttpServletRequest request, int size, int page) {
         String memberId = memberService.getMemberIdFromHeader(request);
-        List<SmartContractDonationDto> donationList = null;
 
         // 스마트 컨트랙트 호출 부분 (_getMyDonationList)
-        try {
-            donationList = donationContractService.getMyDonationList(memberId);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        List<SmartContractDonationDto> donationList = donationContractService.getMyDonationList(memberId)
+                .orElseThrow(()->new RuntimeException());
+
 
         int startIdx = size * page;
         int endIdx = startIdx + size > donationList.size() ? donationList.size() : startIdx + size;
 
         for (int i = startIdx; i < endIdx; i++){
+
+
 
         }
 
@@ -51,7 +50,6 @@ public class DonationServiceImpl implements DonationService {
     public List<FundraiserDonationDto> getFundraiserDonationList(Long fundraiserId) {
         List<SmartContractDonationDto> donationList = donationContractService.getDonationList(fundraiserId)
                 .orElseThrow(()->new RuntimeException());
-
 
         // 최대 10개 반환
         // 어떤 기준으로 정렬 해야하는지??
