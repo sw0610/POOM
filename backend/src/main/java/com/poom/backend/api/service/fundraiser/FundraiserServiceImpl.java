@@ -33,7 +33,6 @@ public class FundraiserServiceImpl implements FundraiserService{
     private final ShelterRepository shelterRepository;
 
 
-    // TODO: 정렬해서 반환하기 -> 정렬 기준 설정하기 (시작 시간 데이터 블록체인에 저장하기)
     @Override
     public MyFundraiserListRes getMyFundraiserList(HttpServletRequest request, int size, int page, boolean isClosed) {
         String memberId = memberService.getMemberIdFromHeader(request);
@@ -124,7 +123,6 @@ public class FundraiserServiceImpl implements FundraiserService{
 
     }
 
-    // TODO: 정렬해서 반환하기 -> 정렬 기준 설정하기 (시작 시간 데이터 블록체인에 저장하기)
     @Override
     public List<FundraiserDto> getFundraiserList(int size, int page, boolean isClosed) {
         // 스마트 컨트랙트 호출 부분
