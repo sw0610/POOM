@@ -54,7 +54,6 @@ public class DonationServiceImpl implements DonationService {
         // 최대 10개 반환
         // 어떤 기준으로 정렬 해야하는지??
         List<FundraiserDonationDto> fundraiserDonationList = donationList.stream()
-                .limit(10)
 //                .flatMap(List::stream)
                 .map(donation ->
                         FundraiserDonationDto.toFundraiserDonationDto(donation,

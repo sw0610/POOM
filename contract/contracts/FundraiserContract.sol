@@ -9,6 +9,7 @@ contract FundraiserProcess {
         string shelterId;
         address payable shelterAddress;
         string hashString; // ipfs hash
+        uint256 startDate; // 모금 시작일
         uint256 currentAmount; // 현재 모인 금액
         uint256 targetAmount;
         bool isEnded; // 종료 되었는지, default false

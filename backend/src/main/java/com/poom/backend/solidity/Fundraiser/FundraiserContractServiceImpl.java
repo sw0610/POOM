@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.web3j.poomcontract.PoomContract;
 
 import java.math.BigInteger;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -45,6 +46,7 @@ public class FundraiserContractServiceImpl implements FundraiserContractService 
             List<PoomContract.Fundraiser> fundraiserList =  poomContract.getFundraiserList().send();
             fundraiserContractList = fundraiserList.stream()
                 .map(fundraiser ->SmartContractFundraiserDto.fromFundraiserContract(fundraiser))
+                .sorted(Comparator.comparing(SmartContractFundraiserDto::getStartDate).reversed())
                 .collect(Collectors.toList());
 
         } catch (Exception e) {

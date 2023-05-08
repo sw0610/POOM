@@ -5,6 +5,7 @@ import lombok.*;
 import org.web3j.poomcontract.PoomContract;
 
 import java.math.BigInteger;
+import java.time.LocalDateTime;
 
 @Builder
 @Setter
@@ -28,6 +29,7 @@ public class SmartContractFundraiserDto {
     private String shelterId;
     private String shelterAddress;
     private String hashString;
+    private LocalDateTime startDate;
     private Double currentAmount;
     private Double targetAmount;
     private Boolean isEnded;
@@ -37,6 +39,7 @@ public class SmartContractFundraiserDto {
                 .shelterId(shelterId)
                 .shelterAddress(cond.getShelterEthWalletAddress())
                 .hashString(hash)
+                .startDate(cond.getStartDate())
                 .currentAmount(0.0)
                 .targetAmount(cond.getTargetAmount()) // wei , 클라이언트에서는 Double(ETH)로 받으므로 변환 필요함
                 .isEnded(false)
@@ -51,6 +54,7 @@ public class SmartContractFundraiserDto {
             .shelterId(fundraiser.shelterId)
             .shelterAddress(fundraiser.shelterAddress)
             .hashString(fundraiser.hashString)
+            .startDate(ConvertUtil.bigIntegerToDateTime(fundraiser.startDate))
             .currentAmount(ConvertUtil.weiToEther(fundraiser.currentAmount))
             .targetAmount(ConvertUtil.weiToEther(fundraiser.targetAmount))
             .isEnded(fundraiser.isEnded)
@@ -64,6 +68,7 @@ public class SmartContractFundraiserDto {
             smartContractFundraiserDto.getShelterId(),
             smartContractFundraiserDto.getShelterAddress(),
             smartContractFundraiserDto.getHashString(),
+            ConvertUtil.dateTimeToBigInteger(smartContractFundraiserDto.getStartDate()),
             ConvertUtil.etherToWei(smartContractFundraiserDto.getCurrentAmount()),
             ConvertUtil.etherToWei(smartContractFundraiserDto.getTargetAmount()),
             smartContractFundraiserDto.getIsEnded()

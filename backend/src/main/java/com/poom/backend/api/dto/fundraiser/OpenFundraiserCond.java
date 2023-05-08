@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -24,7 +25,7 @@ public class OpenFundraiserCond {
     private String shelterEthWalletAddress;
     private String dogName;
     @Builder.Default
-    private LocalDate startDate = LocalDate.now();
+    private LocalDateTime startDate = LocalDateTime.now();
     private LocalDate endDate;
     private DogGender dogGender;
     private int dogAge;

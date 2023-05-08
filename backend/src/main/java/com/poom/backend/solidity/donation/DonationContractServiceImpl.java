@@ -32,7 +32,9 @@ public class DonationContractServiceImpl implements DonationContractService{
             List<PoomContract.Donation> donationContractList = poomContract.getDonationList(BigInteger.valueOf(fundraiserId)).send();
             donationList = donationContractList.stream()
                     .map(donation -> SmartContractDonationDto.fromDonationContract(donation))
-                    .collect(Collectors.toList());
+                    .sorted(Comparator.comparing(SmartContractDonationDto::getDonationAmount))
+                    .limit(10)
+                .collect(Collectors.toList());
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
