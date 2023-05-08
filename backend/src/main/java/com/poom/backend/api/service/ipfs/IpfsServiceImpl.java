@@ -45,7 +45,7 @@ public class IpfsServiceImpl implements IpfsService{
             throw new RuntimeException(e);
         }
         Multihash multihash = merkleNode.hash;
-        return String.valueOf(multihash);
+        return hashToPublicUrl(multihash.toString());
     }
 
     @Override
@@ -81,7 +81,7 @@ public class IpfsServiceImpl implements IpfsService{
         }
         if(result.size() == 0) throw new BadRequestException();
         Multihash hash = result.get(0).hash;
-        return hashToUrl(hash.toString());
+        return hashToPublicUrl(hash.toString());
     }
 
     @Override
