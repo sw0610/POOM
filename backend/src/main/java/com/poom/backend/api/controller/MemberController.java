@@ -1,6 +1,7 @@
 package com.poom.backend.api.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.poom.backend.api.dto.member.MemberDto;
 import com.poom.backend.api.service.member.MemberService;
 import com.poom.backend.api.service.oauth.OauthServiceImpl;
 import com.poom.backend.api.service.redis.RedisService;
@@ -10,6 +11,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,7 +38,9 @@ public class MemberController {
     })
     public ResponseEntity<?> kakaoLogin(@RequestParam String code){
         try {
-            return ResponseEntity.status(200).body(oauthService.login("kakao",code));
+            MemberDto res = oauthService.login("kakao",code);
+            HttpHeaders headers = memberService.getHeader(res.getAccessToken(), res.getRefreshToken());
+            return ResponseEntity.status(200).headers(headers).body(res.getMember().getNickname());
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
