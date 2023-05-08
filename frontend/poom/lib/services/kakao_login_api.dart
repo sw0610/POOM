@@ -13,10 +13,6 @@ class KakaoLoginApi {
         AccessTokenInfo tokenInfo = await UserApi.instance.accessTokenInfo();
         print('토큰 유효성 체크 성공 ${tokenInfo.id} ${tokenInfo.expiresIn}');
 
-        //access token 확인하기
-        String accessToken = prefs.getString('accessToken') ?? '';
-        print('accessToken: $accessToken');
-
         return true;
       } catch (error) {
         if (error is KakaoException && error.isInvalidTokenError()) {
@@ -40,7 +36,8 @@ class KakaoLoginApi {
           ? await UserApi.instance.loginWithKakaoTalk()
           : await UserApi.instance.loginWithKakaoAccount();
 
-      print('accestoken: ${token.accessToken}');
+      print('!!!!accessToken: ${token.accessToken}');
+      print('!!!!refreshToken: ${token.refreshToken}');
 
       //access token 저장하기
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -65,6 +62,18 @@ class KakaoLoginApi {
     } catch (error) {
       print('카카오톡으로 로그인 실패 $error');
       return false;
+    }
+  }
+
+  static void logout(Function makeIsLoginFalse) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    try {
+      await UserApi.instance.logout();
+      await prefs.remove('accessToken');
+      makeIsLoginFalse();
+      print('로그아웃 성공, SDK에서 토큰 삭제');
+    } catch (error) {
+      print('로그아웃 실패, SDK에서 토큰 삭제 $error');
     }
   }
 }
