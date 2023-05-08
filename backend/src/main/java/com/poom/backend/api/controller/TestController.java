@@ -1,7 +1,13 @@
 package com.poom.backend.api.controller;
 
 import com.poom.backend.api.dto.member.SignupCond;
+import com.poom.backend.api.dto.shelter.ShelterAuthCond;
+import com.poom.backend.api.dto.shelter.ShelterAuthMMCond;
+import com.poom.backend.api.service.mattermost.MattermostService;
 import com.poom.backend.api.service.member.MemberService;
+import com.poom.backend.db.entity.Shelter;
+import com.poom.backend.db.repository.MemberRepository;
+import com.poom.backend.enums.ShelterStatus;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -30,6 +36,8 @@ import java.util.List;
 public class TestController {
 
     private final MemberService memberService;
+    private final MattermostService mattermostService;
+    private final MemberRepository memberRepository;
 
 
     @GetMapping("/test/log")
@@ -157,10 +165,28 @@ public class TestController {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 
-        Map<String, Object> attachment = new HashMap<>();
-        attachment.put("text", text);
-        attachment.put("imageURLs", imageUrls);
+// fields 배열 추가
+        Map<String, Object> field1 = new HashMap<>();
+        field1.put("title", "Image 1");
+        field1.put("value", image1);
+        field1.put("short", true);
 
+        Map<String, Object> field2 = new HashMap<>();
+        field2.put("title", "Image 2");
+        field2.put("value", image2);
+        field2.put("short", true);
+
+        Map<String, Object> field3 = new HashMap<>();
+        field3.put("title", "Image 3");
+        field3.put("value", image3);
+        field3.put("short", true);
+
+        Map<String, Object> field4 = new HashMap<>();
+        field4.put("title", "Text");
+        field4.put("value", text);
+        field4.put("short", true);
+
+// actions 배열에 들어갈 버튼 요소
         Map<String, Object> action1 = new HashMap<>();
         action1.put("name", "승인");
         action1.put("integration", createIntegrationBody("IOLXADSLL", true));
@@ -169,13 +195,27 @@ public class TestController {
         action2.put("name", "거절");
         action2.put("integration", createIntegrationBody("IOLXADSLL", false));
 
-        attachment.put("actions", new Map[]{action1, action2});
+// attachment 객체 수정
+        Map<String, Object> attachment = new HashMap<>();
+        attachment.put("fields", List.of(field4));
+        attachment.put("actions", List.of(action1, action2));
+
+        List<Map<String, Object>> imageAttachmentList = new ArrayList<>();
+        for(String imageUrl : imageUrls){
+            Map<String, Object> imageAttachment = new HashMap<>();
+            imageAttachment.put("fallback", "image");
+            imageAttachment.put("image_url", imageUrl);
+            imageAttachment.put("thumb_url", imageUrl);
+            imageAttachmentList.add(imageAttachment);
+        }
+
+        // add image attachments to attachment object
+        attachment.put("image_url", imageAttachmentList);
 
         Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("attachments", new Map[]{attachment});
+        requestBody.put("attachments", List.of(attachment));
 
-        HttpEntity<Map<String, Object>> requestEntity =
-                new HttpEntity<>(requestBody, headers);
+        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
 
         restTemplate.postForObject(webhookUrl, requestEntity, String.class);
     }
@@ -200,4 +240,74 @@ public class TestController {
         log.info("승인 여부: {}", isAgree);
     }
 
+    @PostMapping("/test/mattermost/message")
+    @ApiOperation(value = "메타모스트 메세지 테스트", notes = "<strong>email을 입력받아 테스트를 위한 엑세스 토큰</strong>을 발급합니다.")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "OK(조회 성공)"),
+            @ApiResponse(code = 500, message = "서버 오류")
+    })
+    public void mmMessageTest(){
+        String webhookUrl = "https://meeting.ssafy.com/hooks/dz3nra3df7yc7gbsuab6n16pme";
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+
+        String image2 = "https://www.kukinews.com/data/kuk/image/2023/01/18/kuk202301180113.680x.9.jpg";
+        String image3 = "https://ipfs.io/ipfs/QmV637KHwPNyd7YzgSaL5Fdn6rk6AsD1cKFbFm3yYmt7QH";
+
+        // attachment 객체 수정
+        Map<String, Object> attachment = new HashMap<>();
+        attachment.put("color", "#FF8000");
+        attachment.put("title", "타이틀 테스트 입니다.");
+
+
+
+        Map<String, Object> image11 = new HashMap<>();
+        image11.put("image_url", image3);
+
+        Map<String, Object> image22 = new HashMap<>();
+        image22.put("image_url", image2);
+
+        attachment.put("image_url", image2);
+        attachment.put("image_url", image3);
+
+
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("attachments", List.of(new ShelterAuthMMCond(memberRepository.findById("6448d2f0577f215b3f4de9a3").get(),
+                ShelterAuthCond.builder()
+                        .shelterId("ID 입니다.")
+                        .shelterName("이름입니다")
+                        .shelterAddress("주소입니다.")
+                        .shelterPhoneNumber("전화번호입니다.")
+                        .build())));
+
+        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
+
+        restTemplate.postForObject(webhookUrl, requestEntity, String.class);
+    }
+
+
+    @PostMapping("/test/mattermost/message2")
+    @ApiOperation(value = "메타모스트 메세지 파이널 테스트", notes = "<strong>email을 입력받아 테스트를 위한 엑세스 토큰</strong>을 발급합니다.")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "OK(조회 성공)"),
+            @ApiResponse(code = 500, message = "서버 오류")
+    })
+    public void mmFinalMessageTest(){
+        String image2 = "https://www.kukinews.com/data/kuk/image/2023/01/18/kuk202301180113.680x.9.jpg";
+        String image3 = "https://ipfs.io/ipfs/QmV637KHwPNyd7YzgSaL5Fdn6rk6AsD1cKFbFm3yYmt7QH";
+
+        Shelter shelter = Shelter.builder()
+                .id("shelter ID")
+                .adminId("6448d2f0577f215b3f4de9a3")
+                .shelterName("보호소 이름입니다.")
+                .shelterAddress("보호소 주소입니다.")
+                .shelterPhoneNumber("보호소 전화번호입니다.")
+                .status(ShelterStatus.UNDER_REVIEW)
+                .certificateImages(List.of(image2, image3))
+                .build();
+
+        mattermostService.sendMetaMostMessage(shelter);
+    }
 }

@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -41,9 +42,10 @@ public class ShelterController {
             @ApiResponse(code = 401, message = "UNAUTHORIZED(권한 없음)"),
             @ApiResponse(code = 500, message = "서버에러")
     })
-    public ResponseEntity<?> requestShelterAuth(@RequestPart("certificateImages") List<MultipartFile> certificateImages,
+    public ResponseEntity<?> requestShelterAuth(HttpServletRequest request,
+                                                @RequestPart("certificateImages") List<MultipartFile> certificateImages,
                                                 @RequestBody ShelterAuthCond shelterAuthCond){
-        shelterService.createShelterAuth(certificateImages, shelterAuthCond);
+        shelterService.requestShelterAuth(request, certificateImages, shelterAuthCond);
         return ResponseEntity.status(200).build();
     }
 
