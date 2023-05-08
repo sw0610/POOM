@@ -1,10 +1,11 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:http/http.dart' as http;
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 
 class KakaoLoginApi {
-  static const String appKey = '16f9dc70727d623363f37d2a4e117611';
-
   static Future<bool> isLogin() async {
-    KakaoSdk.init(nativeAppKey: appKey);
     if (await AuthApi.instance.hasToken()) {
       try {
         AccessTokenInfo tokenInfo = await UserApi.instance.accessTokenInfo();
@@ -23,15 +24,35 @@ class KakaoLoginApi {
     }
   }
 
-  static void login() async {
-    KakaoSdk.init(nativeAppKey: appKey);
-    const String redirectUri = 'https://k8a805.p.ssafy.io/api/oauth/kakao';
+  static Future<bool> login() async {
     try {
-      await AuthCodeClient.instance.authorize(
-        redirectUri: redirectUri,
+      bool isInstalled = await isKakaoTalkInstalled();
+
+      OAuthToken token = isInstalled
+          ? await UserApi.instance.loginWithKakaoTalk()
+          : await UserApi.instance.loginWithKakaoAccount();
+
+      print('accestoken: ${token.accessToken}');
+
+      final url = Uri.https('kapi.kakao.com', '/v2/user/me');
+
+      final response = await http.get(
+        url,
+        headers: {
+          HttpHeaders.authorizationHeader: 'Bearer ${token.accessToken}'
+        },
       );
+
+      final profileInfo = json.decode(response.body);
+      print(profileInfo.toString());
+
+      //토큰이 저장되었는지 확인. 저장 안되어있으면 false 리턴
+      Future<bool> isTokenSaved;
+      isTokenSaved = isLogin();
+      return isTokenSaved;
     } catch (error) {
-      print('카카오계정으로 로그인 실패 $error');
+      print('카카오톡으로 로그인 실패 $error');
+      return false;
     }
   }
 }
