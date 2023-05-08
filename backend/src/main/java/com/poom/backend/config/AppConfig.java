@@ -1,11 +1,13 @@
 package com.poom.backend.config;
 
+import com.poom.backend.util.CustomMultipartResolver;
 import io.ipfs.api.IPFS;
 import io.ipfs.multiaddr.MultiAddress;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartResolver;
 
 @Configuration
 public class AppConfig {
@@ -22,5 +24,10 @@ public class AppConfig {
     public String getUrl(String ip, String port){
         // /ip4/43.201.49.21/tcp/8901
         return "/ip4/"+ip+"/tcp/"+port;
+    }
+
+    @Bean
+    public MultipartResolver multipartResolver(){
+        return new CustomMultipartResolver();
     }
 }

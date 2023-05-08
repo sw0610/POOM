@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import com.poom.backend.api.dto.member.MemberDto;
 import com.poom.backend.api.dto.member.SignupCond;
 import com.poom.backend.api.service.member.MemberService;
 import com.poom.backend.config.jwt.TokenProvider;
@@ -32,7 +33,7 @@ public class OauthServiceImpl implements OauthService {
     private final TokenProvider tokenProvider;
 
     @Transactional
-    public String login(String providerName, String code) throws JsonProcessingException {
+    public MemberDto login(String providerName, String code) throws JsonProcessingException {
         String oauthToken = getTokenResponse(code);
         Member member = getKakaoUserInfo(oauthToken);
 
@@ -42,9 +43,7 @@ public class OauthServiceImpl implements OauthService {
 
         // redis에 토큰을 저장합니다.
 
-
-
-        return null;
+        return MemberDto.from(member, accessToken, refreshToken);
     }
 
     public String getTokenResponse(String code) {
@@ -65,7 +64,7 @@ public class OauthServiceImpl implements OauthService {
             StringBuilder sb = new StringBuilder();
             sb.append("grant_type=authorization_code");
             sb.append("&client_id="+"16f9dc70727d623363f37d2a4e117611"); // TODO REST_API_KEY 입력
-            sb.append("&redirect_uri="+"http://localhost:8080/api/oauth/kakao"); // TODO 인가코드 받은 redirect_uri 입력
+            sb.append("&redirect_uri="+"https://k8a805.p.ssafy.io/api/oauth/kakao"); // TODO 인가코드 받은 redirect_uri 입력
             sb.append("&code=" + code);
             bw.write(sb.toString());
             bw.flush();
@@ -135,7 +134,6 @@ public class OauthServiceImpl implements OauthService {
     }
 
     public void logout(HttpServletRequest request) {
-
-
+        //ID로 리프레시토큰을 검색해서 삭제합니다.
     }
 }
