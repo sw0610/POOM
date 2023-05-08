@@ -3,13 +3,20 @@ import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class KakaoLoginApi {
   static Future<bool> isLogin() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     if (await AuthApi.instance.hasToken()) {
       try {
         AccessTokenInfo tokenInfo = await UserApi.instance.accessTokenInfo();
         print('토큰 유효성 체크 성공 ${tokenInfo.id} ${tokenInfo.expiresIn}');
+
+        //access token 확인하기
+        String accessToken = prefs.getString('accessToken') ?? '';
+        print('accessToken: $accessToken');
+
         return true;
       } catch (error) {
         if (error is KakaoException && error.isInvalidTokenError()) {
@@ -17,6 +24,7 @@ class KakaoLoginApi {
         } else {
           print('토큰 정보 조회 실패 $error');
         }
+        await prefs.remove('accessToken');
         return false;
       }
     } else {
@@ -33,6 +41,10 @@ class KakaoLoginApi {
           : await UserApi.instance.loginWithKakaoAccount();
 
       print('accestoken: ${token.accessToken}');
+
+      //access token 저장하기
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('accessToken', token.accessToken);
 
       final url = Uri.https('kapi.kakao.com', '/v2/user/me');
 
