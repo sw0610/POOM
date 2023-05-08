@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:poom/services/eth_per_krw_api.dart';
+import 'package:poom/services/metamask_api.dart';
 
 class DonateScreen extends StatefulWidget {
   const DonateScreen({super.key});
@@ -71,10 +72,14 @@ class _DonateScreenState extends State<DonateScreen> {
     });
   }
 
-  void _doDonate() {
+  void _doDonate(BuildContext context) {
     double ethAmount = double.parse(_inputEth);
     print(ethAmount.runtimeType);
     print(ethAmount);
+
+    // metamask 연결
+    MetamaskApi().handleSupport();
+    // MetamaskApi().handleConnectMetamask(context);
   }
 
   @override
@@ -209,7 +214,7 @@ class _DonateScreenState extends State<DonateScreen> {
                 ),
               const Expanded(child: SizedBox()),
               ElevatedButton(
-                onPressed: isEnabled ? _doDonate : null,
+                onPressed: isEnabled ? () => _doDonate(context) : null,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Theme.of(context).primaryColor,
                   minimumSize: Size(MediaQuery.of(context).size.width, 50),
