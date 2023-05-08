@@ -13,6 +13,10 @@ class KakaoLoginApi {
         AccessTokenInfo tokenInfo = await UserApi.instance.accessTokenInfo();
         print('토큰 유효성 체크 성공 ${tokenInfo.id} ${tokenInfo.expiresIn}');
 
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        String accessToken = prefs.getString('accessToken') ?? '';
+        print('accessToken: $accessToken');
+
         return true;
       } catch (error) {
         if (error is KakaoException && error.isInvalidTokenError()) {
