@@ -10,11 +10,9 @@ import lombok.RequiredArgsConstructor;
 
 import lombok.extern.log4j.Log4j;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
@@ -22,6 +20,8 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Base64;
+import java.util.List;
 
 @Api(tags = "테스트 API")
 @RestController
@@ -95,4 +95,46 @@ public class TestController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @PostMapping("/test/mattermost")
+    @ApiOperation(value = "메타모스트 테스트", notes = "<strong>email을 입력받아 테스트를 위한 엑세스 토큰</strong>을 발급합니다.")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "OK(조회 성공)"),
+            @ApiResponse(code = 500, message = "서버 오류")
+    })
+    public ResponseEntity<?> mattermostTest() throws IOException {
+        String mattermostWebhookUrl = "https://meeting.ssafy.com/hooks/5zsqqadu1t8npmoptsnsdpc1sa";
+        String text = "안태현 똥냄새가 복도에 진동합니다.";
+//        String imageUrl = "https://www.kukinews.com/data/kuk/image/2023/01/18/kuk202301180113.680x.9.jpg";
+        String image1 = "https://www.kukinews.com/data/kuk/image/2023/01/18/kuk202301180113.680x.9.jpg";
+        String image2 = "https://ipfs.io/ipfs/QmV637KHwPNyd7YzgSaL5Fdn6rk6AsD1cKFbFm3yYmt7QH?filename=KakaoTalk_20230421_174005964.jpg";
+        String image3 = "https://ipfs.io/ipfs/QmV637KHwPNyd7YzgSaL5Fdn6rk6AsD1cKFbFm3yYmt7QH";
+        List<String> imageUrls = List.of(image1, image2, image3);
+        String payload = createPayload(imageUrls, text);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<String> request = new HttpEntity<>(payload, headers);
+        RestTemplate restTemplate = new RestTemplate();
+
+        ResponseEntity<String> response = restTemplate.postForEntity(mattermostWebhookUrl, request, String.class);
+
+        return null;
+    }
+
+    private String createPayload(List<String> imageUrls, String text) {
+        StringBuilder attachments = new StringBuilder();
+        for (String imageUrl : imageUrls) {
+            attachments.append(String.format("{\"image_url\": \"%s\"},", imageUrl));
+        }
+
+        // 마지막 쉼표(,) 제거
+        if (attachments.length() > 0) {
+            attachments.setLength(attachments.length() - 1);
+        }
+
+        return String.format("{\"text\": \"%s\", \"attachments\": [%s]}", text, attachments.toString());
+    }
+
 }

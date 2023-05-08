@@ -40,6 +40,7 @@ public class ControllerAspect {
     // Poincut에 의해 필터링된 경로로 들어오는 경우 메서드 리턴 후에 적용
     @AfterReturning(value = "restControllerCut()", returning = "returnObj")
     public void afterReturnLog(Object returnObj) {
+        if (returnObj == null) return;
         log.info("return type = {}", returnObj.getClass().getSimpleName());
         log.info("return value = {}", returnObj);
     }

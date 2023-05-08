@@ -20,7 +20,7 @@ public class NFTController {
     private final NFTService nftService;
 
     @GetMapping("/members/nfts")
-    @ApiOperation(value = "멤버의 NFT를 조회합니다.", notes = "<strong>멤버의 ID를 입력받아</strong> NFT 목록을 조회합니다.")
+    @ApiOperation(value = "멤버의 NFT를 조회합니다.", notes = "<strong>멤버의 ID와 페이지 정보를 입력받아</strong> NFT 목록을 조회합니다.")
     @ApiResponses({
             @ApiResponse(code = 200, message = "OK(조회 성공)"),
             @ApiResponse(code = 204, message = "NO CONTENT(보호소 정보 없음)"),
