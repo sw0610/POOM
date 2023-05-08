@@ -8,6 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 
 public interface OauthService {
     MemberDto login(String providerName, String code) throws JsonProcessingException;
-    String getTokenResponse(String code);
+//    String getTokenResponse(String code);
     void logout(HttpServletRequest request);
 }
