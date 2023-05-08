@@ -12,41 +12,30 @@ contract NftProcess is ERC721URIStorage, FundraiserProcess, DonationProcess  {
     mapping(uint64 => NFT) private _nftList;
 
     struct NFT{
-        uint64 nftId;
-        uint64 fundraiserId;
-        string memberId;
         string imageUrl;
+        string metadataUri;
+        uint256 issuedDate;
     }
 
 
     constructor() ERC721("PoomNFT", "POOM") {}
 
-    // nft 발급
-    function _mintNft(string memory _memberId, uint64 _fundraiserId,  uint64 _donationId, string memory _metadataUri, string memory _imageUrl, address memberAddress) internal returns (uint64) {
+    function _mintNft(NFT memory _nft, address _memberAddress, string memory _memberId, uint64 _donationId, uint64 _fundraiserId) internal {
         require(_getFundraiserDetail(_fundraiserId).isEnded==true, "Fundraiser is not ended.");
         require(_getDonation(_donationId).isIssued==1, "Already issued.");
 
-        _nftIds++;
+        ++_nftIds;
 
-        _safeMint(memberAddress, _nftIds); // nft 발급
-        _setTokenURI(_nftIds, _metadataUri); // nft TokenURI 저장
-
-
-        NFT memory nft = NFT(
-            {nftId:_nftIds,
-            memberId:_memberId,
-            fundraiserId:_fundraiserId,
-            imageUrl:_imageUrl});
+        _safeMint(_memberAddress, _nftIds); // nft 발급
+        _setTokenURI(_nftIds, _nft.metadataUri); // nft TokenURI 저장
 
         if (_memberNftList[_memberId].length == 0) {
             _memberNftList[_memberId] = new uint64[](0);
         }
         _memberNftList[_memberId].push(_nftIds); // 멤버 id별 저장
-        _nftList[_nftIds] = nft; 
-
-
-        return _nftIds-1;
+        _nftList[_nftIds] = _nft;
     }
+
 
     // nft 발급 -> isIssued = 2
     function _setNftIssued(uint64 _donationId) internal{

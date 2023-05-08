@@ -62,6 +62,7 @@ public class DonationServiceImpl implements DonationService {
 
             DonationRes donation = DonationRes.builder()
                     .donationId(smartContractDonation.getDonationId())
+                    .fundraiserId(smartContractDonation.getFundraiserId())
                     .nftImgUrl(ipfsFundraiserDto.getNftImage())
                     .dogName(ipfsFundraiserDto.getDogName())
                     .donateAmount(smartContractDonation.getDonationAmount())

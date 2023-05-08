@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 public class DonationRes {
 
   private Long donationId;
+  private Long fundraiserId;
   private String nftImgUrl;
   private String dogName;
   private Double donateAmount;
