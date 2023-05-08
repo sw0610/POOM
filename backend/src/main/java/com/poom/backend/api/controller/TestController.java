@@ -20,7 +20,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Base64;
+import java.util.*;
 import java.util.List;
 
 @Api(tags = "테스트 API")
@@ -123,6 +123,7 @@ public class TestController {
         return null;
     }
 
+
     private String createPayload(List<String> imageUrls, String text) {
         StringBuilder attachments = new StringBuilder();
         for (String imageUrl : imageUrls) {
@@ -135,6 +136,68 @@ public class TestController {
         }
 
         return String.format("{\"text\": \"%s\", \"attachments\": [%s]}", text, attachments.toString());
+    }
+
+
+    @PostMapping("/test/mattermost2")
+    @ApiOperation(value = "메타모스트 테스트2", notes = "<strong>email을 입력받아 테스트를 위한 엑세스 토큰</strong>을 발급합니다.")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "OK(조회 성공)"),
+            @ApiResponse(code = 500, message = "서버 오류")
+    })
+    public void matterMostTest2(){
+        String webhookUrl = "https://meeting.ssafy.com/hooks/5zsqqadu1t8npmoptsnsdpc1sa";
+        String text = "태봉이가방에 들어가신다";
+        String image1 = "https://www.kukinews.com/data/kuk/image/2023/01/18/kuk202301180113.680x.9.jpg";
+        String image2 = "https://ipfs.io/ipfs/QmV637KHwPNyd7YzgSaL5Fdn6rk6AsD1cKFbFm3yYmt7QH?filename=KakaoTalk_20230421_174005964.jpg";
+        String image3 = "https://ipfs.io/ipfs/QmV637KHwPNyd7YzgSaL5Fdn6rk6AsD1cKFbFm3yYmt7QH";
+        List<String> imageUrls = List.of(image1, image2, image3);
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+
+        Map<String, Object> attachment = new HashMap<>();
+        attachment.put("text", text);
+        attachment.put("imageURLs", imageUrls);
+
+        Map<String, Object> action1 = new HashMap<>();
+        action1.put("name", "승인");
+        action1.put("integration", createIntegrationBody("IOLXADSLL", true));
+
+        Map<String, Object> action2 = new HashMap<>();
+        action2.put("name", "거절");
+        action2.put("integration", createIntegrationBody("IOLXADSLL", false));
+
+        attachment.put("actions", new Map[]{action1, action2});
+
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("attachments", new Map[]{attachment});
+
+        HttpEntity<Map<String, Object>> requestEntity =
+                new HttpEntity<>(requestBody, headers);
+
+        restTemplate.postForObject(webhookUrl, requestEntity, String.class);
+    }
+
+    private Map<String, Object> createIntegrationBody(String uid, boolean isAgree) {
+        Map<String, Object> integration = new HashMap<>();
+        String queryParams = "?uid=" + uid + "&isAgree=" + isAgree;
+        integration.put("url", "https://k8a805.p.ssafy.io/api/test/button" + queryParams);
+        return integration;
+    }
+
+
+    @PostMapping("/test/button")
+    @ApiOperation(value = "메타모스트 테스트3", notes = "<strong>email을 입력받아 테스트를 위한 엑세스 토큰</strong>을 발급합니다.")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "OK(조회 성공)"),
+            @ApiResponse(code = 500, message = "서버 오류")
+    })
+    public void buttonTest(@RequestParam String uid,
+                           @RequestParam boolean isAgree){
+        log.info("UID : {}", uid);
+        log.info("승인 여부: {}", isAgree);
     }
 
 }
