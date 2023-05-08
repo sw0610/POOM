@@ -108,7 +108,8 @@ public class TestController {
 //        String imageUrl = "https://www.kukinews.com/data/kuk/image/2023/01/18/kuk202301180113.680x.9.jpg";
         String image1 = "https://www.kukinews.com/data/kuk/image/2023/01/18/kuk202301180113.680x.9.jpg";
         String image2 = "https://ipfs.io/ipfs/QmV637KHwPNyd7YzgSaL5Fdn6rk6AsD1cKFbFm3yYmt7QH?filename=KakaoTalk_20230421_174005964.jpg";
-        List<String> imageUrls = List.of(image1, image2);
+        String image3 = "https://ipfs.io/ipfs/QmV637KHwPNyd7YzgSaL5Fdn6rk6AsD1cKFbFm3yYmt7QH";
+        List<String> imageUrls = List.of(image1, image2, image3);
         String payload = createPayload(imageUrls, text);
 
         HttpHeaders headers = new HttpHeaders();
