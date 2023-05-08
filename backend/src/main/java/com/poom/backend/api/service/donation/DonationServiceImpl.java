@@ -3,15 +3,20 @@ package com.poom.backend.api.service.donation;
 import com.poom.backend.api.dto.donation.DonationRes;
 import com.poom.backend.api.dto.donation.FundraiserDonationDto;
 import com.poom.backend.api.dto.donation.SmartContractDonationDto;
+import com.poom.backend.api.dto.fundraiser.IPFSFundraiserDto;
+import com.poom.backend.api.dto.fundraiser.SmartContractFundraiserDto;
+import com.poom.backend.api.service.ipfs.IpfsService;
 import com.poom.backend.api.service.member.MemberService;
 import com.poom.backend.db.entity.Member;
 import com.poom.backend.db.repository.MemberRepository;
 import com.poom.backend.exception.BadRequestException;
 import com.poom.backend.solidity.donation.DonationContractService;
+import com.poom.backend.solidity.fundraiser.FundraiserContractService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -22,10 +27,12 @@ import java.util.stream.Collectors;
 public class DonationServiceImpl implements DonationService {
     private final MemberService memberService;
     private final DonationContractService donationContractService;
+    private final FundraiserContractService fundraiserContractService;
+    private final IpfsService ipfsService;
     private final MemberRepository memberRepository;
 
     @Override
-    public DonationRes getMyDonationList(HttpServletRequest request, int size, int page) {
+    public List<DonationRes> getMyDonationList(HttpServletRequest request, int size, int page) {
         String memberId = memberService.getMemberIdFromHeader(request);
 
         // 스마트 컨트랙트 호출 부분 (_getMyDonationList)
@@ -36,13 +43,36 @@ public class DonationServiceImpl implements DonationService {
         int startIdx = size * page;
         int endIdx = startIdx + size > donationList.size() ? donationList.size() : startIdx + size;
 
+        List<DonationRes> donationResList = new ArrayList<>();
+
         for (int i = startIdx; i < endIdx; i++){
 
+            SmartContractDonationDto smartContractDonation = donationList.get(i);
+            SmartContractFundraiserDto smartContractFundraiserDto =
+                fundraiserContractService.getFundraiserDetail(smartContractDonation.getFundraiserId())
+                    .orElseThrow(()->new RuntimeException());
 
+            IPFSFundraiserDto ipfsFundraiserDto = null;
+            try {
+                ipfsFundraiserDto =
+                    IPFSFundraiserDto.fromJson(ipfsService.downloadJson(smartContractFundraiserDto.getHashString()));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
 
+            DonationRes donation = DonationRes.builder()
+                    .donationId(smartContractDonation.getDonationId())
+                    .nftImgUrl(ipfsFundraiserDto.getNftImage())
+                    .dogName(ipfsFundraiserDto.getDogName())
+                    .donateAmount(smartContractDonation.getDonationAmount())
+                    .donateDate(smartContractDonation.getDonationTime())
+                    .isIssued(smartContractDonation.getIsIssued())
+                    .build();
+
+            donationResList.add(donation);
         }
 
-            return null;
+            return donationResList;
     }
 
     // 한 후원에 대한 후원자 목록

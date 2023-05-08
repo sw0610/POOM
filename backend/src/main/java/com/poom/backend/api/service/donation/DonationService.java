@@ -7,6 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 public interface DonationService {
-    DonationRes getMyDonationList(HttpServletRequest request, int size, int page);
+    List<DonationRes> getMyDonationList(HttpServletRequest request, int size, int page);
     List<FundraiserDonationDto> getFundraiserDonationList(Long fundraiserId);
 }
