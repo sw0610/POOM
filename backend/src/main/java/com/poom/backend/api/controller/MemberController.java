@@ -29,7 +29,7 @@ public class MemberController {
     private final MemberService memberService;
 
     // 1. 로그인 (카카오 소셜 로그인만을 지원합니다.)
-    @GetMapping("/oauth/kakao")
+    @GetMapping("/member/login")
     @ApiOperation(value = "로그인(카카오)", notes = "<strong>code</strong>을 입력받아 로그아웃 처리를 합니다.")
     @ApiResponses({
             @ApiResponse(code = 200, message = "OK(로그 아웃 성공)"),
