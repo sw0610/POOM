@@ -36,9 +36,10 @@ public class MemberController {
             @ApiResponse(code = 400, message = "BAD REQUEST(로그아웃 실패)"),
             @ApiResponse(code = 500, message = "서버 오류")
     })
-    public ResponseEntity<?> kakaoLogin(@RequestParam String code){
+    public ResponseEntity<?> kakaoLogin(HttpServletRequest request){
+        String code = request.getHeader("Authorization");
         try {
-            MemberDto res = oauthService.login("kakao",code);
+            MemberDto res = oauthService.login("kakao", code);
             HttpHeaders headers = memberService.getHeader(res.getAccessToken(), res.getRefreshToken());
             return ResponseEntity.status(200).headers(headers).body(res.getMember().getNickname());
         } catch (JsonProcessingException e) {
