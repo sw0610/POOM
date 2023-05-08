@@ -10,6 +10,7 @@ import com.poom.backend.db.repository.MemberRepository;
 import com.poom.backend.db.repository.ShelterRepository;
 import com.poom.backend.exception.BadRequestException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -81,4 +82,11 @@ public class MemberServiceImpl implements MemberService{
         return null;
     }
 
+    @Override
+    public HttpHeaders getHeader(String accessToken, String refreshToken) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("accessToken", accessToken);
+        headers.add("refreshToken", accessToken);
+        return headers;
+    }
 }
