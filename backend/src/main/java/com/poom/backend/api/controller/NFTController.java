@@ -11,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
 @Api(tags = "NFT 관련 API")
 @RequiredArgsConstructor
@@ -41,8 +43,8 @@ public class NFTController {
             @ApiResponse(code = 401, message = "UNAUTHORIZED(권한 없음)"),
             @ApiResponse(code = 500, message = "서버에러")
     }) // /size={}&page={}&memberId={}
-    public ResponseEntity<?> issueNft(@RequestBody NftIssueCond nftIssueCond){
-        nftService.nftIssue(nftIssueCond);
+    public ResponseEntity<?> issueNft(HttpServletRequest request, @RequestBody NftIssueCond nftIssueCond){
+        nftService.nftIssue(request, nftIssueCond);
         return ResponseEntity.status(200).build();
     }
 }

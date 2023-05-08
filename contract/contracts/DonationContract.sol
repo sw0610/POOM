@@ -66,6 +66,16 @@ contract DonationProcess is FundraiserProcess {
     }
 
 
+    // 후원자 정렬 hash 저장
+    function _setDonationSort(uint64 _fundraiserId, string memory _sortHash) internal {
+        fundraisers[_fundraiserId].donationSortHash = _sortHash;
+    }
+
+    // 후원자 정렬 hash 가져오기
+    function _getDonationSort(uint64 _fundraiserId) internal view returns(string memory){
+        return fundraisers[_fundraiserId].donationSortHash;
+    }
+
 
     // 후원
     function _donate(uint64 _fundraiserId, string memory _memberId, uint256 _donationTime, uint256 _value) internal{

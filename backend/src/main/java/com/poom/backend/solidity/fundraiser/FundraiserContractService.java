@@ -12,6 +12,4 @@ public interface FundraiserContractService {
     Optional<SmartContractFundraiserDto> getFundraiserDetail(Long fundraiserId);
     void endFundraiser(Long fundraiserId);
 
-
-
 }

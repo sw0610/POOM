@@ -55,7 +55,7 @@ public class FundraiserContractServiceImpl implements FundraiserContractService 
 
         return Optional.ofNullable(fundraiserContractList);
     }
-    
+
     // 모금 상세
     @Override
     public Optional<SmartContractFundraiserDto> getFundraiserDetail(Long fundraiserId){
@@ -80,6 +80,7 @@ public class FundraiserContractServiceImpl implements FundraiserContractService 
             throw new RuntimeException(e);
         }
     }
+
 
 
 }

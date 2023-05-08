@@ -26,6 +26,7 @@ public class FundraiserDetailRes {
     private String dogFeature;
     private Double targetAmount;
     private Double currentAmount;
+    private Boolean isClosed;
     private List<FundraiserDonationDto> donations;
 
 }

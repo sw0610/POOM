@@ -240,6 +240,8 @@ public class FundraiserServiceImpl implements FundraiserService{
 
             if(ipfsFundraiserDto.getEndDate().isBefore(LocalDate.now())) {
                 fundraiserContractService.endFundraiser(fundraiserDto.getFundraiserId());
+                donationService.setDonationSort(fundraiserDto.getFundraiserId());
+
             }
 
 

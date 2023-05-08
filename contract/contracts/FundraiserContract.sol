@@ -13,6 +13,7 @@ contract FundraiserProcess {
         uint256 currentAmount; // 현재 모인 금액
         uint256 targetAmount;
         bool isEnded; // 종료 되었는지, default false
+        string donationSortHash;
     }
 
     uint64 private _fundraiserIdx;
@@ -43,15 +44,10 @@ contract FundraiserProcess {
         return fundraiserList;
     }
 
-
-
     // 모금 상세
     function _getFundraiserDetail(uint64 _fundraiserId) internal view returns (Fundraiser memory){
         Fundraiser memory fundraiser = fundraisers[_fundraiserId];
         return fundraiser;
     }
-
-
-
 
 }

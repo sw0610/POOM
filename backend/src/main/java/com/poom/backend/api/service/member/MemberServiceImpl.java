@@ -14,8 +14,15 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.web3j.crypto.ECDSASignature;
+import org.web3j.crypto.Hash;
+import org.web3j.crypto.Keys;
+import org.web3j.crypto.Sign;
+import org.web3j.utils.Numeric;
 
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.Optional;
 
 @Service
@@ -25,6 +32,8 @@ public class MemberServiceImpl implements MemberService{
     private final ShelterRepository shelterRepository;
     private final TokenProvider tokenProvider;
     private final IpfsService ipfsService;
+    // PERSONAL_MESSAGE_PREFIX 선언
+    public static final String PERSONAL_MESSAGE_PREFIX = "\u0019Ethereum Signed Message:\n";
 
     @Override
     public Member signUp(SignupCond signupCond) {
@@ -88,5 +97,53 @@ public class MemberServiceImpl implements MemberService{
         headers.add("accessToken", accessToken);
         headers.add("refreshToken", accessToken);
         return headers;
+    }
+
+    @Override
+    public boolean verifySignature(String memberAddress, String signature, String message) {
+        // 메시지의 길이를 결합하여 새 문자열 prefix를 만듭니다. 서명 메시지에 대한 prefix 역할을 합니다.
+        String prefix = PERSONAL_MESSAGE_PREFIX + message.length();
+        // 문자열을 바이트 배열로 변환한 다음, SHA3 알고리즘을 사용하여 해시 값을 계산합니다.
+        byte[] msgHash = Hash.sha3((prefix + message).getBytes());
+
+        // 서명을 16진수 문자열에서 바이트 배열로 변환합니다.
+        byte[] signatureBytes = Numeric.hexStringToByteArray(signature);
+
+        // v 값을 계산합니다. 서명 바이트 배열에서 마지막 바이트는 v 값으로 사용됩니다. 그러나 v 값은 27 미만이 될 수 있으므로, 27을 더하여 v 값을 조정합니다.
+        byte v = signatureBytes[64];
+        if (v < 27) {
+            v += 27;
+        }
+        // 서명 바이트 배열에서 r 값과 s 값의 일부를 추출하여 ECDSA 서명 데이터를 만듭니다. 이 데이터는 서명된 메시지의 검증에 사용됩니다
+        Sign.SignatureData sd =
+                new Sign.SignatureData(
+                        v,
+                        (byte[]) Arrays.copyOfRange(signatureBytes, 0, 32),
+                        (byte[]) Arrays.copyOfRange(signatureBytes, 32, 64));
+        // addressRecovered 복구된 주소를 저장할 변수이고, match는 서명된 주소가 memberAddress와 일치하는지 여부를 저장하는 변수입니다.
+        String addressRecovered = null;
+        boolean match = false;
+
+        // Iterate for each possible key to recover
+        // 모든 가능한 공개 키에 대해 복구를 시도합니다. . 이 공개 키는 이전에 서명된 메시지와 연관된 개인 키로부터 생성된 공개 키를 나타냅니다.
+        for (int i = 0; i < 4; i++) {
+            // 복구에 실패하면 null을 반환합니다.
+            BigInteger publicKey =
+                    Sign.recoverFromSignature(
+                            (byte) i,
+                            new ECDSASignature(
+                                    new BigInteger(1, sd.getR()), new BigInteger(1, sd.getS())),
+                            msgHash);
+            // 키가 성공적으로 복구되면, Keys.getAddress() 메서드를 호출하여 복구된 공개 키에 대한 주소를 가져옵니다.
+            if (publicKey != null) {
+                addressRecovered = "0x" + Keys.getAddress(publicKey);
+                //  복구된 주소가 memberAddress와 일치하는지 확인합니다. 이 경우, match 변수를 true로 설정하고 루프를 종료합니다.
+                if (addressRecovered.equals(memberAddress)) {
+                    match = true;
+                    break;
+                }
+            }
+        }
+        return memberAddress.equals(addressRecovered);
     }
 }

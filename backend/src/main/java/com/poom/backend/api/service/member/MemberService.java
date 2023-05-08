@@ -15,4 +15,6 @@ public interface MemberService {
     MemberInfoRes getMemberInfo(HttpServletRequest request);
     MemberInfoRes updateMemberInfo(HttpServletRequest request, MultipartFile profileImage, String nickname);
     HttpHeaders getHeader(String accessToken, String refreshToken);
+    // 서명 확인
+    boolean verifySignature(String memberAddress, String signature, String message);
 }

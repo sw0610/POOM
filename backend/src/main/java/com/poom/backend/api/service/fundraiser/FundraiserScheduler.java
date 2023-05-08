@@ -1,5 +1,6 @@
 package com.poom.backend.api.service.fundraiser;
 
+import com.poom.backend.api.service.donation.DonationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;

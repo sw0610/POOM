@@ -39,7 +39,6 @@ contract PoomContract is FundraiserProcess, DonationProcess, NftProcess{
     }
 
 
-
     /*
         Donation
     */
@@ -51,6 +50,19 @@ contract PoomContract is FundraiserProcess, DonationProcess, NftProcess{
     // 후원
     function donate(uint64 _fundraiserId, string memory _memberId, uint256 _donationTime) external payable{
         _donate(_fundraiserId, _memberId, _donationTime, msg.value);
+    }
+
+    function setDonationSort(uint64 _fundraiserId, string memory _sortHash) external{
+        _setDonationSort(_fundraiserId, _sortHash);
+    }
+
+    function getDonationSort(uint64 _fundraiserId) external view returns(string memory){
+        return _getDonationSort(_fundraiserId);
+    }
+
+
+    function getDonation(uint64 _id) external view returns (Donation memory){
+        return _getDonation(_id);
     }
 
 

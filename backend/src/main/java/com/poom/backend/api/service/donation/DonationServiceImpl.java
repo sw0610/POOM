@@ -1,6 +1,7 @@
 package com.poom.backend.api.service.donation;
 
 import com.poom.backend.api.dto.donation.DonationRes;
+import com.poom.backend.api.dto.donation.DonationSortDto;
 import com.poom.backend.api.dto.donation.FundraiserDonationDto;
 import com.poom.backend.api.dto.donation.SmartContractDonationDto;
 import com.poom.backend.api.dto.fundraiser.IPFSFundraiserDto;
@@ -80,7 +81,10 @@ public class DonationServiceImpl implements DonationService {
     @Override
     public List<FundraiserDonationDto> getFundraiserDonationList(Long fundraiserId) {
         List<SmartContractDonationDto> donationList = donationContractService.getDonationList(fundraiserId)
-                .orElseThrow(()->new RuntimeException());
+                .stream()
+                .flatMap(List::stream)
+                .limit(10)
+                .collect(Collectors.toList());
 
         // 최대 10개 반환
         // 어떤 기준으로 정렬 해야하는지??
@@ -93,5 +97,48 @@ public class DonationServiceImpl implements DonationService {
         ;
 
         return fundraiserDonationList;
+    }
+
+    @Override
+    public String setDonationSort(Long fundraiserId) {
+        List<SmartContractDonationDto> donationList = donationContractService.getDonationList(fundraiserId)
+                .orElseThrow(()->new RuntimeException());
+
+        List<String> memberIdSort  = donationList.stream().map(donation->donation.getMemberId()).collect(Collectors.toList());
+        DonationSortDto donationSortDto = DonationSortDto.builder()
+                .memberIdSort(memberIdSort)
+                .build();
+
+        String hashString = null;
+        try {
+            // 이미지 해시, 후원 정보들을 합쳐 저장
+            hashString = ipfsService.uploadJson(donationSortDto.donationSortToJson());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        donationContractService.setDonationSort(fundraiserId, hashString);
+        return hashString;
+
+    }
+
+    // 나의 등수 가져오기
+    @Override
+    public int getMyRank(Long fundraiserId, String memberId) {
+        String hashString = donationContractService.getDonationSort(fundraiserId)
+                .orElseThrow(()->new RuntimeException());
+
+        DonationSortDto donationSortDto = null;
+        try {
+            donationSortDto = DonationSortDto.fromDonationSortJson(ipfsService.downloadJson(hashString));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        List<String> memberIdSort = donationSortDto.getMemberIdSort();
+        int myRank = memberIdSort.indexOf(memberId);
+
+        return myRank;
+
     }
 }

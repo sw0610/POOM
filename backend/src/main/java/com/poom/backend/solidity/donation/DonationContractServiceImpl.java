@@ -32,8 +32,7 @@ public class DonationContractServiceImpl implements DonationContractService{
             List<PoomContract.Donation> donationContractList = poomContract.getDonationList(BigInteger.valueOf(fundraiserId)).send();
             donationList = donationContractList.stream()
                     .map(donation -> SmartContractDonationDto.fromDonationContract(donation))
-                    .sorted(Comparator.comparing(SmartContractDonationDto::getDonationAmount))
-                    .limit(10)
+                    .sorted(Comparator.comparing(SmartContractDonationDto::getDonationAmount).reversed()) // 많이 후원한 순으로 반환
                 .collect(Collectors.toList());
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
@@ -60,5 +59,40 @@ public class DonationContractServiceImpl implements DonationContractService{
 
         return Optional.ofNullable(myDonationList);
     }
+
+    @Override
+    public Optional<SmartContractDonationDto> getDonation(Long donationId) {
+        SmartContractDonationDto donationDto = null;
+        try {
+            donationDto = SmartContractDonationDto.fromDonationContract(poomContract.getDonation(BigInteger.valueOf(donationId)).send());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return Optional.ofNullable(donationDto);
+    }
+
+
+    @Override
+    public void setDonationSort(Long fundraiserId, String hashString) {
+        try {
+            poomContract.setDonationSort(BigInteger.valueOf(fundraiserId), hashString).send();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    @Override
+    public Optional<String> getDonationSort(Long fundraiserId) {
+        String hashString = null;
+        try {
+            hashString = poomContract.getDonationSort(BigInteger.valueOf(fundraiserId)).send();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        return Optional.ofNullable(hashString);
+    }
+
 
 }

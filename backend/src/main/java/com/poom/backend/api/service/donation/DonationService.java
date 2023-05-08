@@ -9,4 +9,6 @@ import java.util.List;
 public interface DonationService {
     List<DonationRes> getMyDonationList(HttpServletRequest request, int size, int page);
     List<FundraiserDonationDto> getFundraiserDonationList(Long fundraiserId);
+    String setDonationSort(Long fundraiserId);
+    int getMyRank(Long fundraiserId, String memberId);
 }
