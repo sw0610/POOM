@@ -72,5 +72,14 @@ public class FundraiserContractServiceImpl implements FundraiserContractService 
         return Optional.ofNullable(fundraiser);
     }
 
+    @Override
+    public void endFundraiser(Long fundraiserId) {
+        try {
+            poomContract.endFundraiser(BigInteger.valueOf(fundraiserId)).send();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
 }

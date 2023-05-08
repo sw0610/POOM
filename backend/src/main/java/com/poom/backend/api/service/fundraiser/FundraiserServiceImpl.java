@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -220,7 +221,30 @@ public class FundraiserServiceImpl implements FundraiserService{
 
     // 후원 종료
     @Override
-    public void endFundraiser(Long fundraiserId) {
+    public void endFundraiser() {
+
+        List<SmartContractFundraiserDto> smartContractFundraiserDtoList= fundraiserContractService.getFundraiserList()
+            .stream()
+            .flatMap(List::stream).filter(fundraiser->fundraiser.getIsEnded()==false)
+            .collect(Collectors.toList());
+
+        IPFSFundraiserDto ipfsFundraiserDto = null;
+
+        for(SmartContractFundraiserDto fundraiserDto:smartContractFundraiserDtoList){
+            try {
+                ipfsFundraiserDto =
+                    IPFSFundraiserDto.fromJson(ipfsService.downloadJson(fundraiserDto.getHashString()));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            if(ipfsFundraiserDto.getEndDate().isBefore(LocalDate.now())) {
+                fundraiserContractService.endFundraiser(fundraiserDto.getFundraiserId());
+            }
+
+
+        }
+
 
     }
 }

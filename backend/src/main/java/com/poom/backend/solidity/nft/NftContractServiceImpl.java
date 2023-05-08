@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @Service
 public class NftContractServiceImpl implements NftContractService{
 
-    private static PoomContract poomContract;
+    private final PoomContract poomContract;
     @Autowired
     private NftContractServiceImpl(Web3jConfig web3jConfig){
         poomContract = web3jConfig.getContractApi();

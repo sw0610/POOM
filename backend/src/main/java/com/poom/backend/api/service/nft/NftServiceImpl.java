@@ -6,16 +6,18 @@ import com.poom.backend.api.dto.nft.SmartContractNftDto;
 import com.poom.backend.db.repository.MemberRepository;
 import com.poom.backend.exception.BadRequestException;
 import com.poom.backend.solidity.nft.NftContractService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class NftServiceImpl implements NFTService{
 
-    private static NftContractService nftContractService;
-    private static MemberRepository memberRepository;
+    private final NftContractService nftContractService;
+    private final MemberRepository memberRepository;
 
     @Override
     public NftListRes getNFTList(int size, int page, String memberId) {
