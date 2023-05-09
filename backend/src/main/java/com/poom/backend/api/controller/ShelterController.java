@@ -67,8 +67,8 @@ public class ShelterController {
     public ResponseEntity<?> updateShelterAuth(@RequestParam String shelterId, @RequestParam boolean isApproved){
         Optional<Shelter> shelter = shelterRepository.findById(shelterId);
 
-        if(shelter.isEmpty()) mattermostService.sendMessage(" \"ID :"+shelterId+"\"로 검색되는 보호소 정보가 없습니다.");
-        if(!shelter.get().getStatus().equals(ShelterStatus.UNDER_REVIEW)) mattermostService.sendMessage("이미 처리된 요청입니다.");
+        if(shelter.isEmpty()) mattermostService.sendColorMessage(" \"ID :"+shelterId+"\"로 검색되는 보호소 정보가 없습니다.", "#ff0000");
+        if(!shelter.get().getStatus().equals(ShelterStatus.UNDER_REVIEW)) mattermostService.sendColorMessage("이미 처리된 요청입니다.", "#ff0000");
         if(isApproved){
             shelterService.approveShelterAuth(shelter.get());
         }else {
