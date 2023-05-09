@@ -36,7 +36,7 @@ public class MemberController {
     @GetMapping("/member/login")
     @ApiOperation(value = "로그인(카카오)", notes = "<strong>code</strong>을 입력받아 로그아웃 처리를 합니다.")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "OK(로그 아웃 성공)"),
+            @ApiResponse(code = 200, message = "OK(로그인 성공)"),
             @ApiResponse(code = 400, message = "BAD REQUEST(로그아웃 실패)"),
             @ApiResponse(code = 500, message = "서버 오류")
     })
@@ -66,7 +66,7 @@ public class MemberController {
     @GetMapping("/member/withdrawal")
     @ApiOperation(value = "회원 탈퇴", notes = "<strong>카카오 리다이렉트</strong>을 입력받아 로그아웃 처리를 합니다.")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "OK(로그 아웃 성공)"),
+            @ApiResponse(code = 200, message = "OK(회원 탈퇴 성공)"),
             @ApiResponse(code = 500, message = "서버 오류")
     })
     public ResponseEntity<?> withdrawalMember(@RequestParam String id){
