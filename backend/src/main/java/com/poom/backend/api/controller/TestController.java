@@ -1,7 +1,15 @@
 package com.poom.backend.api.controller;
 
 import com.poom.backend.api.dto.member.SignupCond;
+import com.poom.backend.api.dto.shelter.ShelterAuthCond;
+import com.poom.backend.api.dto.shelter.ShelterAuthMMCond;
+import com.poom.backend.api.service.mattermost.MattermostService;
 import com.poom.backend.api.service.member.MemberService;
+import com.poom.backend.config.jwt.TokenProvider;
+import com.poom.backend.db.entity.Member;
+import com.poom.backend.db.entity.Shelter;
+import com.poom.backend.db.repository.MemberRepository;
+import com.poom.backend.enums.ShelterStatus;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -30,6 +38,9 @@ import java.util.List;
 public class TestController {
 
     private final MemberService memberService;
+    private final MattermostService mattermostService;
+    private final MemberRepository memberRepository;
+    private final TokenProvider tokenProvider;
 
 
     @GetMapping("/test/log")
@@ -47,15 +58,29 @@ public class TestController {
     }
 
     @PostMapping("/test/token")
-    @ApiOperation(value = "토큰 테스트", notes = "<strong>email을 입력받아 테스트를 위한 엑세스 토큰</strong>을 발급합니다.")
+    @ApiOperation(value = "토큰 발급 테스트", notes = "")
     @ApiResponses({
             @ApiResponse(code = 200, message = "OK(조회 성공)"),
             @ApiResponse(code = 500, message = "서버 오류")
     })
-    public ResponseEntity<?> tokenTest(@RequestParam String email){
-        memberService.signUp(new SignupCond(email));
+    public ResponseEntity<?> generateTokenTest(){
+        Member member = memberRepository.findById("644f55055989655e694476b1").get();
+        String token = tokenProvider.createAccessToken(member);
+        return ResponseEntity.status(200).body("Bearer "+token);
+    }
+
+    @PostMapping("/auth/test/token")
+    @ApiOperation(value = "권한 테스트", notes = "")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "OK(조회 성공)"),
+            @ApiResponse(code = 500, message = "서버 오류")
+    })
+    public ResponseEntity<?> tokenAuthTest(){
+        log.info("성공");
         return ResponseEntity.status(200).build();
     }
+
+
 
     @PostMapping("/test/image")
     @ApiOperation(value = "토큰 테스트", notes = "<strong>email을 입력받아 테스트를 위한 엑세스 토큰</strong>을 발급합니다.")
@@ -96,108 +121,26 @@ public class TestController {
         }
     }
 
-    @PostMapping("/test/mattermost")
-    @ApiOperation(value = "메타모스트 테스트", notes = "<strong>email을 입력받아 테스트를 위한 엑세스 토큰</strong>을 발급합니다.")
+    @PostMapping("/test/mattermost/message2")
+    @ApiOperation(value = "메타모스트 메세지 파이널 테스트", notes = "<strong>email을 입력받아 테스트를 위한 엑세스 토큰</strong>을 발급합니다.")
     @ApiResponses({
             @ApiResponse(code = 200, message = "OK(조회 성공)"),
             @ApiResponse(code = 500, message = "서버 오류")
     })
-    public ResponseEntity<?> mattermostTest() throws IOException {
-        String mattermostWebhookUrl = "https://meeting.ssafy.com/hooks/5zsqqadu1t8npmoptsnsdpc1sa";
-        String text = "안태현 똥냄새가 복도에 진동합니다.";
-//        String imageUrl = "https://www.kukinews.com/data/kuk/image/2023/01/18/kuk202301180113.680x.9.jpg";
-        String image1 = "https://www.kukinews.com/data/kuk/image/2023/01/18/kuk202301180113.680x.9.jpg";
-        String image2 = "https://ipfs.io/ipfs/QmV637KHwPNyd7YzgSaL5Fdn6rk6AsD1cKFbFm3yYmt7QH?filename=KakaoTalk_20230421_174005964.jpg";
+    public void mmFinalMessageTest(){
+        String image2 = "https://www.kukinews.com/data/kuk/image/2023/01/18/kuk202301180113.680x.9.jpg";
         String image3 = "https://ipfs.io/ipfs/QmV637KHwPNyd7YzgSaL5Fdn6rk6AsD1cKFbFm3yYmt7QH";
-        List<String> imageUrls = List.of(image1, image2, image3);
-        String payload = createPayload(imageUrls, text);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+        Shelter shelter = Shelter.builder()
+                .id("shelter ID")
+                .adminId("6448d2f0577f215b3f4de9a3")
+                .shelterName("보호소 이름입니다.")
+                .shelterAddress("보호소 주소입니다.")
+                .shelterPhoneNumber("보호소 전화번호입니다.")
+                .status(ShelterStatus.UNDER_REVIEW)
+                .certificateImages(List.of(image2, image3))
+                .build();
 
-        HttpEntity<String> request = new HttpEntity<>(payload, headers);
-        RestTemplate restTemplate = new RestTemplate();
-
-        ResponseEntity<String> response = restTemplate.postForEntity(mattermostWebhookUrl, request, String.class);
-
-        return null;
+        mattermostService.sendMetaMostMessage(shelter);
     }
-
-
-    private String createPayload(List<String> imageUrls, String text) {
-        StringBuilder attachments = new StringBuilder();
-        for (String imageUrl : imageUrls) {
-            attachments.append(String.format("{\"image_url\": \"%s\"},", imageUrl));
-        }
-
-        // 마지막 쉼표(,) 제거
-        if (attachments.length() > 0) {
-            attachments.setLength(attachments.length() - 1);
-        }
-
-        return String.format("{\"text\": \"%s\", \"attachments\": [%s]}", text, attachments.toString());
-    }
-
-
-    @PostMapping("/test/mattermost2")
-    @ApiOperation(value = "메타모스트 테스트2", notes = "<strong>email을 입력받아 테스트를 위한 엑세스 토큰</strong>을 발급합니다.")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "OK(조회 성공)"),
-            @ApiResponse(code = 500, message = "서버 오류")
-    })
-    public void matterMostTest2(){
-        String webhookUrl = "https://meeting.ssafy.com/hooks/5zsqqadu1t8npmoptsnsdpc1sa";
-        String text = "태봉이가방에 들어가신다";
-        String image1 = "https://www.kukinews.com/data/kuk/image/2023/01/18/kuk202301180113.680x.9.jpg";
-        String image2 = "https://ipfs.io/ipfs/QmV637KHwPNyd7YzgSaL5Fdn6rk6AsD1cKFbFm3yYmt7QH?filename=KakaoTalk_20230421_174005964.jpg";
-        String image3 = "https://ipfs.io/ipfs/QmV637KHwPNyd7YzgSaL5Fdn6rk6AsD1cKFbFm3yYmt7QH";
-        List<String> imageUrls = List.of(image1, image2, image3);
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-
-        Map<String, Object> attachment = new HashMap<>();
-        attachment.put("text", text);
-        attachment.put("imageURLs", imageUrls);
-
-        Map<String, Object> action1 = new HashMap<>();
-        action1.put("name", "승인");
-        action1.put("integration", createIntegrationBody("IOLXADSLL", true));
-
-        Map<String, Object> action2 = new HashMap<>();
-        action2.put("name", "거절");
-        action2.put("integration", createIntegrationBody("IOLXADSLL", false));
-
-        attachment.put("actions", new Map[]{action1, action2});
-
-        Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("attachments", new Map[]{attachment});
-
-        HttpEntity<Map<String, Object>> requestEntity =
-                new HttpEntity<>(requestBody, headers);
-
-        restTemplate.postForObject(webhookUrl, requestEntity, String.class);
-    }
-
-    private Map<String, Object> createIntegrationBody(String uid, boolean isAgree) {
-        Map<String, Object> integration = new HashMap<>();
-        String queryParams = "?uid=" + uid + "&isAgree=" + isAgree;
-        integration.put("url", "https://k8a805.p.ssafy.io/api/test/button" + queryParams);
-        return integration;
-    }
-
-
-    @PostMapping("/test/button")
-    @ApiOperation(value = "메타모스트 테스트3", notes = "<strong>email을 입력받아 테스트를 위한 엑세스 토큰</strong>을 발급합니다.")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "OK(조회 성공)"),
-            @ApiResponse(code = 500, message = "서버 오류")
-    })
-    public void buttonTest(@RequestParam String uid,
-                           @RequestParam boolean isAgree){
-        log.info("UID : {}", uid);
-        log.info("승인 여부: {}", isAgree);
-    }
-
 }

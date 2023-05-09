@@ -31,15 +31,17 @@ public class Shelter {
     @Id
     private String id;
 
-    private String adminId;
+    private String adminId; // memberId
 
     private String shelterName;
 
+    private String shelterAddress;
+
+    private String shelterPhoneNumber;
+
     private LocalDate regDate;
 
-    private String phoneNumber;
-
-    private ShelterStatus status; // 0 : 미인증, 1 : 인증, 2 : 거절
+    private ShelterStatus status; // 0 : 미인증, 1 : 인증, 2 : 거절, 3 : 심사중
 
     private List<String> certificateImages;
 }
