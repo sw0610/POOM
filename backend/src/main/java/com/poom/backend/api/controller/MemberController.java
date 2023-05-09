@@ -1,6 +1,7 @@
 package com.poom.backend.api.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.poom.backend.api.dto.member.LoginRes;
 import com.poom.backend.api.dto.member.MemberDto;
 import com.poom.backend.api.service.member.MemberService;
 import com.poom.backend.api.service.oauth.OauthServiceImpl;
@@ -41,7 +42,7 @@ public class MemberController {
         try {
             MemberDto res = oauthService.login("kakao", code);
             HttpHeaders headers = memberService.getHeader(res.getAccessToken(), res.getRefreshToken());
-            return ResponseEntity.status(200).headers(headers).body(res.getMember().getNickname());
+            return ResponseEntity.status(200).headers(headers).body(LoginRes.from(res.getMember()));
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

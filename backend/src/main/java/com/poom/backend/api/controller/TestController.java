@@ -1,5 +1,6 @@
 package com.poom.backend.api.controller;
 
+import com.poom.backend.api.dto.member.LoginRes;
 import com.poom.backend.api.dto.member.SignupCond;
 import com.poom.backend.api.dto.shelter.ShelterAuthCond;
 import com.poom.backend.api.dto.shelter.ShelterAuthMMCond;
@@ -152,5 +153,16 @@ public class TestController {
     })
     public void shelterTest(){
         log.info("왔어요");
+    }
+
+    @PostMapping("/test/loginres")
+    @ApiOperation(value = "로그인 리스폰스 테스트", notes = "")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "OK(조회 성공)"),
+            @ApiResponse(code = 500, message = "서버 오류")
+    })
+    public ResponseEntity<?> loginTest(){
+        Member member = memberRepository.findById("644f55055989655e694476b1").get();
+        return ResponseEntity.status(200).body(LoginRes.from(member));
     }
 }
