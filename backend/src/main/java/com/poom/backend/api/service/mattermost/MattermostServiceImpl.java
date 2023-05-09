@@ -21,8 +21,7 @@ import java.util.*;
 public class MattermostServiceImpl implements MattermostService{
     private static final String META_MOST_WEBHOOK_URL = "https://meeting.ssafy.com/hooks/dz3nra3df7yc7gbsuab6n16pme";
     private final MemberRepository memberRepository;
-
-    private final RestTemplate restTemplate = new RestTemplate();
+//    private final RestTemplate restTemplate = new RestTemplate();
 
     @Override
     public void sendMetaMostMessage(Shelter shelter) {
@@ -63,6 +62,15 @@ public class MattermostServiceImpl implements MattermostService{
         sendMessage(requestBody);
     }
 
+    @Override
+    public void sendColorMessage(String msg, String color) {
+        // 메세지를 만듭니다.
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("attachments", List.of(ShelterAuthMMCond.getColorMsg(msg, color)));
+        // 메세지를 보냅니다.
+        sendMessage(requestBody);
+    }
+
     private void sendMessage(Map requestBody){
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
@@ -70,12 +78,5 @@ public class MattermostServiceImpl implements MattermostService{
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
         restTemplate.postForObject(META_MOST_WEBHOOK_URL, requestEntity, String.class);
-    }
-
-    private Map<String, Object> createIntegrationBody(String uid, boolean isAgree) {
-        Map<String, Object> integration = new HashMap<>();
-        String queryParams = "?uid=" + uid + "&isAgree=" + isAgree;
-        integration.put("url", "https://k8a805.p.ssafy.io/api/test/button" + queryParams);
-        return integration;
     }
 }
