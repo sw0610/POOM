@@ -36,8 +36,6 @@ class MemberApi {
         var response = await dio.get('$baseUrl/member/login');
 
         if (response.statusCode == 200) {
-          print(response.headers);
-          print("==============");
           SharedPreferences prefs = await SharedPreferences.getInstance();
           await prefs.setString('nickname', response.data);
           await prefs.setString(
@@ -45,7 +43,7 @@ class MemberApi {
           await prefs.setString(
               'refreshtoken', response.headers['refreshtoken']![0]);
 
-          print(prefs.getString('accesstoken'));
+          print('AccessToken: ${prefs.getString('accesstoken')}');
 
           return true;
         } else {
