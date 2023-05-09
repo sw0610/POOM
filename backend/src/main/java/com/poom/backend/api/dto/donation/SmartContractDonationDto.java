@@ -22,7 +22,7 @@ public class SmartContractDonationDto {
 //        uint8 isIssued; // nft 발급 여부
 //    }
 
-    private String memberId;
+    public String memberId;
     Long donationId;
     Double donationAmount;
     Long fundraiserId;
@@ -31,6 +31,7 @@ public class SmartContractDonationDto {
 
     // contract -> java
     public static SmartContractDonationDto fromDonationContract(PoomContract.Donation donation){
+
         return SmartContractDonationDto.builder()
                 .memberId(donation.memberId)
                 .donationAmount(ConvertUtil.weiToEther(donation.donationAmount))

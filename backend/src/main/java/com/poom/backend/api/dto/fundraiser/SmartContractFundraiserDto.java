@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SmartContractFundraiserDto {
-//
+    //
 //    struct Fundraiser { // 모금
 //        string shelterId;
 //        address payable shelterAddress;
@@ -33,6 +33,9 @@ public class SmartContractFundraiserDto {
     private Double currentAmount;
     private Double targetAmount;
     private Boolean isEnded;
+    @Builder.Default
+    private String donationSortHash = "none";
+
 
     public static SmartContractFundraiserDto from(OpenFundraiserCond cond, String hash, String shelterId) {
         return SmartContractFundraiserDto.builder()
@@ -47,32 +50,35 @@ public class SmartContractFundraiserDto {
     }
 
     // contract -> java
-    public static SmartContractFundraiserDto fromFundraiserContract(PoomContract.Fundraiser fundraiser){
+    public static SmartContractFundraiserDto fromFundraiserContract(PoomContract.Fundraiser fundraiser) {
 
         return SmartContractFundraiserDto.builder()
-            .fundraiserId(fundraiser.fundraiserId.longValue())
-            .shelterId(fundraiser.shelterId)
-            .shelterAddress(fundraiser.shelterAddress)
-            .hashString(fundraiser.hashString)
-            .startDate(ConvertUtil.bigIntegerToDateTime(fundraiser.startDate))
-            .currentAmount(ConvertUtil.weiToEther(fundraiser.currentAmount))
-            .targetAmount(ConvertUtil.weiToEther(fundraiser.targetAmount))
-            .isEnded(fundraiser.isEnded)
-            .build();
+                .fundraiserId(fundraiser.fundraiserId.longValue())
+                .shelterId(fundraiser.shelterId)
+                .shelterAddress(fundraiser.shelterAddress)
+                .hashString(fundraiser.hashString)
+                .startDate(ConvertUtil.bigIntegerToDateTime(fundraiser.startDate))
+                .currentAmount(ConvertUtil.weiToEther(fundraiser.currentAmount))
+                .targetAmount(ConvertUtil.weiToEther(fundraiser.targetAmount))
+                .isEnded(fundraiser.isEnded)
+                .donationSortHash(fundraiser.donationSortHash)
+                .build();
     }
 
     // java -> contract
     public PoomContract.Fundraiser toFundraiserContract(SmartContractFundraiserDto smartContractFundraiserDto) {
         return new PoomContract.Fundraiser(
-            BigInteger.valueOf(0L),
-            smartContractFundraiserDto.getShelterId(),
-            smartContractFundraiserDto.getShelterAddress(),
-            smartContractFundraiserDto.getHashString(),
-            ConvertUtil.dateTimeToBigInteger(smartContractFundraiserDto.getStartDate()),
-            ConvertUtil.etherToWei(smartContractFundraiserDto.getCurrentAmount()),
-            ConvertUtil.etherToWei(smartContractFundraiserDto.getTargetAmount()),
-            smartContractFundraiserDto.getIsEnded()
-        );}
+                BigInteger.valueOf(0L),
+                smartContractFundraiserDto.getShelterId(),
+                smartContractFundraiserDto.getShelterAddress(),
+                smartContractFundraiserDto.getHashString(),
+                ConvertUtil.dateTimeToBigInteger(smartContractFundraiserDto.getStartDate()),
+                ConvertUtil.etherToWei(smartContractFundraiserDto.getCurrentAmount()),
+                ConvertUtil.etherToWei(smartContractFundraiserDto.getTargetAmount()),
+                smartContractFundraiserDto.getIsEnded(),
+                smartContractFundraiserDto.getDonationSortHash()
+        );
+    }
 
 
 }

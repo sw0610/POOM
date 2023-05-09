@@ -55,14 +55,15 @@ public class FundraiserContractServiceImpl implements FundraiserContractService 
 
         return Optional.ofNullable(fundraiserContractList);
     }
-    
+
     // 모금 상세
     @Override
     public Optional<SmartContractFundraiserDto> getFundraiserDetail(Long fundraiserId){
         SmartContractFundraiserDto fundraiser = null;
         try {
              fundraiser = SmartContractFundraiserDto.fromFundraiserContract(poomContract.getFundraiserDetail(BigInteger.valueOf(fundraiserId)).send());
-             if(fundraiser.getFundraiserId().longValue()!=fundraiserId){
+            System.out.println("-------"+fundraiser.getFundraiserId());
+             if(fundraiser.getFundraiserId()==0){
                  throw new BadRequestException("모금 정보가 없습니다.");
              }
         } catch (Exception e) {
@@ -71,6 +72,16 @@ public class FundraiserContractServiceImpl implements FundraiserContractService 
 
         return Optional.ofNullable(fundraiser);
     }
+
+    @Override
+    public void endFundraiser(Long fundraiserId) {
+        try {
+            poomContract.endFundraiser(BigInteger.valueOf(fundraiserId)).send();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
 
 }
