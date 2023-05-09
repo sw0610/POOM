@@ -1,9 +1,24 @@
 import 'package:dio/dio.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:poom/services/kakao_api.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MemberApi {
   static const String baseUrl = 'https://k8a805.p.ssafy.io/api';
+
+  static Future<void> getMemberInfo() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+
+      var dio = Dio();
+      dio.options.headers['Authorization'] = prefs.getString('accesstoken');
+      var response = await dio.get('$baseUrl/members');
+      print('회원정보 가져오기=================');
+      print(response);
+    } catch (e) {
+      print(e);
+    }
+  }
 
   static Future<bool> login() async {
     try {
@@ -21,8 +36,17 @@ class MemberApi {
         var response = await dio.get('$baseUrl/member/login');
 
         if (response.statusCode == 200) {
-          print(response.data);
           print(response.headers);
+          print("==============");
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          await prefs.setString('nickname', response.data);
+          await prefs.setString(
+              'accesstoken', response.headers['accesstoken']![0]);
+          await prefs.setString(
+              'refreshtoken', response.headers['refreshtoken']![0]);
+
+          print(prefs.getString('accesstoken'));
+
           return true;
         } else {
           print('Error Code: ${response.statusCode}');
