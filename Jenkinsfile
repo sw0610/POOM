@@ -33,7 +33,7 @@ pipeline{
         }
         stage('백엔드 컨테이너 생성') {
           steps {
-            sh "docker run --no-cache -d -p 8081:8080 -e LC_ALL=C.UTF-8 --name backend backend:0.0.1-SNAPSHOT"
+            sh "docker run -d -p 8080:8080 -e LC_ALL=C.UTF-8 --name backend backend:0.0.1-SNAPSHOT"
           }
         }
       }
