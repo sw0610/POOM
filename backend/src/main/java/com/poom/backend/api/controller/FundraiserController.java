@@ -43,6 +43,7 @@ public class FundraiserController {
             @ApiResponse(code = 200, message = "OK(생성 성공)"),
             @ApiResponse(code = 400, message = "BAD REQUEST(요청 실패)"),
             @ApiResponse(code = 401, message = "UNAUTHORIZED(권한 없음)"),
+            @ApiResponse(code = 403, message = "Forbidden(권한 없음)"),
             @ApiResponse(code = 500, message = "서버에러")
     })
     public ResponseEntity<?> openFundraiser(@RequestPart("mainImage") MultipartFile mainImage){
@@ -57,6 +58,7 @@ public class FundraiserController {
             @ApiResponse(code = 200, message = "OK(생성 성공)"),
             @ApiResponse(code = 400, message = "BAD REQUEST(요청 실패)"),
             @ApiResponse(code = 401, message = "UNAUTHORIZED(권한 없음)"),
+            @ApiResponse(code = 403, message = "Forbidden(권한 없음)"),
             @ApiResponse(code = 500, message = "서버에러")
     })
     public ResponseEntity<?> openFundraiser(HttpServletRequest request,

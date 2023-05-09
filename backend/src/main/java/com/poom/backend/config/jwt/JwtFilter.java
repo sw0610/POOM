@@ -31,8 +31,7 @@ public class JwtFilter extends GenericFilterBean {
     }
 
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-//      logger.debug("Jwt filter start ");
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {logger.debug("Jwt filter start ");
         //  JWT 토큰을 추출하고, 추출한 토큰이 유효한지 검증
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
         String jwt = resolveToken(httpServletRequest);
@@ -42,7 +41,9 @@ public class JwtFilter extends GenericFilterBean {
         log.info("요청 URI : {}", requestURI);
 
         if (StringUtils.hasText(jwt)){
+            log.info("토큰이 존재합니다.");
             if(tokenProvider.validateToken(jwt)){ // 토큰이 유효하다면
+                log.info("토큰이 유효합니다.");
                 Authentication authentication = tokenProvider.getAuthentication(jwt); // Authentication 객체(권한 정보들)를 가져온다.
                 SecurityContextHolder.getContext().setAuthentication(authentication); // SecurityContext에 set한다.
                 logger.info("MEMBER ADDRESS IN TOKEN : '{}'", authentication.getName());
