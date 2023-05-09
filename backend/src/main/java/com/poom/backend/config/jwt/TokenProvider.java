@@ -74,21 +74,14 @@ public class TokenProvider implements InitializingBean {
                 .parseClaimsJws(token)
                 .getBody();
 
-        log.info("path 1");
-
         // GrantedAuthority(role) 객체들의 리스트 생성
         Collection<? extends GrantedAuthority> authorities =
                 Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
 
-        log.info("path 2");
-        log.info(claims.getId());
-        log.info(authorities.toString());
         // User 객체 생성
         User principal = new User(claims.getSubject(), " ", authorities);
-
-        log.info("path 3");
         return new UsernamePasswordAuthenticationToken(principal,token, authorities);
     }
 
