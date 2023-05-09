@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
-import 'package:poom/services/kakao_login_api.dart';
+import 'package:poom/services/kakao_api.dart';
+import 'package:poom/services/member_api.dart';
 import 'package:poom/widgets/poom_page_state.dart';
 
 void main() {
@@ -22,12 +23,13 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    isLogin = KakaoLoginApi.isLogin();
+    isLogin = MemberApi.login();
   }
 
-  void checkIsLogin(Future<bool> isLoginAfter) {
+  void doLogin() async {
+    await KakaoApi.kakaoLogin();
     setState(() {
-      isLogin = isLoginAfter;
+      isLogin = MemberApi.login();
     });
   }
 
@@ -55,12 +57,7 @@ class _MyAppState extends State<MyApp> {
               return Scaffold(
                 body: Center(
                   child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        isLogin = KakaoLoginApi.login();
-                        print('main.dart: $isLogin');
-                      });
-                    },
+                    onTap: doLogin,
                     child: Container(
                       height: 50,
                       width: MediaQuery.of(context).size.width - 200,
