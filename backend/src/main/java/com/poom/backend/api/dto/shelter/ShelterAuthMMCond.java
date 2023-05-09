@@ -64,7 +64,7 @@ public class ShelterAuthMMCond {
     public static ShelterAuthMMCond getColorMsg(String msg, String color) {
         ShelterAuthMMCond cond = new ShelterAuthMMCond();
         cond.setColor(color);
-        cond.setText("### msg");
+        cond.setText("### "+msg);
         return cond;
     }
 
