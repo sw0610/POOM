@@ -17,7 +17,8 @@ public class SmartContractNftDto {
 
     private String imageUrl;
     private String metadataUri;
-    private LocalDateTime issuedDate;
+    @Builder.Default
+    private LocalDateTime issuedDate = LocalDateTime.now();
 
     public static SmartContractNftDto fromNftContract(PoomContract.NFT nft){
         return SmartContractNftDto.builder()

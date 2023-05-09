@@ -40,14 +40,15 @@ public class NftContractServiceImpl implements NftContractService{
 
         return Optional.ofNullable(nftList);
     }
+//    function mintNft(NFT memory _nft, address _memberAddress, string memory _memberId, uint64 _donationId, uint64 _fundraiserId) external{
 
     @Override
     public void mintNft(SmartContractNftDto nftDto, String memberId, String memberAddress, Long donationId, Long fundraiserId)  {
         SmartContractNftDto smartContractNftDto = new SmartContractNftDto();
         try {
-            poomContract.mintNft(smartContractNftDto.toNftContract(nftDto), memberId, memberAddress, BigInteger.valueOf(donationId), BigInteger.valueOf(fundraiserId)).send();
+            poomContract.mintNft(smartContractNftDto.toNftContract(nftDto), memberAddress, memberId, BigInteger.valueOf(donationId), BigInteger.valueOf(fundraiserId)).send();
         } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 }

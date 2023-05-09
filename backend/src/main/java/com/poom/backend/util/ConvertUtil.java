@@ -11,7 +11,7 @@ public class ConvertUtil {
 
   // Double -> uint
   public static BigInteger etherToWei(Double amount){
-    return new BigDecimal(amount).divide(BigDecimal.TEN.pow(18)).toBigInteger();
+    return new BigDecimal(amount).multiply(BigDecimal.TEN.pow(18)).toBigInteger();
   }
 
   // uint -> Double

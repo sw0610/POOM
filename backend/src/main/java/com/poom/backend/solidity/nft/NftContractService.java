@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface NftContractService {
 
     Optional<List<SmartContractNftDto>> getNftList(String memberId);
-    void mintNft(SmartContractNftDto nftDto, String memberId, String memberAddress, Long donationId, Long fundraiserId) throws Exception;
+    void mintNft(SmartContractNftDto nftDto, String memberId, String memberAddress, Long donationId, Long fundraiserId);
 
 
 }

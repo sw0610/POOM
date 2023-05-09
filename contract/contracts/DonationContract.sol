@@ -16,47 +16,28 @@ contract DonationProcess is FundraiserProcess {
 
     uint64 private _donationId;
 
-    mapping(string => uint64[]) public memberDonationList; // memberid -> 후원id[]
     mapping(string => mapping(uint64=>uint64)) public memberToFundraiser; // memberid => fundraiserid -> 후원 id
     mapping(uint64=>Donation) public donations; //  후원 id -> 후원 내역
-    mapping(uint64 => mapping(uint64=>Donation)) public fundraiserDonationList; // 모금 id -> 후원자들
+    mapping(uint64 => uint64[]) public fundraiserDonationList; // 모금 id -> 후원자들
+
     mapping(uint64 => uint256) public donationsCount; // 모금 id -> 후원자 수
 
 
-    // 후원자 목록
-    function _getDonationList(uint64 _fundraiserId) internal view returns (Donation[] memory) {
-        uint256 donationLength = donationsCount[_fundraiserId];
-        Donation[] memory donationList = new Donation[](donationLength);
+    function _getDonationList() internal view returns (Donation[] memory){
+        Donation[] memory donationList = new Donation[](_donationId);
 
-        for (uint64 i = 0; i < donationLength; i++) {
-            donationList[i] = fundraiserDonationList[_fundraiserId][i];
+        for(uint64 i =0 ; i < _donationId; i++){
+            donationList[i] = donations[i+1];
         }
-
         return donationList;
     }
 
-
-    // 내 후원 목록 가져오기
-    function _getMyDonationList(string memory _memberId) internal view returns(Donation[] memory){
-
-        uint256 myDonationCount = memberDonationList[_memberId].length;
-
-        Donation[] memory myDonaionList = new Donation[](myDonationCount);
-
-        for(uint64 i = 0; i < myDonationCount; i++){
-            myDonaionList[i] = donations[memberDonationList[_memberId][i]];
-        }
-        return myDonaionList;
-
-    }
-
-    // nft isIssued -> 모금이 종료되면 1로 모두 변경
+    // nft isIssued -> 모금이 종료되면 2로 모두 변경
     function _setNftFundraiserEnded(uint64 _fundraiserId) internal {
-        require(_getFundraiserDetail(_fundraiserId).isEnded==true, "Fundraiser is not ended.");
 
         uint256 donationLength = donationsCount[_fundraiserId];
         for (uint64 i = 0; i < donationLength; i++) {
-            fundraiserDonationList[_fundraiserId][i].isIssued = 1;
+            donations[fundraiserDonationList[_fundraiserId][i]].isIssued = 2;
         }
     }
 
@@ -81,7 +62,7 @@ contract DonationProcess is FundraiserProcess {
     function _donate(uint64 _fundraiserId, string memory _memberId, uint256 _donationTime, uint256 _value) internal{
         require(_value >0, "Value must be more then 0");
         require(_value <= fundraisers[_fundraiserId].targetAmount-fundraisers[_fundraiserId].currentAmount, "Value must be little then target amount");
-        require(fundraisers[_fundraiserId].isEnded = false,"Fundraiser is ended");
+        require(fundraisers[_fundraiserId].isEnded == false,"Fundraiser is ended");
 
         if(donations[memberToFundraiser[_memberId][_fundraiserId]].donationAmount==0){
             Donation memory donation = Donation(
@@ -91,11 +72,13 @@ contract DonationProcess is FundraiserProcess {
                 donationAmount:0,
                 donationTime:_donationTime,
                 isIssued: 0});
+            memberToFundraiser[_memberId][_fundraiserId] = _donationId;
+
             donations[memberToFundraiser[_memberId][_fundraiserId]] = donation;
 
-            memberDonationList[_memberId].push(_donationId);
+            // memberDonationList[_memberId].push(_donationId);
             donations[_donationId] = donation;
-            fundraiserDonationList[_fundraiserId][_donationId] = donation;
+            fundraiserDonationList[_fundraiserId].push(_donationId);
             donationsCount[_fundraiserId]+=1;
         }
 

@@ -1,5 +1,6 @@
 package com.poom.backend.api.service.nft;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.poom.backend.api.dto.fundraiser.FundraiserDetailRes;
 import com.poom.backend.api.dto.fundraiser.SmartContractFundraiserDto;
 import com.poom.backend.api.dto.nft.NftIssueCond;
@@ -19,11 +20,6 @@ import com.poom.backend.solidity.nft.NftContractService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.web3j.crypto.ECDSASignature;
-import org.web3j.crypto.Hash;
-import org.web3j.crypto.Keys;
-import org.web3j.crypto.Sign;
-import org.web3j.utils.Numeric;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
@@ -79,22 +75,26 @@ public class NftServiceImpl implements NFTService{
     @Override
     public void nftIssue(HttpServletRequest request, NftIssueCond nftIssueCond) {
 
+
         Long fundraiserId = nftIssueCond.getFundraiserId();
         String memberId = memberService.getMemberIdFromHeader(request);
         Optional<Member> member = memberRepository.findById(memberId);
 
         FundraiserDetailRes fundraiserDto = fundraiserService.getFundraiserDetail(fundraiserId);
 
-        // 종료 되었고 해시 있는지 체크하기
-        if(fundraiserDto.getIsClosed()==true){
+        // 종료 되었고 후원 순위 해시 있는지 체크하기
+        if(fundraiserDto.getIsClosed()){
             String hashString = donationContractService.getDonationSort(fundraiserId)
                     .orElseThrow(()->new RuntimeException());
-            if (hashString == "") { // 없으면
+
+            if (hashString.equals("none")) { // 없으면
                 hashString = donationService.setDonationSort(fundraiserId); // 생성하기
+
             }
 
 
-            int myRank = donationService.getMyRank(fundraiserId, hashString); // 내 등수 가져오기
+            int myRank = donationService.getMyRank(fundraiserId, memberId); // 내 등수 가져오기
+            Double myAmount = donationService.getMyAmount(fundraiserId, memberId); // 내 후원 금액 가져오기
 
             MultipartFile nftImageFile = ipfsService.downloadImage(fundraiserDto.getNftImgUrl());// 이미지 url->multipart file
 
@@ -116,25 +116,38 @@ public class NftServiceImpl implements NFTService{
 //            ByteArrayOutputStream baos = new ByteArrayOutputStream();
 //            ImageIO.write(originalImage, "png", baos);
 
-            String myNftImage = "";
-            String name = fundraiserDto.getDogName();
-            String description = member.get().getNickname() + "님께서 " + name +"에게 ";
+            String myNftImageUrl = fundraiserDto.getNftImgUrl(); // 이미지 url
+            String dogName = fundraiserDto.getDogName();
+            String description = member.get().getNickname() + "님께서 " + dogName +"에게 "
+                    +myAmount+" ETH 후원한 내역에 대한 후원 증서입니다.";
 
 
             // nft data json 생성
             NftMetadata nftMetadata = NftMetadata.builder()
-                    .name()
-                    .description()
-                    .image()
+                    .name(dogName)
+                    .description(description)
+                    .image(myNftImageUrl)
                     .build();
-            
+            String nftJson = null;
+            try {
+                nftJson = "ipfs://"+ipfsService.uploadJson(nftMetadata.nftMetadataToJson());
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+
             // 발급 전에 서명 확인
-            memberService.verifySignature(nftIssueCond.getMemberAddress(), nftIssueCond.getMemberSignature(), nftIssueCond.getSignMessage());
+            boolean verify = memberService.verifySignature(nftIssueCond.getMemberAddress(), nftIssueCond.getMemberSignature(), nftIssueCond.getSignMessage());
             // 발급하기
+            if(verify){
+                SmartContractNftDto smartContractNftDto = SmartContractNftDto.builder()
+                                .imageUrl(myNftImageUrl)
+                                .metadataUri(nftJson)
+                                .build();
 
 
 
-
+            nftContractService.mintNft(smartContractNftDto, memberId, nftIssueCond.getMemberAddress(), nftIssueCond.getDonationId(), fundraiserId);
+            }
 
         }
 

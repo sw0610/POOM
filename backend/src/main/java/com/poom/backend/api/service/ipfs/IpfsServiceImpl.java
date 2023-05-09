@@ -45,7 +45,7 @@ public class IpfsServiceImpl implements IpfsService{
             throw new RuntimeException(e);
         }
         Multihash multihash = merkleNode.hash;
-        return hashToPublicUrl(multihash.toString());
+        return multihash.toString();
     }
 
     @Override

@@ -18,9 +18,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,9 +35,12 @@ public class DonationServiceImpl implements DonationService {
         String memberId = memberService.getMemberIdFromHeader(request);
 
         // 스마트 컨트랙트 호출 부분 (_getMyDonationList)
-        List<SmartContractDonationDto> donationList = donationContractService.getMyDonationList(memberId)
-                .orElseThrow(()->new RuntimeException());
-
+        List<SmartContractDonationDto> donationList = donationContractService.getDonationList()
+                .stream()
+                .flatMap(List::stream)
+                .filter(donation->donation.getMemberId().equals(memberId))
+                .sorted(Comparator.comparing(SmartContractDonationDto::getDonationTime).reversed())
+                .collect(Collectors.toList());
 
         int startIdx = size * page;
         int endIdx = startIdx + size > donationList.size() ? donationList.size() : startIdx + size;
@@ -80,11 +81,14 @@ public class DonationServiceImpl implements DonationService {
     // 한 후원에 대한 후원자 목록
     @Override
     public List<FundraiserDonationDto> getFundraiserDonationList(Long fundraiserId) {
-        List<SmartContractDonationDto> donationList = donationContractService.getDonationList(fundraiserId)
+        List<SmartContractDonationDto> donationList = donationContractService.getDonationList()
                 .stream()
                 .flatMap(List::stream)
+                .filter(donation->donation.getFundraiserId()==fundraiserId)
+                .sorted(Comparator.comparing(SmartContractDonationDto::getDonationAmount).reversed())
                 .limit(10)
                 .collect(Collectors.toList());
+
 
         // 최대 10개 반환
         // 어떤 기준으로 정렬 해야하는지??
@@ -92,7 +96,8 @@ public class DonationServiceImpl implements DonationService {
 //                .flatMap(List::stream)
                 .map(donation ->
                         FundraiserDonationDto.toFundraiserDonationDto(donation,
-                                memberRepository.findById(donation.getMemberId()).orElseThrow(() -> new BadRequestException("회원 정보가 없습니다."))))
+                                memberRepository.findById(donation.getMemberId()).orElseThrow(() -> new BadRequestException("회원 정보가 없습니다."))
+                                ))
                 .collect(Collectors.toList());
         ;
 
@@ -101,22 +106,36 @@ public class DonationServiceImpl implements DonationService {
 
     @Override
     public String setDonationSort(Long fundraiserId) {
-        List<SmartContractDonationDto> donationList = donationContractService.getDonationList(fundraiserId)
-                .orElseThrow(()->new RuntimeException());
+        List<SmartContractDonationDto> donationList = donationContractService.getDonationList()
+                .stream()
+                .flatMap(List::stream)
+                .filter(donation->donation.getFundraiserId()==fundraiserId)
+                .sorted(Comparator.comparing(SmartContractDonationDto::getDonationAmount).reversed())
+                .collect(Collectors.toList());
 
-        List<String> memberIdSort  = donationList.stream().map(donation->donation.getMemberId()).collect(Collectors.toList());
+//                .orElseThrow(()->new RuntimeException());
+
+        List<String> memberIdSort  = donationList.stream().map(donation->donation.getMemberId())
+                .collect(Collectors.toList());
+
+        Map<String, Double> memberDonationAmount = donationList
+                .stream()
+                .collect(Collectors.toMap(SmartContractDonationDto::getMemberId, SmartContractDonationDto::getDonationAmount));
+
         DonationSortDto donationSortDto = DonationSortDto.builder()
                 .memberIdSort(memberIdSort)
+                .memberDonationAmount(memberDonationAmount)
                 .build();
+
+
 
         String hashString = null;
         try {
-            // 이미지 해시, 후원 정보들을 합쳐 저장
+
             hashString = ipfsService.uploadJson(donationSortDto.donationSortToJson());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
         donationContractService.setDonationSort(fundraiserId, hashString);
         return hashString;
 
@@ -136,9 +155,27 @@ public class DonationServiceImpl implements DonationService {
         }
 
         List<String> memberIdSort = donationSortDto.getMemberIdSort();
-        int myRank = memberIdSort.indexOf(memberId);
+        int myRank = memberIdSort.indexOf(memberId)+1;
 
         return myRank;
 
+    }
+
+    @Override
+    public Double getMyAmount(Long fundraiserId, String memberId) {
+        String hashString = donationContractService.getDonationSort(fundraiserId)
+                .orElseThrow(()->new RuntimeException());
+
+        DonationSortDto donationSortDto = null;
+        try {
+            donationSortDto = DonationSortDto.fromDonationSortJson(ipfsService.downloadJson(hashString));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        Map<String, Double> memberDonationAmount = donationSortDto.getMemberDonationAmount();
+        Double myAmount = memberDonationAmount.get(memberId);
+
+        return myAmount;
     }
 }

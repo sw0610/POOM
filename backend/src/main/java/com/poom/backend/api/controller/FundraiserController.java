@@ -63,12 +63,12 @@ public class FundraiserController {
                                             @RequestPart("dogImages") List<MultipartFile> dogImages,
                                             @RequestPart("nftImage") MultipartFile nftImage,
                                             @RequestPart("mainImage") MultipartFile mainImage,
-                                            @RequestBody OpenFundraiserCond openFundraiserCond){
+                                            @RequestPart OpenFundraiserCond openFundraiserCond){
         fundraiserService.createFundraiser(request, dogImages, nftImage, mainImage, openFundraiserCond);
         return ResponseEntity.status(200).build();
     }
 
-    @GetMapping("/fundraisers/size={}&page={}&isClosed={}")
+    @GetMapping("/fundraisers")
     @ApiOperation(value = "후원 모집 목록 조회", notes = "<strong>페이지 검색 조건</strong>을 입력받아 후원 모집을 조회합니다.")
     @ApiResponses({
             @ApiResponse(code = 200, message = "OK(조회 성공)"),

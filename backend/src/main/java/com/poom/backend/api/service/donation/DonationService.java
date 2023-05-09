@@ -11,4 +11,5 @@ public interface DonationService {
     List<FundraiserDonationDto> getFundraiserDonationList(Long fundraiserId);
     String setDonationSort(Long fundraiserId);
     int getMyRank(Long fundraiserId, String memberId);
+    Double getMyAmount(Long fundraiserId, String memberId);
 }

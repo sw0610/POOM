@@ -24,41 +24,42 @@ public class DonationContractServiceImpl implements DonationContractService{
     }
 
     @Override
-    public Optional<List<SmartContractDonationDto>> getDonationList(Long fundraiserId){
+    public Optional<List<SmartContractDonationDto>> getDonationList(){
 
         List<SmartContractDonationDto> donationList = null;
 
         try {
-            List<PoomContract.Donation> donationContractList = poomContract.getDonationList(BigInteger.valueOf(fundraiserId)).send();
+            List<PoomContract.Donation> donationContractList = poomContract.getDonationList().send();
             donationList = donationContractList.stream()
                     .map(donation -> SmartContractDonationDto.fromDonationContract(donation))
-                    .sorted(Comparator.comparing(SmartContractDonationDto::getDonationAmount).reversed()) // 많이 후원한 순으로 반환
+//                    .sorted(Comparator.comparing(SmartContractDonationDto::getDonationAmount).reversed()) // 많이 후원한 순으로 반환
                 .collect(Collectors.toList());
+
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
 
         return Optional.ofNullable(donationList);
     }
-
-    @Override
-    public Optional<List<SmartContractDonationDto>> getMyDonationList(String memberId){
-
-        List<SmartContractDonationDto> myDonationList = null;
-
-        try {
-            List<PoomContract.Donation> myDonationContractList = poomContract.getMyDonationList(memberId).send();
-            myDonationList
-                    = myDonationContractList.stream()
-                    .map(donation -> SmartContractDonationDto.fromDonationContract(donation))
-                    .sorted(Comparator.comparing(SmartContractDonationDto::getDonationTime).reversed()) // 최신순 정렬
-                    .collect(Collectors.toList());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        return Optional.ofNullable(myDonationList);
-    }
+//
+//    @Override
+//    public Optional<List<SmartContractDonationDto>> getMyDonationList(String memberId){
+//
+//        List<SmartContractDonationDto> myDonationList = null;
+//
+//        try {
+//            List<PoomContract.Donation> myDonationContractList = poomContract.getMyDonationList(memberId).send();
+//            myDonationList
+//                    = myDonationContractList.stream()
+//                    .map(donation -> SmartContractDonationDto.fromDonationContract(donation))
+//                    .sorted(Comparator.comparing(SmartContractDonationDto::getDonationTime).reversed()) // 최신순 정렬
+//                    .collect(Collectors.toList());
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+//
+//        return Optional.ofNullable(myDonationList);
+//    }
 
     @Override
     public Optional<SmartContractDonationDto> getDonation(Long donationId) {

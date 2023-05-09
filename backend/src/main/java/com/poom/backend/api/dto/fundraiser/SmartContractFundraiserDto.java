@@ -33,7 +33,8 @@ public class SmartContractFundraiserDto {
     private Double currentAmount;
     private Double targetAmount;
     private Boolean isEnded;
-    private String donationSortHash;
+    @Builder.Default
+    private String donationSortHash = "none";
 
 
     public static SmartContractFundraiserDto from(OpenFundraiserCond cond, String hash, String shelterId) {
