@@ -133,7 +133,7 @@ public class TestController {
         String image3 = "https://ipfs.io/ipfs/QmV637KHwPNyd7YzgSaL5Fdn6rk6AsD1cKFbFm3yYmt7QH";
 
         Shelter shelter = Shelter.builder()
-                .id("shelter ID")
+                .id("123ksadkjsk")
                 .adminId("6448d2f0577f215b3f4de9a3")
                 .shelterName("보호소 이름입니다.")
                 .shelterAddress("보호소 주소입니다.")
