@@ -159,7 +159,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Container(
                       height: 120,
                       alignment: Alignment.center,
-                      child: const Text('등록된 게시글 없음'),
+                      child: const Text(
+                        '도움이 필요한 보호견이 없어요',
+                        style: TextStyle(
+                          fontSize: 16,
+                        ),
+                      ),
                     ),
                   );
           },
