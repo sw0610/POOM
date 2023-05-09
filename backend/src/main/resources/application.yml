@@ -27,7 +27,7 @@ spring:
       username: poom
       password: poompwd1234
   redis:
-    host: localhost
+    host: k8a805.p.ssafy.io
     port: 6379
     lettuce:
       pool:

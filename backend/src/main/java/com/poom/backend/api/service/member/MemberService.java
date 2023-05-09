@@ -17,4 +17,5 @@ public interface MemberService {
     HttpHeaders getHeader(String accessToken, String refreshToken);
     // 서명 확인
     boolean verifySignature(String memberAddress, String signature, String message);
+    String getToken(HttpServletRequest request);
 }

@@ -31,8 +31,7 @@ public class JwtFilter extends GenericFilterBean {
     }
 
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-//      logger.debug("Jwt filter start ");
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {logger.debug("Jwt filter start ");
         //  JWT 토큰을 추출하고, 추출한 토큰이 유효한지 검증
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
         String jwt = resolveToken(httpServletRequest);
@@ -42,7 +41,9 @@ public class JwtFilter extends GenericFilterBean {
         log.info("요청 URI : {}", requestURI);
 
         if (StringUtils.hasText(jwt)){
+            log.info("토큰이 존재합니다.");
             if(tokenProvider.validateToken(jwt)){ // 토큰이 유효하다면
+                log.info("토큰이 유효합니다.");
                 Authentication authentication = tokenProvider.getAuthentication(jwt); // Authentication 객체(권한 정보들)를 가져온다.
                 SecurityContextHolder.getContext().setAuthentication(authentication); // SecurityContext에 set한다.
                 logger.info("MEMBER ADDRESS IN TOKEN : '{}'", authentication.getName());
@@ -55,7 +56,7 @@ public class JwtFilter extends GenericFilterBean {
         filterChain.doFilter(servletRequest, servletResponse);
     }
 
-    private String resolveToken(HttpServletRequest request) { // request header에서 token 정보를 가져옴
+    public String resolveToken(HttpServletRequest request) { // request header에서 token 정보를 가져옴
         String bearerToken = request.getHeader(AUTH_HEADER);
 //      System.out.println(bearerToken);
         // ACCESS_HEADER 상수로 정의된 문자열을 사용하여 HTTP request header에서 "Bearer "로 시작하는 Authorization 헤더를 검색합니다.

@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.web3j.crypto.ECDSASignature;
 import org.web3j.crypto.Hash;
@@ -94,8 +95,8 @@ public class MemberServiceImpl implements MemberService{
     @Override
     public HttpHeaders getHeader(String accessToken, String refreshToken) {
         HttpHeaders headers = new HttpHeaders();
-        headers.add("accessToken", accessToken);
-        headers.add("refreshToken", accessToken);
+        headers.add("accessToken", "Bearer "+accessToken);
+        headers.add("refreshToken", "Bearer "+refreshToken);
         return headers;
     }
 
@@ -145,5 +146,18 @@ public class MemberServiceImpl implements MemberService{
             }
         }
         return memberAddress.equals(addressRecovered);
+    }
+
+    @Override
+    public String getToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader(JwtFilter.AUTH_HEADER);
+//      System.out.println(bearerToken);
+        // ACCESS_HEADER 상수로 정의된 문자열을 사용하여 HTTP request header에서 "Bearer "로 시작하는 Authorization 헤더를 검색합니다.
+        // 검색된 문자열이 null이 아니며, "Bearer "로 시작한다면 실제 인증 토큰 정보를 추출하여 반환하고, 그렇지 않다면 null을 반환합니다.
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
+        }
+
+        return null;
     }
 }

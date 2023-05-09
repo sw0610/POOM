@@ -10,4 +10,5 @@ public interface OauthService {
     MemberDto login(String providerName, String code) throws JsonProcessingException;
 //    String getTokenResponse(String code);
     void logout(HttpServletRequest request);
+    MemberDto generateToken(Member member);
 }
