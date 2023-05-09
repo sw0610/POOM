@@ -85,8 +85,8 @@ public class MemberServiceImpl implements MemberService{
     @Override
     public HttpHeaders getHeader(String accessToken, String refreshToken) {
         HttpHeaders headers = new HttpHeaders();
-        headers.add("accessToken", accessToken);
-        headers.add("refreshToken", accessToken);
+        headers.add("accessToken", "Bearer "+accessToken);
+        headers.add("refreshToken", "Bearer "+refreshToken);
         return headers;
     }
 }
