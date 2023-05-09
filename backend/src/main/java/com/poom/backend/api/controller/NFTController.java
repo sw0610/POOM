@@ -11,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
 @Api(tags = "NFT 관련 API")
 @RequiredArgsConstructor
@@ -33,16 +35,16 @@ public class NFTController {
         return ResponseEntity.status(200).body(nftService.getNFTList(size, page, memberId));
     }
 
-    @GetMapping("/donations/nft/issued")
-    @ApiOperation(value = "NFT를 발급합니다.", notes = "<strong>후원 ID와 메타마스크 지갑 정보</strong>를 입력받아 NFT를 발급합니다.")
+    @PostMapping("/donations/nft/issued")
+    @ApiOperation(value = "NFT를 발급합니다.", notes = "<strong>후원 ID와 모금 ID, 메타마스크 지갑 정보</strong>를 입력받아 NFT를 발급합니다.")
     @ApiResponses({
             @ApiResponse(code = 200, message = "OK(발급 성공)"),
             @ApiResponse(code = 400, message = "BAD REQUEST(요청 실패)"),
             @ApiResponse(code = 401, message = "UNAUTHORIZED(권한 없음)"),
             @ApiResponse(code = 500, message = "서버에러")
     }) // /size={}&page={}&memberId={}
-    public ResponseEntity<?> issueNft(@RequestBody NftIssueCond nftIssueCond){
-        nftService.nftIssue(nftIssueCond);
+    public ResponseEntity<?> issueNft(HttpServletRequest request, @RequestBody NftIssueCond nftIssueCond){
+        nftService.nftIssue(request, nftIssueCond);
         return ResponseEntity.status(200).build();
     }
 }

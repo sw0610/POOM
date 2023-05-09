@@ -15,5 +15,6 @@ public interface FundraiserService {
 
     FundraiserDetailRes getFundraiserDetail(Long fundraiserId);
 
-    void endFundraiser(Long fundraiserId);
+    void endFundraiser();
+
 }

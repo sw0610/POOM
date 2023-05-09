@@ -10,7 +10,6 @@ public interface FundraiserContractService {
     void createFundraiser(SmartContractFundraiserDto smartContractFundraiserDto);
     Optional<List<SmartContractFundraiserDto>> getFundraiserList();
     Optional<SmartContractFundraiserDto> getFundraiserDetail(Long fundraiserId);
-
-
+    void endFundraiser(Long fundraiserId);
 
 }
