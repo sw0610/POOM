@@ -30,11 +30,10 @@ public class ShelterAuthMMActionDto {
         this.name = "거절";
     }
 
-
     public static Map<String, Object> getIntegration(String shelterId, boolean isApproved){
         Map<String, Object> integration = new HashMap<>();
         String queryParams = "?shelterId=" + shelterId + "&isApproved=" + isApproved;
-        integration.put("url", "https://k8a805.p.ssafy.io/api/test/lop" + queryParams);
+        integration.put("url", "https://k8a805.p.ssafy.io/api/admin/shelter/auth" + queryParams);
         return integration;
     }
 }
