@@ -76,9 +76,9 @@ ipfs:
     port: 8900
 
 eth:
-  address: '0x288fB136C9291a4b62f1620bEE5901BEB2B0ffD7'
-  privateKey: '9c63b31a88c410c7d33265876407b31aea175c589ec82fff8d0bc4aa2baf150d'
+  address: '0xDA5DF7C0ff5cC8a7e0313cFE6D8f6f0522ef3918'
+  privateKey: 'f34821d258dad290929525336226f31ef928f6efe1d3be14b5dc1d35552cc4aa'
   # test
-  rpcUtil : 'https://polygon-mumbai.infura.io/v3/ac3a17c914fd47a29cb5ed54315f746a'
-  applicationAddress : '0xb4787A11745AfC48D76c2E603164118502447EC6'
-  chainId : 80001
+  rpcUtil : 'https://sepolia.infura.io/v3/0be8b78f1cad416a80f5d523b264e437'
+  applicationAddress : '0xDe5A662e8d8F6501498e21088e8220A24504b89a'
+  chainId : 11155111

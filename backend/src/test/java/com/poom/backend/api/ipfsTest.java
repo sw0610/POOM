@@ -71,7 +71,7 @@ public class ipfsTest {
         System.out.println(multihash.toString());
         System.out.println(multihash.toBase58());
         System.out.println(multihash.toHex());
-        Multihash mh = Multihash.fromHex(multihash.toString());
+        Multihash mh = Multihash.fromBase58(multihash.toString());
 
         // IPFS에서 데이터 가져오기
         byte[] data = ipfs.get(mh);

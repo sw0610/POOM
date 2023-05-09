@@ -37,19 +37,20 @@ public class FundraiserController {
         return ResponseEntity.status(200).body(fundraiserService.getMyFundraiserList(request, size, page, isClosed));
     }
 
-    @PostMapping("/fundraiser/nft")
-    @ApiOperation(value = "후원 모집시 NFT 이미지를 생성", notes = "<strong>대표 사진</strong>을 입력받아 NFT 이미지를 생성합니다.")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "OK(생성 성공)"),
-            @ApiResponse(code = 400, message = "BAD REQUEST(요청 실패)"),
-            @ApiResponse(code = 401, message = "UNAUTHORIZED(권한 없음)"),
-            @ApiResponse(code = 500, message = "서버에러")
-    })
-    public ResponseEntity<?> openFundraiser(@RequestPart("mainImage") MultipartFile mainImage){
-        // 파이썬 서버에 mainImage를 전송하고 NFT 이미지를 받습니다.
-        MultipartFile result = null;
-        return ResponseEntity.status(200).body(result);
-    }
+//    @PostMapping("/fundraiser/nft")
+//    @ApiOperation(value = "후원 모집시 NFT 이미지를 생성", notes = "<strong>대표 사진</strong>을 입력받아 NFT 이미지를 생성합니다.")
+//    @ApiResponses({
+//            @ApiResponse(code = 200, message = "OK(생성 성공)"),
+//            @ApiResponse(code = 400, message = "BAD REQUEST(요청 실패)"),
+//            @ApiResponse(code = 401, message = "UNAUTHORIZED(권한 없음)"),
+//            @ApiResponse(code = 403, message = "Forbidden(권한 없음)"),
+//            @ApiResponse(code = 500, message = "서버에러")
+//    })
+//    public ResponseEntity<?> openFundraiser(@RequestPart("mainImage") MultipartFile mainImage){
+//        // 파이썬 서버에 mainImage를 전송하고 NFT 이미지를 받습니다.
+//        MultipartFile result = null;
+//        return ResponseEntity.status(200).body(result);
+//    }
 
     @PostMapping("/fundraiser/open")
     @ApiOperation(value = "후원 모집 생성", notes = "<strong>후원 모집 정보</strong>를 받아 모집을 등록합니다.")
@@ -57,13 +58,14 @@ public class FundraiserController {
             @ApiResponse(code = 200, message = "OK(생성 성공)"),
             @ApiResponse(code = 400, message = "BAD REQUEST(요청 실패)"),
             @ApiResponse(code = 401, message = "UNAUTHORIZED(권한 없음)"),
+            @ApiResponse(code = 403, message = "Forbidden(권한 없음)"),
             @ApiResponse(code = 500, message = "서버에러")
     })
     public ResponseEntity<?> openFundraiser(HttpServletRequest request,
                                             @RequestPart("dogImages") List<MultipartFile> dogImages,
                                             @RequestPart("nftImage") MultipartFile nftImage,
                                             @RequestPart("mainImage") MultipartFile mainImage,
-                                            @RequestBody OpenFundraiserCond openFundraiserCond){
+                                            @RequestPart("cond") OpenFundraiserCond openFundraiserCond){
         fundraiserService.createFundraiser(request, dogImages, nftImage, mainImage, openFundraiserCond);
         return ResponseEntity.status(200).build();
     }
@@ -84,7 +86,7 @@ public class FundraiserController {
     }
 
     @GetMapping("/fundraisers/{fundraiserId}")
-    @ApiOperation(value = "후원 모집 상세 조회", notes = "<strong>페이지 검색 조건</strong>을 입력받아 후원 모집을 조회합니다.")
+    @ApiOperation(value = "후원 모집 상세 조회", notes = "<strong>후원 ID</strong>를 입력받아 후원 모집을 조회합니다.")
     @ApiResponses({
             @ApiResponse(code = 200, message = "OK(조회 성공)"),
             @ApiResponse(code = 204, message = "NO CONTENT(후원 모집 없음)"),
