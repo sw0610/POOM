@@ -15,4 +15,5 @@ public interface MemberService {
     MemberInfoRes getMemberInfo(HttpServletRequest request);
     MemberInfoRes updateMemberInfo(HttpServletRequest request, MultipartFile profileImage, String nickname);
     HttpHeaders getHeader(String accessToken, String refreshToken);
+    String getToken(HttpServletRequest request);
 }
