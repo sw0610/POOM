@@ -3,11 +3,12 @@ package com.poom.backend.solidity.nft;
 import com.poom.backend.api.dto.nft.SmartContractNftDto;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface NftContractService {
 
-    List<SmartContractNftDto> getNftList(String memberId) throws Exception;
-    void mintNft(String memberId, Long fundraiserId, Long donationId, String metadataUri, String imageUri) throws Exception;
+    Optional<List<SmartContractNftDto>> getNftList(String memberId);
+    void mintNft(SmartContractNftDto nftDto, String memberId, String memberAddress, Long donationId, Long fundraiserId);
 
 
 }

@@ -58,7 +58,6 @@ public class FundraiserController {
             @ApiResponse(code = 200, message = "OK(생성 성공)"),
             @ApiResponse(code = 400, message = "BAD REQUEST(요청 실패)"),
             @ApiResponse(code = 401, message = "UNAUTHORIZED(권한 없음)"),
-            @ApiResponse(code = 403, message = "Forbidden(권한 없음)"),
             @ApiResponse(code = 500, message = "서버에러")
     })
     public ResponseEntity<?> openFundraiser(HttpServletRequest request,
@@ -70,7 +69,7 @@ public class FundraiserController {
         return ResponseEntity.status(200).build();
     }
 
-    @GetMapping("/fundraisers/size={}&page={}&isClosed={}")
+    @GetMapping("/fundraisers")
     @ApiOperation(value = "후원 모집 목록 조회", notes = "<strong>페이지 검색 조건</strong>을 입력받아 후원 모집을 조회합니다.")
     @ApiResponses({
             @ApiResponse(code = 200, message = "OK(조회 성공)"),

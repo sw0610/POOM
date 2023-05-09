@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -109,7 +110,7 @@ public class FundraiserServiceImpl implements FundraiserService{
         String hashString = null;
         try {
             // 이미지 해시, 후원 정보들을 합쳐 저장
-            IPFSFundraiserDto ipfsDto = IPFSFundraiserDto.toIPFSFundraiseDto(openFundraiserCond, dogImageHash, nftImageHash, mainImageHash);// TODO : 이미지 해시, 후원 정보들을 합쳐 저장해야한다.
+            IPFSFundraiserDto ipfsDto = IPFSFundraiserDto.toIPFSFundraiseDto(openFundraiserCond, dogImageHash, nftImageHash, mainImageHash);
             hashString = ipfsService.uploadJson(ipfsDto.toJson());
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -140,6 +141,7 @@ public class FundraiserServiceImpl implements FundraiserService{
 
         int listIdx = 0;
         while(count<smartContractFundraiserDtoList.size() && listIdx<listLength) {
+
             SmartContractFundraiserDto smartContractFundraiserDto = smartContractFundraiserDtoList.get(listIdx);
             count++;
             if(smartContractFundraiserDto.getIsEnded()==isClosed){ // 모집중, 종료 구분
@@ -152,16 +154,16 @@ public class FundraiserServiceImpl implements FundraiserService{
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-
-                Shelter shelter = shelterRepository.findShelterByAdminId(smartContractFundraiserDto.getShelterId())
-                        .orElseThrow(()->new BadRequestException("보호소 정보가 없습니다"));
-                String shelterName = shelter.getShelterName();
+//
+//                Shelter shelter = shelterRepository.findShelterByAdminId(smartContractFundraiserDto.getShelterId())
+//                        .orElseThrow(()->new BadRequestException("보호소 정보가 없습니다"));
+//                String shelterName = shelter.getShelterName();
 
 
                 // FundraiserDto에 담기
                 FundraiserDto fundraiserDto = FundraiserDto.builder()
                         .fundraiserId(smartContractFundraiserDto.getFundraiserId())
-                        .shelterName(shelterName)
+                        .shelterName("shelterName")
                         .dogName(ipfsFundraiserDto.getDogName())
                         .dogGender(ipfsFundraiserDto.getDogGender().toString())
                         .mainImgUrl(ipfsFundraiserDto.getMainImage())
@@ -213,6 +215,7 @@ public class FundraiserServiceImpl implements FundraiserService{
                         .currentAmount(smartContractFundraiserDto.getCurrentAmount())
                         .targetAmount(smartContractFundraiserDto.getTargetAmount())
                         .donations(donationList)
+                        .isClosed(smartContractFundraiserDto.getIsEnded())
                         .build();
 
         return fundraiserDetailRes;
@@ -220,7 +223,32 @@ public class FundraiserServiceImpl implements FundraiserService{
 
     // 후원 종료
     @Override
-    public void endFundraiser(Long fundraiserId) {
+    public void endFundraiser() {
+
+        List<SmartContractFundraiserDto> smartContractFundraiserDtoList= fundraiserContractService.getFundraiserList()
+            .stream()
+            .flatMap(List::stream).filter(fundraiser->fundraiser.getIsEnded()==false)
+            .collect(Collectors.toList());
+
+        IPFSFundraiserDto ipfsFundraiserDto = null;
+
+        for(SmartContractFundraiserDto fundraiserDto:smartContractFundraiserDtoList){
+            try {
+                ipfsFundraiserDto =
+                    IPFSFundraiserDto.fromJson(ipfsService.downloadJson(fundraiserDto.getHashString()));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            if(ipfsFundraiserDto.getEndDate().isBefore(LocalDate.now())) {
+                fundraiserContractService.endFundraiser(fundraiserDto.getFundraiserId());
+                donationService.setDonationSort(fundraiserDto.getFundraiserId());
+
+            }
+
+
+        }
+
 
     }
 }
