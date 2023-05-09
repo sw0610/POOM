@@ -8,4 +8,5 @@ import java.util.List;
 public interface MattermostService {
     void sendMetaMostMessage(Shelter shelter);
     void sendMessage(String msg);
+    void sendColorMessage(String msg, String color);
 }

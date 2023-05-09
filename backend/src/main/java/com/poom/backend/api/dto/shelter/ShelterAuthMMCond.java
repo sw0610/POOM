@@ -61,6 +61,13 @@ public class ShelterAuthMMCond {
         this.fields = ShelterAuthMMFieldDto.getFields(cond, member);
     }
 
+    public static ShelterAuthMMCond getColorMsg(String msg, String color) {
+        ShelterAuthMMCond cond = new ShelterAuthMMCond();
+        cond.setColor(color);
+        cond.setText("### msg");
+        return cond;
+    }
+
     public String getTestFromMemberInfo(Member member){
         StringBuilder sb = new StringBuilder();
         sb.append("# 보호소 등록 심사 요청이 등록되었습니다. \n");

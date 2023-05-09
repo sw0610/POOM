@@ -74,7 +74,7 @@ public class ShelterServiceImpl implements ShelterService{
 
         m.getRoles().add(Role.ROLE_SHELTER);
         memberRepository.save(m);
-        mattermostService.sendMessage("승인되었습니다.");
+        mattermostService.sendColorMessage("승인되었습니다.", "#8fce00");
     }
 
     @Override
@@ -82,7 +82,7 @@ public class ShelterServiceImpl implements ShelterService{
         // 1. 쉘터의 status를 변경하고 저장합니다.
         shelter.setStatus(ShelterStatus.REJECT);
         shelterRepository.save(shelter);
-        mattermostService.sendMessage("거절되었습니다.");
+        mattermostService.sendColorMessage("거절되었습니다.", "#F6546A");
     }
 
     private Shelter getOrCreateShelterInfo(String memberId, List<MultipartFile> certificateImages, ShelterAuthCond shelterAuthCond) {
