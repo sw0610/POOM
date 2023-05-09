@@ -8,6 +8,7 @@ import com.google.gson.JsonParser;
 import com.poom.backend.api.dto.member.MemberDto;
 import com.poom.backend.api.dto.member.SignupCond;
 import com.poom.backend.api.service.member.MemberService;
+import com.poom.backend.api.service.redis.RedisService;
 import com.poom.backend.config.jwt.TokenProvider;
 import com.poom.backend.db.entity.Member;
 import com.poom.backend.db.repository.MemberRepository;
@@ -31,6 +32,7 @@ public class OauthServiceImpl implements OauthService {
     private final MemberRepository memberRepository;
     private final MemberService memberService;
     private final TokenProvider tokenProvider;
+    private final RedisService redisService;
 
     @Transactional
     public MemberDto login(String providerName, String code) throws JsonProcessingException {
@@ -42,7 +44,7 @@ public class OauthServiceImpl implements OauthService {
         String refreshToken = tokenProvider.createRefreshToken(member);
 
         // redis에 토큰을 저장합니다.
-
+        redisService.saveRefreshToken(member.getId(), refreshToken);
 
         return MemberDto.from(member, accessToken, refreshToken);
     }
@@ -136,5 +138,7 @@ public class OauthServiceImpl implements OauthService {
 
     public void logout(HttpServletRequest request) {
         //ID로 리프레시토큰을 검색해서 삭제합니다.
+        String memberId = memberService.getMemberIdFromHeader(request);
+        redisService.removeRefreshToken(memberId);
     }
 }
