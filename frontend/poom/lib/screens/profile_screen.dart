@@ -23,7 +23,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String email = "songo427@gmail.com";
   String profileImgUrl = "https://avatars.githubusercontent.com/u/38373150?v=4";
   bool isHideMenu = false;
-  int authStatus = 1;
+  int authStatus = 2;
 
   void setHideMenu() {
     setState(() {
