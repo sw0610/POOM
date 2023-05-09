@@ -8,7 +8,6 @@ import com.poom.backend.api.dto.fundraiser.IPFSFundraiserDto;
 import com.poom.backend.api.dto.fundraiser.SmartContractFundraiserDto;
 import com.poom.backend.api.service.ipfs.IpfsService;
 import com.poom.backend.api.service.member.MemberService;
-import com.poom.backend.db.entity.Member;
 import com.poom.backend.db.repository.MemberRepository;
 import com.poom.backend.exception.BadRequestException;
 import com.poom.backend.solidity.donation.DonationContractService;
