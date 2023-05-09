@@ -3,7 +3,6 @@ package com.poom.backend.solidity.fundraiser;
 import com.poom.backend.api.dto.fundraiser.SmartContractFundraiserDto;
 import com.poom.backend.config.Web3jConfig;
 import com.poom.backend.exception.BadRequestException;
-import com.poom.backend.exception.NoContentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.web3j.poomcontract.PoomContract;
@@ -55,14 +54,15 @@ public class FundraiserContractServiceImpl implements FundraiserContractService 
 
         return Optional.ofNullable(fundraiserContractList);
     }
-    
+
     // 모금 상세
     @Override
     public Optional<SmartContractFundraiserDto> getFundraiserDetail(Long fundraiserId){
         SmartContractFundraiserDto fundraiser = null;
         try {
              fundraiser = SmartContractFundraiserDto.fromFundraiserContract(poomContract.getFundraiserDetail(BigInteger.valueOf(fundraiserId)).send());
-             if(fundraiser.getFundraiserId().longValue()!=fundraiserId){
+            System.out.println("-------"+fundraiser.getFundraiserId());
+             if(fundraiser.getFundraiserId()==0){
                  throw new BadRequestException("모금 정보가 없습니다.");
              }
         } catch (Exception e) {
@@ -71,6 +71,16 @@ public class FundraiserContractServiceImpl implements FundraiserContractService 
 
         return Optional.ofNullable(fundraiser);
     }
+
+    @Override
+    public void endFundraiser(Long fundraiserId) {
+        try {
+            poomContract.endFundraiser(BigInteger.valueOf(fundraiserId)).send();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
 
 }

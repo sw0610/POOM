@@ -47,6 +47,7 @@ public class TokenProvider implements InitializingBean {
         Date validity = new Date(now + this.tokenValidityInMilliseconds * times); // 만료 일자를 계산한다.
 
         String authorities = member.getRoles().stream().map(role -> role.name()).collect(Collectors.joining(","));
+        log.info(" member Id = {}", member.getId());
         return Jwts.builder()
                 .setSubject(member.getId()) // meber의 id 값을 기준으로 jwt 토큰을 생성
                 .claim(AUTHORITIES_KEY, authorities) // 권한 목록
@@ -80,7 +81,7 @@ public class TokenProvider implements InitializingBean {
                         .collect(Collectors.toList());
 
         // User 객체 생성
-        User principal = new User(claims.getId(), " ", authorities);
+        User principal = new User(claims.getSubject(), " ", authorities);
         return new UsernamePasswordAuthenticationToken(principal,token, authorities);
     }
 
