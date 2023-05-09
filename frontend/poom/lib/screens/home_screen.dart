@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:poom/screens/regist_screen.dart';
 import 'package:poom/widgets/home/home_dog_card.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -10,13 +11,22 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final String nickname = '유후';
+  String nickname = '';
   final _sortType = ['최신순', '모집완료'];
   String? _selectedSortType;
+
+  void getNickname() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? prefNickname = pref.getString('nickname');
+    setState(() {
+      nickname = prefNickname!;
+    });
+  }
 
   @override
   void initState() {
     super.initState();
+    getNickname();
     setState(() {
       _selectedSortType = _sortType[0];
     });
