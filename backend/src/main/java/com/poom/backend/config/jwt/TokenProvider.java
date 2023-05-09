@@ -82,13 +82,10 @@ public class TokenProvider implements InitializingBean {
 
         // User 객체 생성
         User principal = new User(claims.getSubject(), " ", authorities);
-        log.info("회원의 권한 : {}", authorities.toArray()[0].toString());
-        log.info(claims.getSubject());
         return new UsernamePasswordAuthenticationToken(principal,token, authorities);
     }
 
     public boolean validateToken(String token) { // 토큰을 받아 유효성 검사를 실행
-        log.info("토큰 validation check");
         try {
             // key 값을 사용하여 파싱을 수행
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
