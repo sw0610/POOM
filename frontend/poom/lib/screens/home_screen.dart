@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:poom/models/home_dog_card_model.dart';
 import 'package:poom/screens/regist_screen.dart';
 import 'package:poom/widgets/home/home_dog_card.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -12,9 +13,11 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   String nickname = '';
-  final _sortType = ['최신순', '모집완료'];
+  final _sortType = ['모집 중', '모집완료'];
   String? _selectedSortType;
+  List<HomeDogCardModel> fundraiserList = [];
 
+  //현재 로그인한 유저의 닉네임 가져오기
   void getNickname() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? prefNickname = pref.getString('nickname');
@@ -96,7 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SizedBox(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
-        child: ListView.separated(
+        child: ListView.builder(
           itemBuilder: (context, index) {
             //첫번째 자식요소
             if (index == 0) {
@@ -144,19 +147,23 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               );
             }
-            return const Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: 24,
-              ),
-              child: HomeDogCard(),
-            );
+            return fundraiserList.isNotEmpty
+                ? Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                    ),
+                    child: HomeDogCard(dogInfo: fundraiserList[index - 2]),
+                  )
+                : Padding(
+                    padding: const EdgeInsets.all(24),
+                    child: Container(
+                      height: 120,
+                      alignment: Alignment.center,
+                      child: const Text('등록된 게시글 없음'),
+                    ),
+                  );
           },
-          separatorBuilder: (context, index) {
-            return const SizedBox(
-              height: 0,
-            );
-          },
-          itemCount: 10 + 2,
+          itemCount: fundraiserList.isNotEmpty ? fundraiserList.length + 2 : 3,
         ),
       ),
     );
