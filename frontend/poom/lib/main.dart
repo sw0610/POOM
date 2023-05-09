@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:poom/services/kakao_api.dart';
 import 'package:poom/services/member_api.dart';
 import 'package:poom/widgets/poom_page_state.dart';
 
-void main() {
-  const String nativeAppKey = '0902572b5f1cb7155e2c40b83d1d0fc6';
+void main() async {
+  await dotenv.load(fileName: 'assets/config/.env');
+  String? nativeAppKey = dotenv.env['NATIVE_APP_KEY'];
   KakaoSdk.init(nativeAppKey: nativeAppKey);
   runApp(const MyApp());
 }
