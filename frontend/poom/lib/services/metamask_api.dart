@@ -1,16 +1,8 @@
-import 'package:http/http.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:walletconnect_dart/walletconnect_dart.dart';
-import 'package:web3dart/web3dart.dart';
 
-class MetamaskApi {
-  late final _session, _uri;
-
-  var sepoliaUrl =
-      "https://sepolia.infura.io/v3/5aff15fef45e416db6343a1850399c1c"; // sepolia url 설정
-
-  // walletConnect 연결
-  final connector = WalletConnect(
+class MetamaskUtil {
+  static final WalletConnect _connector = WalletConnect(
     bridge: 'https://bridge.walletconnect.org',
     clientMeta: const PeerMeta(
       name: 'POOM',
@@ -21,64 +13,65 @@ class MetamaskApi {
       ],
     ),
   );
+  static late final SessionStatus _session;
+  static late final String _senderAddress;
 
-  // metamask 연결
-  handleConnectMetamask() async {
-    try {
-      var session = await connector.createSession(onDisplayUri: (uri) async {
-        _uri = uri;
-        await launchUrlString(uri, mode: LaunchMode.externalApplication);
-      });
+  static WalletConnect getConnector() {
+    return _connector;
+  }
 
-      _session = session;
-    } catch (error) {
-      print("connectMetamask Error: $error");
+  // 메타마스크 연결 메서드
+  static void handleConnectMetamask() async {
+    // connected 여부 확인
+    if (!_connector.connected) {
+      try {
+        _session = await _connector.createSession(
+          onDisplayUri: (uri) async {
+            bool isLaunched = await launchUrlString(uri,
+                mode: LaunchMode.externalApplication);
+
+            // metamask 설치여부에 따른 가이드 제공
+            if (!isLaunched) {
+              print("설치 필요 가이드 제공");
+              return;
+            }
+          },
+        );
+        // 지갑주소 및 체인아이디 설정
+        _senderAddress = _session.accounts.first;
+      } catch (e) {
+        // 연결 거절 상태 처리 예정
+        print("[MetamaskUtil] 메타마스크 연결 거절 : $e");
+        return;
+      }
+    }
+
+    // 연결 후 지갑 주소를 받아왔다면 후원 발생
+    if (_senderAddress.isNotEmpty) {
+      handleGenerateSupport();
     }
   }
 
-  // 후원하기
-  handleSupport() async {
-    // 연결이 끊겼다면, 연결 시도
-    if (!connector.connected) {
-      await handleConnectMetamask();
+  // 후원 발생 및 후원 메서드
+  static void handleGenerateSupport() async {
+    EthereumWalletConnectProvider provider =
+        EthereumWalletConnectProvider(_connector);
+
+    try {
+      var result = await provider.sendTransaction(
+        from: _senderAddress,
+        to: "0xb3d8D0965c8Df86DC7f4772115aC03f2D9487CB4",
+        value: BigInt.one,
+      );
+      print("[MetamaskUtil] 후원 성공");
+    } catch (e) {
+      // 후원 거절 상태 처리 예정
+      print("[MetamaskUtil] 후원 실패 $e");
     }
+  }
 
-    // test
-    var httpClient = Client();
-    var ethClient = Web3Client(sepoliaUrl, httpClient);
-    var credentials = EthPrivateKey.fromHex(_session.accounts[0]);
-    var sender = EthereumAddress.fromHex(_session.accounts[0]);
-
-    // 체인 아이디
-    var chainId = await ethClient.getChainId();
-    final chainIdAsInt = chainId.toInt();
-
-    print("chainId $chainId");
-    print("chainIdInt $chainIdAsInt");
-
-    // 가스비용 - 현재 네트워크의 가스비용
-    var gasPrice = await ethClient.getGasPrice();
-    var maxGas = await ethClient.estimateGas();
-
-    // 트랜잭션
-    var transaction = Transaction(
-      from: sender,
-      to: EthereumAddress.fromHex('0xb3d8D0965c8Df86DC7f4772115aC03f2D9487CB4'),
-      gasPrice: gasPrice,
-      maxGas: 100000,
-      value: EtherAmount.inWei(BigInt.one),
-    );
-
-    print("내 잔고 : ${await ethClient.getBalance(sender)}");
-    print("현재 가스 비용 : ${transaction.gasPrice}");
-    print("최대 가스 : ${transaction.maxGas}");
-    print("후원 비용 : ${transaction.value}");
-
-    await ethClient.sendTransaction(
-      credentials,
-      transaction,
-      chainId: chainIdAsInt,
-    );
-    await ethClient.dispose();
+  static void handleDispose() async {
+    await _connector.killSession();
+    print("[MetamaskUtil] WalletConnect 세션 종료");
   }
 }
