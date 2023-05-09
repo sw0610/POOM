@@ -34,7 +34,6 @@ public class MemberController {
     private final RedisService redisService;
     private final MemberRepository memberRepository;
     private final MemberService memberService;
-    private final JwtFilter jwtFilter;
 
     // 1. 로그인 (카카오 소셜 로그인만을 지원합니다.)
     @GetMapping("/member/login")
@@ -123,7 +122,7 @@ public class MemberController {
     })
     public ResponseEntity<?> refreshAccessToken(HttpServletRequest request){
         String memberId = memberService.getMemberIdFromHeader(request);
-        if(!redisService.getRefreshToken(memberId).equals(jwtFilter.resolveToken(request)))
+        if(!redisService.getRefreshToken(memberId).equals(memberService.getToken(request)))
             return ResponseEntity.status(400).build();
         MemberDto dto = oauthService.generateToken(memberRepository.findById(memberId)
                         .orElseThrow(()-> new BadRequestException("member가 없습니다.")));
