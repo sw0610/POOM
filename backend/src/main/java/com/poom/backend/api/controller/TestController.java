@@ -83,7 +83,7 @@ public class TestController {
 
 
     @PostMapping("/test/image")
-    @ApiOperation(value = "토큰 테스트", notes = "<strong>email을 입력받아 테스트를 위한 엑세스 토큰</strong>을 발급합니다.")
+    @ApiOperation(value = "이미지 변환 테스트", notes = "")
     @ApiResponses({
             @ApiResponse(code = 200, message = "OK(조회 성공)"),
             @ApiResponse(code = 500, message = "서버 오류")
