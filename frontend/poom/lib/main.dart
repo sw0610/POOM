@@ -77,7 +77,7 @@ class _MyAppState extends State<MyApp> {
                         ),
                       ),
                       const SizedBox(
-                        height: 180,
+                        height: 220,
                       ),
                       GestureDetector(
                         onTap: doLogin,
