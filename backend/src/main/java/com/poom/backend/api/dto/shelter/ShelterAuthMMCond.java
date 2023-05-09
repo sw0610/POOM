@@ -1,11 +1,9 @@
 package com.poom.backend.api.dto.shelter;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.poom.backend.db.entity.Member;
 import com.poom.backend.db.entity.Shelter;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
@@ -18,6 +16,35 @@ public class ShelterAuthMMCond {
     String color;
     String text;
     List<ShelterAuthMMFieldDto> fields;
+    @JsonProperty("image_url")
+    String imageUrl; // add this field
+    List<ShelterAuthMMActionDto> actions;
+
+    public static ShelterAuthMMCond getActions(String shelterId){
+        ShelterAuthMMCond shelter = new ShelterAuthMMCond();
+        shelter.setText("### 승인하시겠습니까?");
+        shelter.setActions(ShelterAuthMMActionDto.getActions(shelterId));
+        return shelter;
+    }
+
+    public static ShelterAuthMMCond getSimpleMsg(String msg){
+        ShelterAuthMMCond shelter = new ShelterAuthMMCond();
+        shelter.setText("### "+msg);
+        return shelter;
+    }
+
+    public ShelterAuthMMCond(){
+        this.color = "#FF8000";
+    }
+
+    public ShelterAuthMMCond(String imageUrl, int idx){
+//        this.fallback = "test";
+        if(idx == 0){
+            this.text = "### 심사 서류 정보 \n";
+        }
+        this.color = "#FF8000";
+        this.imageUrl = imageUrl;
+    }
 
     public ShelterAuthMMCond(Member member, Shelter shelter){
         this.fallback = "test";
@@ -41,7 +68,7 @@ public class ShelterAuthMMCond {
         sb.append(member.getNickname());
         sb.append("**");
         sb.append("님이 보호소 등록을 요청하셨습니다. \n\n\n ");
-        sb.append("### 심사 요청 요청 정보 \n");
+        sb.append("### 심사 요청 요약 정보 \n");
         return sb.toString();
     }
 }
