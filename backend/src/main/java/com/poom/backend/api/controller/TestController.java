@@ -143,4 +143,14 @@ public class TestController {
 
         mattermostService.sendMetaMostMessage(shelter);
     }
+
+    @PostMapping("/fundraiser/test")
+    @ApiOperation(value = "보호소 권한 테스트", notes = "")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "OK(조회 성공)"),
+            @ApiResponse(code = 500, message = "서버 오류")
+    })
+    public void shelterTest(){
+        log.info("왔어요");
+    }
 }

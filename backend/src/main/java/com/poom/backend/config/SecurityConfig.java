@@ -77,9 +77,10 @@ public class SecurityConfig {
                 .authorizeRequests() // HttpServletRequest를 사용하는 요청들에 대한 접근 제한을 설정하겠다는 의미
                 .antMatchers("/authenticate","/v2/api-docs/**", "/swagger-ui/**", "/swagger-resources/**").permitAll()
                 // 인증된 사용자만 접근
-                .antMatchers("/api/auth/**").authenticated()
+                .antMatchers("/auth/**").authenticated()
+                .antMatchers("/fundraiser/**").hasAuthority("ROLE_SHELTER")
                 // 누구나 접근 가능하도록 설정
-                .antMatchers("/api/**").permitAll() // authenticated로 차후 변경
+//                .antMatchers("/api/test/**").permitAll() // authenticated로 차후 변경
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                 .anyRequest().permitAll()
                 //  CORS(Cross-Origin Resource Sharing)를 허용
