@@ -1,11 +1,14 @@
 package com.poom.backend.api.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.filter.TokenFilter;
 import com.poom.backend.api.dto.member.LoginRes;
 import com.poom.backend.api.dto.member.MemberDto;
 import com.poom.backend.api.service.member.MemberService;
 import com.poom.backend.api.service.oauth.OauthServiceImpl;
 import com.poom.backend.api.service.redis.RedisService;
+import com.poom.backend.config.jwt.JwtFilter;
+import com.poom.backend.config.jwt.TokenProvider;
 import com.poom.backend.db.repository.MemberRepository;
 import com.poom.backend.exception.BadRequestException;
 import io.swagger.annotations.Api;
@@ -31,6 +34,7 @@ public class MemberController {
     private final RedisService redisService;
     private final MemberRepository memberRepository;
     private final MemberService memberService;
+    private final JwtFilter jwtFilter;
 
     // 1. 로그인 (카카오 소셜 로그인만을 지원합니다.)
     @GetMapping("/member/login")
@@ -113,12 +117,14 @@ public class MemberController {
     @ApiOperation(value = "엑세스 토큰 재발급", notes = "<strong>멀티 파트 파일</strong>의 형태로 입력받아 회원의 닉네임, 프로필 사진을 변경한다.")
     @ApiResponses({
             @ApiResponse(code = 200, message = "OK(발급 성공)"),
-            @ApiResponse(code = 400, message = "BAD REQUEST(요청 실패)"),
+            @ApiResponse(code = 400, message = "BAD REQUEST(요청 실패, 서버에 저장된 refresh 토큰과 불일치)"),
             @ApiResponse(code = 401, message = "UNAUTHORIZED(권한 없음)"),
             @ApiResponse(code = 500, message = "서버에러")
     })
     public ResponseEntity<?> refreshAccessToken(HttpServletRequest request){
         String memberId = memberService.getMemberIdFromHeader(request);
+        if(!redisService.getRefreshToken(memberId).equals(jwtFilter.resolveToken(request)))
+            return ResponseEntity.status(400).build();
         MemberDto dto = oauthService.generateToken(memberRepository.findById(memberId)
                         .orElseThrow(()-> new BadRequestException("member가 없습니다.")));
         redisService.saveRefreshToken(memberId, dto.getRefreshToken());

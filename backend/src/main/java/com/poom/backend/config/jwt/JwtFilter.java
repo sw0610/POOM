@@ -56,7 +56,7 @@ public class JwtFilter extends GenericFilterBean {
         filterChain.doFilter(servletRequest, servletResponse);
     }
 
-    private String resolveToken(HttpServletRequest request) { // request header에서 token 정보를 가져옴
+    public String resolveToken(HttpServletRequest request) { // request header에서 token 정보를 가져옴
         String bearerToken = request.getHeader(AUTH_HEADER);
 //      System.out.println(bearerToken);
         // ACCESS_HEADER 상수로 정의된 문자열을 사용하여 HTTP request header에서 "Bearer "로 시작하는 Authorization 헤더를 검색합니다.
