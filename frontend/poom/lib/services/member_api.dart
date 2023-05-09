@@ -37,7 +37,8 @@ class MemberApi {
 
         if (response.statusCode == 200) {
           SharedPreferences prefs = await SharedPreferences.getInstance();
-          await prefs.setString('nickname', response.data);
+          await prefs.setString('nickname', response.data['nickname']);
+          await prefs.setBool('isShelter', response.data['shelter']);
           await prefs.setString(
               'accesstoken', response.headers['accesstoken']![0]);
           await prefs.setString(
