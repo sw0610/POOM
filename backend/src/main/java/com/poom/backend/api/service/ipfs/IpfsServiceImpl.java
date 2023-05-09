@@ -45,7 +45,7 @@ public class IpfsServiceImpl implements IpfsService{
             throw new RuntimeException(e);
         }
         Multihash multihash = merkleNode.hash;
-        return String.valueOf(multihash);
+        return hashToPublicUrl(multihash.toString());
     }
 
     @Override
@@ -81,7 +81,7 @@ public class IpfsServiceImpl implements IpfsService{
         }
         if(result.size() == 0) throw new BadRequestException();
         Multihash hash = result.get(0).hash;
-        return hashToUrl(hash.toString());
+        return hashToPublicUrl(hash.toString());
     }
 
     @Override
@@ -100,9 +100,13 @@ public class IpfsServiceImpl implements IpfsService{
     public String urlToHash(String url) {
         return url.substring(url.indexOf("ipfs/") + 5);
     }
-
+    // https://ipfs.io/ipfs/QmV637KHwPNyd7YzgSaL5Fdn6rk6AsD1cKFbFm3yYmt7QH?filename=KakaoTalk_20230421_174005964.jpg
     public String hashToUrl(String hash){
         return "http://"+gateway+":"+gatewayPort+"/ipfs/"+hash;
+    }
+
+    public String hashToPublicUrl(String hash){
+        return "https://ipfs.io/ipfs/"+hash;
     }
 }
 
