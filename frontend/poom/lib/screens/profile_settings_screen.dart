@@ -12,6 +12,7 @@ class ProfileSettingsScreen extends StatelessWidget {
       BuildContext context, String title, String guideMessage) {
     return showDialog<String>(
       context: context,
+      barrierDismissible: false,
       builder: (context) => AlertDialog(
         insetPadding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
         elevation: 1,
