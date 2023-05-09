@@ -3,6 +3,7 @@ package com.poom.backend.api.service.member;
 import com.poom.backend.api.dto.member.SignupCond;
 import com.poom.backend.api.dto.member.MemberInfoRes;
 import com.poom.backend.api.service.ipfs.IpfsService;
+import com.poom.backend.config.jwt.JwtFilter;
 import com.poom.backend.config.jwt.TokenProvider;
 import com.poom.backend.db.entity.Member;
 import com.poom.backend.db.entity.Shelter;
