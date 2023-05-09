@@ -55,25 +55,48 @@ class _MyAppState extends State<MyApp> {
               );
             } else {
               return Scaffold(
-                body: Center(
-                  child: GestureDetector(
-                    onTap: doLogin,
-                    child: Container(
-                      height: 50,
-                      width: MediaQuery.of(context).size.width - 200,
-                      decoration: const BoxDecoration(
-                        color: Colors.yellow,
+                body: Container(
+                  alignment: Alignment.center,
+                  color: Theme.of(context).primaryColor,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        'assets/images/img_logo.png',
+                        width: 140,
                       ),
-                      child: const Text('카카오로 로그인 하기'),
-                    ),
+                      const SizedBox(
+                        height: 24,
+                      ),
+                      const Text(
+                        'POOM',
+                        style: TextStyle(
+                          color: Color(0xFFFFFFFF),
+                          fontSize: 30,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 180,
+                      ),
+                      GestureDetector(
+                        onTap: doLogin,
+                        child: Image.asset(
+                          'assets/images/img_kakaologin.png',
+                          width: 200,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               );
             }
           } else {
-            return const Scaffold(
-              body: Center(
-                child: Text('Loading...'),
+            return Scaffold(
+              body: Container(
+                color: Theme.of(context).primaryColor,
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
               ),
             );
           }
