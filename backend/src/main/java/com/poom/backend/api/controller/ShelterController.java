@@ -51,7 +51,7 @@ public class ShelterController {
     })
     public ResponseEntity<?> requestShelterAuth(HttpServletRequest request,
                                                 @RequestPart("certificateImages") List<MultipartFile> certificateImages,
-                                                @RequestBody ShelterAuthCond shelterAuthCond){
+                                                @RequestPart("cond") ShelterAuthCond shelterAuthCond){
         shelterService.requestShelterAuth(request, certificateImages, shelterAuthCond);
         return ResponseEntity.status(200).build();
     }
