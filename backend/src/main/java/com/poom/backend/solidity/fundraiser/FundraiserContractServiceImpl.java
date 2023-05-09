@@ -3,7 +3,6 @@ package com.poom.backend.solidity.fundraiser;
 import com.poom.backend.api.dto.fundraiser.SmartContractFundraiserDto;
 import com.poom.backend.config.Web3jConfig;
 import com.poom.backend.exception.BadRequestException;
-import com.poom.backend.exception.NoContentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.web3j.poomcontract.PoomContract;
