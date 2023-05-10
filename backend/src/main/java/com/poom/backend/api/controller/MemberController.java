@@ -105,8 +105,8 @@ public class MemberController {
             @ApiResponse(code = 500, message = "서버에러")
     })
     public ResponseEntity<?> updateMemberInfo(HttpServletRequest request,
-                                              @RequestPart("profileImage")MultipartFile profileImage,
-                                              @RequestParam String nickname){
+                                              @RequestPart(name = "profileImage", required = false)MultipartFile profileImage,
+                                              @RequestParam(required = false) String nickname){
         return ResponseEntity.status(200)
                 .body(memberService.updateMemberInfo(request, profileImage, nickname));
     }
