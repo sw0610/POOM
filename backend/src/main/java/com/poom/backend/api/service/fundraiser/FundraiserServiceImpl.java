@@ -7,7 +7,6 @@ import com.poom.backend.api.service.ipfs.IpfsService;
 import com.poom.backend.api.service.member.MemberService;
 import com.poom.backend.db.entity.Shelter;
 import com.poom.backend.db.repository.ShelterRepository;
-import com.poom.backend.enums.DogGender;
 import com.poom.backend.exception.BadRequestException;
 import com.poom.backend.solidity.fundraiser.FundraiserContractService;
 import lombok.RequiredArgsConstructor;
@@ -72,7 +71,7 @@ public class FundraiserServiceImpl implements FundraiserService{
                 FundraiserDto fundraiserDto = FundraiserDto.builder()
                         .fundraiserId(smartContractFundraiserDto.getFundraiserId())
                         .dogName(ipfsFundraiserDto.getDogName())
-                        .dogGender(ipfsFundraiserDto.getDogGender().toString())
+                        .dogGender(ipfsFundraiserDto.getDogGender())
                         .mainImgUrl(ipfsFundraiserDto.getMainImage())
                         .nftImgUrl(ipfsFundraiserDto.getNftImage())
                         .endDate(ipfsFundraiserDto.getEndDate())
@@ -87,7 +86,12 @@ public class FundraiserServiceImpl implements FundraiserService{
 
         }
 
-        MyFundraiserListRes myFundraiserListRes = new MyFundraiserListRes(shelter.getShelterName(), fundraiserDtoList);
+        MyFundraiserListRes myFundraiserListRes = MyFundraiserListRes.builder()
+                .shelterName(shelter.getShelterName())
+                .hasMore(!(listLength==smartContractFundraiserDtoList.size()))
+                .fundraisers(fundraiserDtoList)
+                .build();
+
 
         return myFundraiserListRes;
     }
@@ -124,7 +128,7 @@ public class FundraiserServiceImpl implements FundraiserService{
     }
 
     @Override
-    public List<FundraiserDto> getFundraiserList(int size, int page, boolean isClosed) {
+    public FundraiserListRes getFundraiserList(int size, int page, boolean isClosed) {
         // 스마트 컨트랙트 호출 부분
         List<SmartContractFundraiserDto> smartContractFundraiserDtoList= fundraiserContractService.getFundraiserList()
                 .orElseThrow(()->new RuntimeException());
@@ -162,9 +166,9 @@ public class FundraiserServiceImpl implements FundraiserService{
                 // FundraiserDto에 담기
                 FundraiserDto fundraiserDto = FundraiserDto.builder()
                         .fundraiserId(smartContractFundraiserDto.getFundraiserId())
-                        .shelterName("shelterName")
+                        .shelterName("shelterName") // TODO: 보호소 이름 받아야함
                         .dogName(ipfsFundraiserDto.getDogName())
-                        .dogGender(ipfsFundraiserDto.getDogGender().toString())
+                        .dogGender(ipfsFundraiserDto.getDogGender())
                         .mainImgUrl(ipfsFundraiserDto.getMainImage())
                         .nftImgUrl(ipfsFundraiserDto.getNftImage())
                         .endDate(ipfsFundraiserDto.getEndDate())
@@ -178,8 +182,13 @@ public class FundraiserServiceImpl implements FundraiserService{
 
 
         }
+        FundraiserListRes fundraiserDto = FundraiserListRes.builder()
+                .hasMore(!(listLength==smartContractFundraiserDtoList.size()))
+                .fundraiser(fundraiserDtoList)
+                .build();
 
-        return fundraiserDtoList;
+
+        return fundraiserDto;
     }
 
     @Override
@@ -207,7 +216,7 @@ public class FundraiserServiceImpl implements FundraiserService{
                         .mainImgUrl(ipfsFundraiserDto.getMainImage())
                         .nftImgUrl(ipfsFundraiserDto.getNftImage())
                         .dogImgUrls(ipfsFundraiserDto.getDogImage())
-                        .dogGender(ipfsFundraiserDto.getDogGender().equals(DogGender.FEMALE)?0:1)
+                        .dogGender(ipfsFundraiserDto.getDogGender())
                         .dogAge(ipfsFundraiserDto.getDogAge())
                         .ageIsEstimated(ipfsFundraiserDto.getAgeIsEstimated())
                         .dogFeature(ipfsFundraiserDto.getDogFeature())
