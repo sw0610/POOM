@@ -87,12 +87,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
           children: [
             SizedBox(
               height: 286,
-              child: ProfileForm(
-                nickname: nickname,
-                email: email,
-                profileImgUrl: profileImgUrl,
-                setHideMenu: setHideMenu,
-              ),
+              child: FutureBuilder(
+                  future: user,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return ProfileForm(
+                        nickname: snapshot.data!.nickname,
+                        email: snapshot.data!.email,
+                        profileImgUrl: snapshot.data!.profileImgUrl,
+                        setHideMenu: setHideMenu,
+                      );
+                    }
+                    return ProfileForm(
+                      nickname: "",
+                      email: "",
+                      profileImgUrl: "",
+                      setHideMenu: setHideMenu,
+                    );
+                  }),
             ),
             Column(
               children: [

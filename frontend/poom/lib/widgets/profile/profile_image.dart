@@ -7,8 +7,13 @@ import 'package:image_picker/image_picker.dart';
 import 'package:shimmer/shimmer.dart';
 
 class ProfileImage extends StatefulWidget {
-  const ProfileImage({super.key, required this.isEditMode});
+  const ProfileImage({
+    super.key,
+    required this.profileImgUrl,
+    required this.isEditMode,
+  });
 
+  final String profileImgUrl;
   final bool isEditMode;
 
   @override
@@ -63,8 +68,7 @@ class _ProfileImageState extends State<ProfileImage> {
                     shape: BoxShape.circle,
                   ),
                   child: CachedNetworkImage(
-                    imageUrl:
-                        "https://img.freepik.com/premium-vector/cute-coton-de-tulear-puppy-cartoon-vector-illustration_42750-1173.jpg",
+                    imageUrl: widget.profileImgUrl,
                     width: 100,
                     height: 100,
                     placeholder: (context, url) => Shimmer.fromColors(

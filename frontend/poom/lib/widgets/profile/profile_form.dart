@@ -33,13 +33,13 @@ class _ProfileFormState extends State<ProfileForm> {
 
   // form key 설정
   final _formKey = GlobalKey<FormState>();
-  late String _nickname, _profileImgUrl;
+  // late String _nickname, _profileImgUrl;
 
   @override
   void initState() {
     super.initState();
-    _nickname = widget.nickname;
-    _profileImgUrl = widget.profileImgUrl;
+    // _nickname = widget.nickname;
+    // _profileImgUrl = widget.profileImgUrl;
   }
 
   @override
@@ -65,7 +65,8 @@ class _ProfileFormState extends State<ProfileForm> {
                 ),
               ],
             ),
-            ProfileImage(isEditMode: isEditMode),
+            ProfileImage(
+                profileImgUrl: widget.profileImgUrl, isEditMode: isEditMode),
             const SizedBox(
               height: 20,
             ),
@@ -74,7 +75,7 @@ class _ProfileFormState extends State<ProfileForm> {
                     width: 312,
                     height: 48,
                     child: TextFormField(
-                      initialValue: _nickname,
+                      initialValue: widget.nickname,
                       decoration: InputDecoration(
                         filled: true,
                         fillColor: _inputBackgroundColor,
@@ -98,7 +99,7 @@ class _ProfileFormState extends State<ProfileForm> {
                     ),
                   )
                 : Text(
-                    _nickname,
+                    widget.nickname,
                     style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w500,
