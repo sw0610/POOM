@@ -6,6 +6,8 @@ import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.*;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
+
 @Aspect
 @Component
 @Slf4j
@@ -33,7 +35,9 @@ public class ControllerAspect {
         if(args == null) return;
         int cnt = 1;
         for (Object arg : args) {
-            log.info("파라미터 {} | class : {} | 값 : {}",cnt++, arg.getClass().getSimpleName(), arg);
+            if(!Objects.isNull(arg)){
+                log.info("파라미터 {} | class : {} | 값 : {}",cnt++, arg.getClass().getSimpleName(), arg);
+            }
         }
     }
 
