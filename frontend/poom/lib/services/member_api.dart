@@ -1,17 +1,18 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
+import 'package:poom/services/auth_dio.dart';
 import 'package:poom/services/kakao_api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class MemberApi {
   static const String baseUrl = 'https://k8a805.p.ssafy.io/api';
+  static const storage = FlutterSecureStorage();
 
-  static Future<void> getMemberInfo() async {
+  static Future<void> getMemberInfo(BuildContext context) async {
     try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-
-      var dio = Dio();
-      dio.options.headers['Authorization'] = prefs.getString('accesstoken');
+      var dio = await authDio(context);
       var response = await dio.get('$baseUrl/members');
       print('회원정보 가져오기=================');
       print(response);
@@ -39,12 +40,14 @@ class MemberApi {
           SharedPreferences prefs = await SharedPreferences.getInstance();
           await prefs.setString('nickname', response.data['nickname']);
           await prefs.setBool('isShelter', response.data['shelter']);
-          await prefs.setString(
-              'accesstoken', response.headers['accesstoken']![0]);
-          await prefs.setString(
-              'refreshtoken', response.headers['refreshtoken']![0]);
 
-          print('AccessToken: ${prefs.getString('accesstoken')}');
+          await storage.write(
+              key: 'accesstoken', value: response.headers['accesstoken']![0]);
+
+          await storage.write(
+              key: 'refreshtoken', value: response.headers['refreshtoken']![0]);
+          var accesstoken = await storage.read(key: 'accesstoken');
+          print('Access token: $accesstoken');
 
           return true;
         } else {
