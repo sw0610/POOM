@@ -57,7 +57,10 @@ public class NftServiceImpl implements NFTService{
         String[] imgUrls = new String[endIdx-startIdx];
 
         for(int i=startIdx;i<endIdx;i++){
-            imgUrls[i-startIdx] = smartContractNftDto.get(i).getImageUrl();
+
+            imgUrls[i-startIdx] = smartContractNftDto.get(i).getImageUrl().replaceFirst("ipfs://", "https://ipfs.io/ipfs/");
+
+
         }
 
         String nickname = memberRepository.findById(memberId).orElseThrow(()->new BadRequestException("회원 정보가 없습니다."))
@@ -96,21 +99,6 @@ public class NftServiceImpl implements NFTService{
             int myRank = donationService.getMyRank(fundraiserId, memberId); // 내 등수 가져오기
             Double myAmount = donationService.getMyAmount(fundraiserId, memberId); // 내 후원 금액 가져오기
 
-            MultipartFile nftImageFile = ipfsService.downloadImage(fundraiserDto.getNftImgUrl());// 이미지 url->multipart file
-
-            // 이미지 파일 읽기
-            BufferedImage originalImage = null;
-            try {
-                originalImage = ImageIO.read(nftImageFile.getInputStream());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-
-            // 글자 쓰기
-            Graphics2D graphics = originalImage.createGraphics();
-            graphics.setColor(Color.GREEN);
-            graphics.setFont(new Font("Malgun Gothic", Font.BOLD, 30));
-            graphics.drawString("#" + myRank, 10, 30);
 
             // 이미지 파일 저장
 //            ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -153,6 +141,30 @@ public class NftServiceImpl implements NFTService{
 
 
     }
+
+    
+    // nft 이미지 url과 자신의 순위를 받아서 nft 이미지 생성
+    public String createNftImage(String imageUrl, int rank){
+        MultipartFile nftImageFile = ipfsService.downloadImage(imageUrl);// 이미지 url->multipart file
+
+        // 이미지 파일 읽기
+        BufferedImage originalImage = null;
+        try {
+            originalImage = ImageIO.read(nftImageFile.getInputStream());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        // 글자 쓰기
+        Graphics2D graphics = originalImage.createGraphics();
+        graphics.setColor(Color.GREEN);
+        graphics.setFont(new Font("Malgun Gothic", Font.BOLD, 30));
+        graphics.drawString("#" + rank, 10, 30);
+
+        return null;
+
+    }
+
 
 
 

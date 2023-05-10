@@ -23,6 +23,7 @@ public class FundraiserDonationDto {
     private String profileImgUrl;
     private Double donationAmount;
 
+    // 테스트시 바꿔야함
     public static FundraiserDonationDto toFundraiserDonationDto(SmartContractDonationDto donationDto, Member member){
         return FundraiserDonationDto.builder()
                 .memberId(member.getId())

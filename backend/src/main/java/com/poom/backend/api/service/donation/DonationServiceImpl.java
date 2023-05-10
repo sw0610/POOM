@@ -90,8 +90,6 @@ public class DonationServiceImpl implements DonationService {
                 .collect(Collectors.toList());
 
 
-        // 최대 10개 반환
-        // 어떤 기준으로 정렬 해야하는지??
         List<FundraiserDonationDto> fundraiserDonationList = donationList.stream()
 //                .flatMap(List::stream)
                 .map(donation ->
@@ -100,6 +98,8 @@ public class DonationServiceImpl implements DonationService {
                                 ))
                 .collect(Collectors.toList());
         ;
+
+
 
         return fundraiserDonationList;
     }
