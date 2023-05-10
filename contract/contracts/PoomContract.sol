@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0 <0.9.0;
 
-import "./Fundraiser.sol";
-import "./Donation.sol";
-import "./Nft.sol";
+import "./FundraiserContract.sol";
+import "./DonationContract.sol";
+import "./NftContract.sol";
 
 contract PoomContract is FundraiserProcess, DonationProcess, NftProcess{
 
@@ -11,25 +11,25 @@ contract PoomContract is FundraiserProcess, DonationProcess, NftProcess{
         fundraiser
     */
     // 후원 요청 등록
-    function createFundraiser(Fundraiser memory _fundraiser) external returns(Fundraiser memory){
-        return _createFundraiser(_fundraiser);
+    function createFundraiser(Fundraiser memory _fundraiser) external{
+        _createFundraiser(_fundraiser);
     }
 
     // 모든 후원 요청 목록 조회
-    function getFundraiserList(bool _isEnded, uint64 _page, uint64 _size) external view returns(Fundraiser[] memory){
-        return _getFundraiserList(_isEnded, _page, _size);
-    }
-
-    // 내 후원 요청 목록 조회
-    function getMyFundraiserList(string memory _shelterId, bool _isEnded, uint64 _page, uint64 _size) external view returns (Fundraiser[] memory){
-        return _getMyFundraiserList(_shelterId, _isEnded, _page, _size);
+    function getFundraiserList() external view returns(Fundraiser[] memory){
+        return _getFundraiserList();
     }
 
     // 후원 요청 상세 조회
-    function getFundraiserDetail(uint64 _fundraiserId) external view returns(Fundraiser memory, Donation[] memory){
+    function getFundraiserDetail(uint64 _fundraiserId) external view returns(Fundraiser memory){
         Fundraiser memory fundraiser = _getFundraiserDetail(_fundraiserId);
-        Donation[] memory donationList = _getDonationList(_fundraiserId);
-        return (fundraiser, donationList);
+        return fundraiser;
+    }
+
+    // 한 후원에 대한 후원자 목록 조회
+    function getDonationList() external view returns(Donation[] memory){
+        Donation[] memory donationList = _getDonationList();
+        return donationList;
     }
 
     // 후원 요청 종료
@@ -38,32 +38,42 @@ contract PoomContract is FundraiserProcess, DonationProcess, NftProcess{
         _setNftFundraiserEnded(_fundraiserId); // isIssued 1로 변경
     }
 
+
     /*
         Donation
     */
-    // 나의 후원 목록 조회
-    function getMyDonationList(string memory _memberId, uint64 _page, uint64 _size) external view returns(Donation[] memory){
-        Donation[] memory myDonationList = _getMyDonationList(_memberId, _page, _size);
-        return myDonationList;
-    }
+
     // 후원
-    function donate(uint64 _fundraiserId, string memory _memberId, string memory _donateDate) external payable returns (uint64){
-        return _donate(_fundraiserId, _memberId, _donateDate);
+    function donate(uint64 _fundraiserId, string memory _memberId, uint256 _donationTime) external payable{
+        _donate(_fundraiserId, _memberId, _donationTime, msg.value);
     }
+
+    function setDonationSort(uint64 _fundraiserId, string memory _sortHash) external{
+        _setDonationSort(_fundraiserId, _sortHash);
+    }
+
+    function getDonationSort(uint64 _fundraiserId) external view returns(string memory){
+        return _getDonationSort(_fundraiserId);
+    }
+
+
+    function getDonation(uint64 _id) external view returns (Donation memory){
+        return _getDonation(_id);
+    }
+
 
 
     /*
         NFT
     */
     // NFT 리스트 조회
-    function getNftList(string memory _memberId,  uint64 _page, uint64 _size) external view returns(NFT[] memory){
-        return _getNftList(_memberId, _page, _size);
+    function getNftList(string memory _memberId) external view returns(NFT[] memory){
+        return _getNftList(_memberId);
     }
 
     // 마감된 후원 NFT 발급
-    function mintNft(string memory _memberId, uint64 _fundraiserId,  uint64 _donationId, string memory _metadataUri, string memory _imageUrl) external{
-        _mintNft(_memberId, _fundraiserId, _donationId, _metadataUri, _imageUrl);
-        _setNftIssued(_donationId);
+    function mintNft(NFT memory _nft, address _memberAddress, string memory _memberId, uint64 _donationId, uint64 _fundraiserId) external{
+        _mintNft(_nft, _memberAddress, _memberId, _donationId, _fundraiserId);
     }
 
 }

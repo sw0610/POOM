@@ -1,13 +1,16 @@
 package com.poom.backend.api.dto.fundraiser;
 
 import com.poom.backend.enums.DogGender;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class OpenFundraiserCond {
 //    {
 //        "dogName" : String,
@@ -20,13 +23,16 @@ public class OpenFundraiserCond {
 //        "dogFeature" : Text,
 //            "walletAddress" : String,
 //    }
-    private String shelterId;
     private String shelterEthWalletAddress;
     private String dogName;
+    @Builder.Default
+    private LocalDateTime startDate = LocalDateTime.now();
     private LocalDate endDate;
-    private DogGender dogGender;
+    private int dogGender;
     private int dogAge;
     private boolean ageIsEstimated;
     private Double targetAmount;
     private String dogFeature;
+
+
 }
