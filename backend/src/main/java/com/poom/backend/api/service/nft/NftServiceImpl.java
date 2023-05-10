@@ -35,7 +35,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class NftServiceImpl implements NFTService{
+public class NftServiceImpl implements NFTService {
 
     private final NftContractService nftContractService;
     private final MemberRepository memberRepository;
@@ -50,27 +50,26 @@ public class NftServiceImpl implements NFTService{
     public NftListRes getNFTList(int size, int page, String memberId) {
 
         List<SmartContractNftDto> smartContractNftDto = nftContractService.getNftList(memberId)
-            .orElseThrow(()->new RuntimeException());
+                .orElseThrow(() -> new RuntimeException());
 
-        int startIdx = size*page;
+        int startIdx = size * page;
         int endIdx = startIdx + size > smartContractNftDto.size() ? smartContractNftDto.size() : startIdx + size;
-        String[] imgUrls = new String[endIdx-startIdx];
+        String[] imgUrls = new String[endIdx - startIdx];
 
-        for(int i=startIdx;i<endIdx;i++){
+        for (int i = startIdx; i < endIdx; i++) {
 
-            imgUrls[i-startIdx] = smartContractNftDto.get(i).getImageUrl().replaceFirst("ipfs://", "https://ipfs.io/ipfs/");
-
-
+            imgUrls[i - startIdx] = smartContractNftDto.get(i).getImageUrl().replaceFirst("ipfs://", "https://ipfs.io/ipfs/");
         }
 
-        String nickname = memberRepository.findById(memberId).orElseThrow(()->new BadRequestException("회원 정보가 없습니다."))
-            .getNickname();
+        String nickname = memberRepository.findById(memberId).orElseThrow(() -> new BadRequestException("회원 정보가 없습니다."))
+                .getNickname();
 
         NftListRes nftListRes = NftListRes.builder()
-            .nickname(nickname)
-            .nftCount(smartContractNftDto.size())
-            .nftImgUrls(imgUrls)
-            .build();
+                .hasMore(!(endIdx == smartContractNftDto.size()))
+                .nickname(nickname)
+                .nftCount(smartContractNftDto.size())
+                .nftImgUrls(imgUrls)
+                .build();
 
         return nftListRes;
     }
@@ -86,9 +85,9 @@ public class NftServiceImpl implements NFTService{
         FundraiserDetailRes fundraiserDto = fundraiserService.getFundraiserDetail(fundraiserId);
 
         // 종료 되었고 후원 순위 해시 있는지 체크하기
-        if(fundraiserDto.getIsClosed()){
+        if (fundraiserDto.getIsClosed()) {
             String hashString = donationContractService.getDonationSort(fundraiserId)
-                    .orElseThrow(()->new RuntimeException());
+                    .orElseThrow(() -> new RuntimeException());
 
             if (hashString.equals("none")) { // 없으면
                 hashString = donationService.setDonationSort(fundraiserId); // 생성하기
@@ -106,8 +105,8 @@ public class NftServiceImpl implements NFTService{
 
             String myNftImageUrl = fundraiserDto.getNftImgUrl(); // 이미지 url
             String dogName = fundraiserDto.getDogName();
-            String description = member.get().getNickname() + "님께서 " + dogName +"에게 "
-                    +myAmount+" ETH 후원한 내역에 대한 후원 증서입니다.";
+            String description = member.get().getNickname() + "님께서 " + dogName + "에게 "
+                    + myAmount + " ETH 후원한 내역에 대한 후원 증서입니다.";
 
 
             // nft data json 생성
@@ -118,7 +117,7 @@ public class NftServiceImpl implements NFTService{
                     .build();
             String nftJson = null;
             try {
-                nftJson = "ipfs://"+ipfsService.uploadJson(nftMetadata.nftMetadataToJson());
+                nftJson = "ipfs://" + ipfsService.uploadJson(nftMetadata.nftMetadataToJson());
             } catch (JsonProcessingException e) {
                 throw new RuntimeException(e);
             }
@@ -126,15 +125,14 @@ public class NftServiceImpl implements NFTService{
             // 발급 전에 서명 확인
             boolean verify = memberService.verifySignature(nftIssueCond.getMemberAddress(), nftIssueCond.getMemberSignature(), nftIssueCond.getSignMessage());
             // 발급하기
-            if(verify){
+            if (verify) {
                 SmartContractNftDto smartContractNftDto = SmartContractNftDto.builder()
-                                .imageUrl(myNftImageUrl)
-                                .metadataUri(nftJson)
-                                .build();
+                        .imageUrl(myNftImageUrl)
+                        .metadataUri(nftJson)
+                        .build();
 
 
-
-            nftContractService.mintNft(smartContractNftDto, memberId, nftIssueCond.getMemberAddress(), nftIssueCond.getDonationId(), fundraiserId);
+                nftContractService.mintNft(smartContractNftDto, memberId, nftIssueCond.getMemberAddress(), nftIssueCond.getDonationId(), fundraiserId);
             }
 
         }
@@ -142,9 +140,9 @@ public class NftServiceImpl implements NFTService{
 
     }
 
-    
+
     // nft 이미지 url과 자신의 순위를 받아서 nft 이미지 생성
-    public String createNftImage(String imageUrl, int rank){
+    public String createNftImage(String imageUrl, int rank) {
         MultipartFile nftImageFile = ipfsService.downloadImage(imageUrl);// 이미지 url->multipart file
 
         // 이미지 파일 읽기
@@ -164,8 +162,6 @@ public class NftServiceImpl implements NFTService{
         return null;
 
     }
-
-
 
 
 }
