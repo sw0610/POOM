@@ -26,7 +26,7 @@ public class FundraiserDto {
 
     private Long fundraiserId;
     private String dogName;
-    private String dogGender;
+    private int dogGender;
     private String mainImgUrl;
     private String nftImgUrl;
     private String shelterName;
