@@ -13,23 +13,26 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   String nickname = '';
+  bool isShelter = false;
   final _sortType = ['모집 중', '모집완료'];
   String? _selectedSortType;
   List<HomeDogCardModel> fundraiserList = [];
 
   //현재 로그인한 유저의 닉네임 가져오기
-  void getNickname() async {
+  void getNicknameAndIsShelter() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? prefNickname = pref.getString('nickname');
+    bool? prefIsShelter = pref.getBool('isShelter');
     setState(() {
       nickname = prefNickname!;
+      isShelter = prefIsShelter!;
     });
   }
 
   @override
   void initState() {
     super.initState();
-    getNickname();
+    getNicknameAndIsShelter();
     setState(() {
       _selectedSortType = _sortType[0];
     });
@@ -83,16 +86,17 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
           actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 8.0),
-              child: IconButton(
-                onPressed: goRegistScreen,
-                icon: const Icon(
-                  Icons.add,
-                  color: Color(0xFF333333),
+            if (isShelter)
+              Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: IconButton(
+                  onPressed: goRegistScreen,
+                  icon: const Icon(
+                    Icons.add,
+                    color: Color(0xFF333333),
+                  ),
                 ),
-              ),
-            )
+              )
           ],
         ),
       ),
