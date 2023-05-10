@@ -11,7 +11,7 @@ public interface FundraiserService {
 
     void createFundraiser(HttpServletRequest request, List<MultipartFile> dogImages, MultipartFile nftImage, MultipartFile mainImage, OpenFundraiserCond openFundraiserCond);
 
-    List<FundraiserDto> getFundraiserList(int size, int page, boolean isClosed);
+    FundraiserListRes getFundraiserList(int size, int page, boolean isClosed);
 
     FundraiserDetailRes getFundraiserDetail(Long fundraiserId);
 

@@ -1,9 +1,15 @@
 package com.poom.backend.api.dto.fundraiser;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.*;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.List;
 
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class FundraiserListRes {
+    boolean hasMore;
+    List<FundraiserDto> fundraiser;
 }

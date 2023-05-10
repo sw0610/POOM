@@ -24,7 +24,7 @@ public class IPFSFundraiserDto {
     private List<String> dogImage;
     private String nftImage;
     private String mainImage;
-    private DogGender dogGender;
+    private int dogGender;
     private int dogAge;
     private Boolean ageIsEstimated;
     private String dogFeature;
