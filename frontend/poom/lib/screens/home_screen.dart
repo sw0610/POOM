@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:poom/models/home_dog_card_model.dart';
 import 'package:poom/screens/regist_screen.dart';
+import 'package:poom/services/auth_dio.dart';
+import 'package:poom/services/member_api.dart';
 import 'package:poom/widgets/home/home_dog_card.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -36,6 +38,22 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       _selectedSortType = _sortType[0];
     });
+  }
+
+  // void getFundraiserList() {
+  //   HomeApi.getFundraiserList(
+  //     isClosed: false,
+  //     page: 0,
+  //     size: 10,
+  //   );
+  // }
+
+  void getFundraiserList() {
+    MemberApi.getMemberInfo(context);
+  }
+
+  void dioTest() {
+    authDio(context);
   }
 
   @override
@@ -121,6 +139,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
+                    ElevatedButton(
+                        onPressed: getFundraiserList, child: const Text('ㄱㄱ')),
                     const Text(
                       '도움이 필요해요!',
                       style: TextStyle(
