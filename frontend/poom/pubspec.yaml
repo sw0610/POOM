@@ -67,6 +67,10 @@ dependencies:
 
   intl: ^0.18.1
 
+  flutter_dotenv: ^5.0.2
+
+  flutter_secure_storage: ^8.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -93,6 +97,7 @@ flutter:
     - assets/images/
     - assets/icons/
     - assets/gifs/
+    - assets/config/.env
 
   # 폰트 path 설정
   fonts:
