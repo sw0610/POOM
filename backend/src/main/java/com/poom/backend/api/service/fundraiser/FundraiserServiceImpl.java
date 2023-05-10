@@ -81,7 +81,7 @@ public class FundraiserServiceImpl implements FundraiserService{
 
 
         MyFundraiserListRes myFundraiserListRes = MyFundraiserListRes.builder()
-                .shelterName("testShelter")
+                .shelterName(shelter.getShelterName())
                 .hasMore(!(listLength==smartContractFundraiserDtoList.size()))
                 .fundraisers(fundraiserDtoList)
                 .build();
