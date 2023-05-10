@@ -34,6 +34,7 @@ public class SmartContractDonationDto {
 
         return SmartContractDonationDto.builder()
                 .memberId(donation.memberId)
+                .donationId(donation.donationId.longValue())
                 .donationAmount(ConvertUtil.weiToEther(donation.donationAmount))
                 .fundraiserId(donation.fundraiserId.longValue())
                 .donationTime(ConvertUtil.bigIntegerToDateTime(donation.donationTime))
