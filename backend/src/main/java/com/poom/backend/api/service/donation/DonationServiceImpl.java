@@ -93,7 +93,6 @@ public class DonationServiceImpl implements DonationService {
 
 
         List<FundraiserDonationDto> fundraiserDonationList = donationList.stream()
-//                .flatMap(List::stream)
                 .map(donation ->
                         FundraiserDonationDto.toFundraiserDonationDto(donation,
                                 memberRepository.findById(donation.getMemberId()).orElseThrow(() -> new BadRequestException("회원 정보가 없습니다."))
@@ -114,7 +113,6 @@ public class DonationServiceImpl implements DonationService {
                 .sorted(Comparator.comparing(SmartContractDonationDto::getDonationAmount).reversed())
                 .collect(Collectors.toList());
 
-//                .orElseThrow(()->new RuntimeException());
 
         List<String> memberIdSort = donationList.stream().map(donation -> donation.getMemberId())
                 .collect(Collectors.toList());

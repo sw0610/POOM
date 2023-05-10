@@ -17,6 +17,7 @@ import com.poom.backend.db.repository.MemberRepository;
 import com.poom.backend.exception.BadRequestException;
 import com.poom.backend.solidity.donation.DonationContractService;
 import com.poom.backend.solidity.nft.NftContractService;
+import com.poom.backend.util.ByteArrayMultipartFile;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.swing.text.html.Option;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -99,10 +101,6 @@ public class NftServiceImpl implements NFTService {
             Double myAmount = donationService.getMyAmount(fundraiserId, memberId); // 내 후원 금액 가져오기
 
 
-            // 이미지 파일 저장
-//            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//            ImageIO.write(originalImage, "png", baos);
-
             String myNftImageUrl = fundraiserDto.getNftImgUrl(); // 이미지 url
             String dogName = fundraiserDto.getDogName();
             String description = member.get().getNickname() + "님께서 " + dogName + "에게 "
@@ -117,7 +115,7 @@ public class NftServiceImpl implements NFTService {
                     .build();
             String nftJson = null;
             try {
-                nftJson = "ipfs://" + ipfsService.uploadJson(nftMetadata.nftMetadataToJson());
+                nftJson = ipfsService.hashToUrl(ipfsService.uploadJson(nftMetadata.nftMetadataToJson()));
             } catch (JsonProcessingException e) {
                 throw new RuntimeException(e);
             }
@@ -126,13 +124,13 @@ public class NftServiceImpl implements NFTService {
             boolean verify = memberService.verifySignature(nftIssueCond.getMemberAddress(), nftIssueCond.getMemberSignature(), nftIssueCond.getSignMessage());
             // 발급하기
             if (verify) {
-                SmartContractNftDto smartContractNftDto = SmartContractNftDto.builder()
-                        .imageUrl(myNftImageUrl)
-                        .metadataUri(nftJson)
-                        .build();
+            SmartContractNftDto smartContractNftDto = SmartContractNftDto.builder()
+                    .imageUrl(myNftImageUrl)
+                    .metadataUri(nftJson)
+                    .build();
 
 
-                nftContractService.mintNft(smartContractNftDto, memberId, nftIssueCond.getMemberAddress(), nftIssueCond.getDonationId(), fundraiserId);
+            nftContractService.mintNft(smartContractNftDto, memberId, nftIssueCond.getMemberAddress(), nftIssueCond.getDonationId(), fundraiserId);
             }
 
         }
@@ -141,8 +139,8 @@ public class NftServiceImpl implements NFTService {
     }
 
 
-    // nft 이미지 url과 자신의 순위를 받아서 nft 이미지 생성
-    public String createNftImage(String imageUrl, int rank) {
+    // nft 이미지 url과 자신의 순위를 받아서 nft 이미지 생성 -> 이미지 url 반환
+    public String createNftImage(String imageUrl, int rank) throws IOException {
         MultipartFile nftImageFile = ipfsService.downloadImage(imageUrl);// 이미지 url->multipart file
 
         // 이미지 파일 읽기
@@ -158,6 +156,10 @@ public class NftServiceImpl implements NFTService {
         graphics.setColor(Color.GREEN);
         graphics.setFont(new Font("Malgun Gothic", Font.BOLD, 30));
         graphics.drawString("#" + rank, 10, 30);
+
+        // 이미지 파일 저장
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write(originalImage, "png", baos);
 
         return null;
 
