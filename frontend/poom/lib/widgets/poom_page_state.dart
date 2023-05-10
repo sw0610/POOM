@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:poom/screens/collection_screen.dart';
 import 'package:poom/screens/home_screen.dart';
-import 'package:poom/screens/test_screen.dart';
+import 'package:poom/screens/profile_screen.dart';
 
 class PoomPageState extends StatefulWidget {
   const PoomPageState({super.key});
@@ -17,8 +17,7 @@ class _PoomPageState extends State<PoomPageState> {
   static const List<Widget> _widgetOptions = <Widget>[
     HomeScreen(),
     CollectionScreen(),
-    // ProfileScreen()
-    TestScreen()
+    ProfileScreen()
   ];
 
   void _onItemTapped(int index) {

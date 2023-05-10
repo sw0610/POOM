@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 Future<Dio> authDio(BuildContext context) async {
-  var dio = Dio();
-
+  const String baseUrl = 'https://k8a805.p.ssafy.io/api';
+  var dio = Dio(BaseOptions(baseUrl: baseUrl));
   const storage = FlutterSecureStorage();
 
   dio.interceptors.clear();
@@ -46,8 +46,7 @@ Future<Dio> authDio(BuildContext context) async {
       // refreshDio.options.headers['Refresh'] = refreshToken;
 
       // 토큰 갱신 API 요청
-      final refreshResponse =
-          await refreshDio.get('https://k8a805.p.ssafy.io/api/member/refresh');
+      final refreshResponse = await refreshDio.get('$baseUrl/member/refresh');
 
       // response로부터 새로 갱신된 AccessToken과 RefreshToken 파싱
       final newAccessToken = refreshResponse.headers['accesstoken']![0];
