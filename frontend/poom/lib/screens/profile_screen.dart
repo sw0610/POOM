@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:poom/models/profile/user_info_model.dart';
 import 'package:poom/screens/profile_settings_screen.dart';
 import 'package:poom/screens/profile_support_request_screen.dart';
 import 'package:poom/screens/profile_support_screen.dart';
 import 'package:poom/screens/shelter_auth_form_screen.dart';
 import 'package:poom/screens/shelter_auth_screen.dart';
+import 'package:poom/services/profile_api_service.dart';
 import 'package:poom/widgets/profile/profile_form.dart';
 import 'package:poom/widgets/profile/profile_menu.dart';
 
@@ -19,6 +21,8 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   // API호출을 통해 받아올 Future 데이터 처리(userId, userEmail, profileImg)
   // 임시 데이터 처리
+
+  late Future<UserInfoModel> user;
   String nickname = "songo427";
   String email = "songo427@gmail.com";
   String profileImgUrl = "https://avatars.githubusercontent.com/u/38373150?v=4";
@@ -29,6 +33,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
     setState(() {
       isHideMenu = !isHideMenu;
     });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    user = ProfileApiService().getUserProfile(context);
   }
 
   @override
