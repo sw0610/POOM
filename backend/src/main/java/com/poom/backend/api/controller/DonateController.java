@@ -20,7 +20,7 @@ public class DonateController {
     private final DonationService donationService;
 
     // 1. 내가 한 후원의 목록을 조회합니다.
-    @GetMapping("/api/members/donations")
+    @GetMapping("/members/donations")
     @ApiOperation(value = "나의 후원 내역 조회", notes = "<strong>페이지의 크기와 순번</strong>을 입력받아 나의 후원 내역을 조회합니다.")
     @ApiResponses({
             @ApiResponse(code = 200, message = "OK(조회 성공)"),
