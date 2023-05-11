@@ -1,4 +1,4 @@
-import 'package:poom/models/home_dog_card_model.dart';
+import 'package:poom/models/home/home_dog_card_model.dart';
 import 'package:poom/services/auth_dio.dart';
 
 class HomeApi {
