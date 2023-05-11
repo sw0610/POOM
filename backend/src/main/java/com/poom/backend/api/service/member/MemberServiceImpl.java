@@ -25,6 +25,7 @@ import org.web3j.utils.Numeric;
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -82,7 +83,7 @@ public class MemberServiceImpl implements MemberService{
     public MemberInfoRes updateMemberInfo(HttpServletRequest request, MultipartFile profileImage, String nickname) {
         Member member = memberRepository.findById(getMemberIdFromHeader(request))
                 .orElseThrow(()->new BadRequestException("회원 정보가 없습니다."));
-        if(profileImage != null || !profileImage.isEmpty()) {
+        if(!Objects.isNull(profileImage)) {
             String hash = ipfsService.uploadImage(profileImage);
             member.setProfileImgUrl(hash);
         }
