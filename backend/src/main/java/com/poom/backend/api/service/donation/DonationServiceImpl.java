@@ -1,9 +1,6 @@
 package com.poom.backend.api.service.donation;
 
-import com.poom.backend.api.dto.donation.DonationRes;
-import com.poom.backend.api.dto.donation.DonationSortDto;
-import com.poom.backend.api.dto.donation.FundraiserDonationDto;
-import com.poom.backend.api.dto.donation.SmartContractDonationDto;
+import com.poom.backend.api.dto.donation.*;
 import com.poom.backend.api.dto.fundraiser.IPFSFundraiserDto;
 import com.poom.backend.api.dto.fundraiser.SmartContractFundraiserDto;
 import com.poom.backend.api.service.ipfs.IpfsService;
@@ -31,38 +28,38 @@ public class DonationServiceImpl implements DonationService {
     private final MemberRepository memberRepository;
 
     @Override
-    public List<DonationRes> getMyDonationList(HttpServletRequest request, int size, int page) {
+    public DonationRes getMyDonationList(HttpServletRequest request, int size, int page) {
         String memberId = memberService.getMemberIdFromHeader(request);
 
         // 스마트 컨트랙트 호출 부분 (_getMyDonationList)
         List<SmartContractDonationDto> donationList = donationContractService.getDonationList()
                 .stream()
                 .flatMap(List::stream)
-                .filter(donation->donation.getMemberId().equals(memberId))
+                .filter(donation -> donation.getMemberId().equals(memberId))
                 .sorted(Comparator.comparing(SmartContractDonationDto::getDonationTime).reversed())
                 .collect(Collectors.toList());
 
         int startIdx = size * page;
         int endIdx = startIdx + size > donationList.size() ? donationList.size() : startIdx + size;
 
-        List<DonationRes> donationResList = new ArrayList<>();
+        List<DonationDto> donationListDto = new ArrayList<>();
 
-        for (int i = startIdx; i < endIdx; i++){
+        for (int i = startIdx; i < endIdx; i++) {
 
             SmartContractDonationDto smartContractDonation = donationList.get(i);
             SmartContractFundraiserDto smartContractFundraiserDto =
-                fundraiserContractService.getFundraiserDetail(smartContractDonation.getFundraiserId())
-                    .orElseThrow(()->new RuntimeException());
+                    fundraiserContractService.getFundraiserDetail(smartContractDonation.getFundraiserId())
+                            .orElseThrow(() -> new RuntimeException());
 
             IPFSFundraiserDto ipfsFundraiserDto = null;
             try {
                 ipfsFundraiserDto =
-                    IPFSFundraiserDto.fromJson(ipfsService.downloadJson(smartContractFundraiserDto.getHashString()));
+                        IPFSFundraiserDto.fromJson(ipfsService.downloadJson(smartContractFundraiserDto.getHashString()));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
 
-            DonationRes donation = DonationRes.builder()
+            DonationDto donation = DonationDto.builder()
                     .donationId(smartContractDonation.getDonationId())
                     .fundraiserId(smartContractDonation.getFundraiserId())
                     .nftImgUrl(ipfsFundraiserDto.getNftImage())
@@ -72,10 +69,15 @@ public class DonationServiceImpl implements DonationService {
                     .isIssued(smartContractDonation.getIsIssued())
                     .build();
 
-            donationResList.add(donation);
+            donationListDto.add(donation);
         }
 
-            return donationResList;
+        DonationRes donationRes = DonationRes.builder()
+                .hasMore(!(endIdx==donationList.size()))
+                .donationList(donationListDto)
+                .build();
+
+        return donationRes;
     }
 
     // 한 후원에 대한 후원자 목록
@@ -84,21 +86,19 @@ public class DonationServiceImpl implements DonationService {
         List<SmartContractDonationDto> donationList = donationContractService.getDonationList()
                 .stream()
                 .flatMap(List::stream)
-                .filter(donation->donation.getFundraiserId()==fundraiserId)
+                .filter(donation -> donation.getFundraiserId() == fundraiserId)
                 .sorted(Comparator.comparing(SmartContractDonationDto::getDonationAmount).reversed())
                 .limit(10)
                 .collect(Collectors.toList());
 
 
         List<FundraiserDonationDto> fundraiserDonationList = donationList.stream()
-//                .flatMap(List::stream)
                 .map(donation ->
                         FundraiserDonationDto.toFundraiserDonationDto(donation,
                                 memberRepository.findById(donation.getMemberId()).orElseThrow(() -> new BadRequestException("회원 정보가 없습니다."))
-                                ))
+                        ))
                 .collect(Collectors.toList());
         ;
-
 
 
         return fundraiserDonationList;
@@ -109,13 +109,12 @@ public class DonationServiceImpl implements DonationService {
         List<SmartContractDonationDto> donationList = donationContractService.getDonationList()
                 .stream()
                 .flatMap(List::stream)
-                .filter(donation->donation.getFundraiserId()==fundraiserId)
+                .filter(donation -> donation.getFundraiserId() == fundraiserId)
                 .sorted(Comparator.comparing(SmartContractDonationDto::getDonationAmount).reversed())
                 .collect(Collectors.toList());
 
-//                .orElseThrow(()->new RuntimeException());
 
-        List<String> memberIdSort  = donationList.stream().map(donation->donation.getMemberId())
+        List<String> memberIdSort = donationList.stream().map(donation -> donation.getMemberId())
                 .collect(Collectors.toList());
 
         Map<String, Double> memberDonationAmount = donationList
@@ -126,7 +125,6 @@ public class DonationServiceImpl implements DonationService {
                 .memberIdSort(memberIdSort)
                 .memberDonationAmount(memberDonationAmount)
                 .build();
-
 
 
         String hashString = null;
@@ -145,7 +143,7 @@ public class DonationServiceImpl implements DonationService {
     @Override
     public int getMyRank(Long fundraiserId, String memberId) {
         String hashString = donationContractService.getDonationSort(fundraiserId)
-                .orElseThrow(()->new RuntimeException());
+                .orElseThrow(() -> new RuntimeException());
 
         DonationSortDto donationSortDto = null;
         try {
@@ -155,7 +153,7 @@ public class DonationServiceImpl implements DonationService {
         }
 
         List<String> memberIdSort = donationSortDto.getMemberIdSort();
-        int myRank = memberIdSort.indexOf(memberId)+1;
+        int myRank = memberIdSort.indexOf(memberId) + 1;
 
         return myRank;
 
@@ -164,7 +162,7 @@ public class DonationServiceImpl implements DonationService {
     @Override
     public Double getMyAmount(Long fundraiserId, String memberId) {
         String hashString = donationContractService.getDonationSort(fundraiserId)
-                .orElseThrow(()->new RuntimeException());
+                .orElseThrow(() -> new RuntimeException());
 
         DonationSortDto donationSortDto = null;
         try {

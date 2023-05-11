@@ -42,7 +42,12 @@ public class ShelterController {
     }
 
     @PostMapping("/shelters/auth")
-    @ApiOperation(value = "보호소 심사 등록", notes = "<strong>보호소의 id</strong>를 입력받아 보호소의 정보를 조회합니다.")
+    @ApiOperation(value = "보호소 심사 등록", notes = "<strong>보호소의 id</strong>를 입력받아 보호소의 정보를 조회합니다. \n" +
+            "보호소 정보 key 값: cond \n" +
+            "shelterId: string \n" +
+            "shelterName: string \n" +
+            "shelterAddress: string \n" +
+            "shelterPhoneNumber string")
     @ApiResponses({
             @ApiResponse(code = 200, message = "OK(등록 성공)"),
             @ApiResponse(code = 400, message = "BAD REQUEST(요청 실패)"),
