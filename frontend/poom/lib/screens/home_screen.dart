@@ -20,7 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _hasMore = false;
   List<dynamic> fundraiserList = [];
   int _page = 0;
-  static const int SIZE = 2;
+  static const int SIZE = 10;
 
   //무한스크롤 감지 컨트롤러
   final ScrollController _scrollController = ScrollController();
