@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
+import 'package:poom/models/profile/support_model.dart';
 import 'package:poom/models/profile/user_info_model.dart';
 import 'package:poom/services/auth_dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -54,15 +55,28 @@ class ProfileApiService {
     }
   }
 
-  void getMySupportList(BuildContext context, int pageNum) async {
+  Future<List<dynamic>> getMySupportList(
+      BuildContext context, int pageNum) async {
     var logger = Logger();
     try {
+      List<SupportModel> supportInstances = [];
       var dio = await authDio(context);
       final response =
           await dio.get("/members/donations?page=$pageNum&size=10");
+
+      final Map<String, dynamic> result = response.data;
+      final bool hasMore = result["hasMore"];
+      final List<dynamic> supportList = result["donationList"];
+
+      for (var supportItem in supportList) {
+        supportInstances.add(SupportModel.fromJson(supportItem));
+      }
+
       logger.i("[ProfileApiService] getMySupportList() success $response.data");
+      return [hasMore, supportList];
     } catch (e) {
       logger.e("[ProfileApiService] getMySupportList() fail $e");
+      throw Error();
     }
   }
 }
