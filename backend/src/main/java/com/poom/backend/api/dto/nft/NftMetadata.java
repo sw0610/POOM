@@ -11,9 +11,9 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class NftMetadata {
-    String name;
     String description;
     String image;
+    String name;
 
 
     public String nftMetadataToJson() throws JsonProcessingException { // 객체를 JSON으로 변환합니다.
