@@ -10,11 +10,14 @@ class SupportItem extends StatelessWidget {
     Colors.green.shade400
   ];
 
-  final String dogName, donateAmount, donateDate;
-  final int isIssued;
+  final int donationId, fundraiserId, isIssued;
+  final double donateAmount;
+  final String dogName, donateDate;
 
   const SupportItem({
     super.key,
+    required this.donationId,
+    required this.fundraiserId,
     required this.dogName,
     required this.donateAmount,
     required this.donateDate,
