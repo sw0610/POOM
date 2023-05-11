@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:poom/models/profile/user_info_model.dart';
@@ -25,6 +26,30 @@ class ProfileApiService {
       return UserInfoModel.fromJson(jsonDecode(responseToString));
     } catch (e) {
       logger.e("[ProfileApiService] getUserProfile() fail $e");
+      throw Error();
+    }
+  }
+
+  Future<bool> updateUserProfile(
+      BuildContext context, Map<String, dynamic> data) async {
+    var logger = Logger();
+    try {
+      var dio = await authDio(context);
+      var file = data["file"];
+
+      final formData = FormData.fromMap({
+        'profileImage': file == null ? null : await MultipartFile.fromFile(file)
+      });
+
+      await dio.put(
+        "/members?nickname=${data["nickname"]}",
+        data: formData,
+      );
+      logger.i("[ProfileApiService] updateUserProfile() success");
+
+      return true;
+    } catch (e) {
+      logger.e("[ProfileApiService] updateUserProfile() fail $e");
       throw Error();
     }
   }
