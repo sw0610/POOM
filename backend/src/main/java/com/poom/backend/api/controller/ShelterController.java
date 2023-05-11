@@ -6,10 +6,7 @@ import com.poom.backend.api.service.shelter.ShelterService;
 import com.poom.backend.db.entity.Shelter;
 import com.poom.backend.db.repository.ShelterRepository;
 import com.poom.backend.enums.ShelterStatus;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,12 +39,10 @@ public class ShelterController {
     }
 
     @PostMapping("/shelters/auth")
-    @ApiOperation(value = "보호소 심사 등록", notes = "<strong>보호소의 id</strong>를 입력받아 보호소의 정보를 조회합니다. \n" +
-            "보호소 정보 key 값: cond \n" +
-            "shelterId: string \n" +
-            "shelterName: string \n" +
-            "shelterAddress: string \n" +
-            "shelterPhoneNumber string")
+    @ApiOperation(value = "보호소 심사 등록", notes = "<strong>보호소의 id</strong>를 입력받아 보호소의 정보를 조회합니다.")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "cond", value = "cond", dataType = "com.poom.backend.api.dto.shelter.ShelterAuthCond", paramType = "body")
+    })
     @ApiResponses({
             @ApiResponse(code = 200, message = "OK(등록 성공)"),
             @ApiResponse(code = 400, message = "BAD REQUEST(요청 실패)"),

@@ -12,10 +12,6 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class ShelterAuthCond {
-//    "shelterId": String
-//	"shelterName" : String
-//	"shelterAddress" : String
-//	"shelterPhoneNumber": String
     String shelterId;
     String shelterName;
     String shelterAddress;
