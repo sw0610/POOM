@@ -53,7 +53,16 @@ public class FundraiserController {
 //    }
 
     @PostMapping("/fundraiser/open")
-    @ApiOperation(value = "후원 모집 생성", notes = "<strong>후원 모집 정보</strong>를 받아 모집을 등록합니다.")
+    @ApiOperation(value = "후원 모집 생성", notes = "<strong>후원 모집 정보</strong>를 받아 모집을 등록합니다. \n" +
+            "이미지 제외한 후원 모집 정보를 담은 data key: cond \n" +
+            "shelterEthWalletAddress: String - 보호소 지갑 주소\n" +
+            "dogName: String \n" +
+            "endDate: LocalDate \n" +
+            "dogGender: int \n" +
+            "dogAge: int \n" +
+            "ageIsEstimated : boolean - 나이 추청: true \n" +
+            "targetAmount : double \n" +
+            "dogFeature : String \n")
     @ApiResponses({
             @ApiResponse(code = 200, message = "OK(생성 성공)"),
             @ApiResponse(code = 400, message = "BAD REQUEST(요청 실패)"),
