@@ -53,4 +53,16 @@ class ProfileApiService {
       throw Error();
     }
   }
+
+  void getMySupportList(BuildContext context, int pageNum) async {
+    var logger = Logger();
+    try {
+      var dio = await authDio(context);
+      final response =
+          await dio.get("/members/donations?page=$pageNum&size=10");
+      logger.i("[ProfileApiService] getMySupportList() success $response.data");
+    } catch (e) {
+      logger.e("[ProfileApiService] getMySupportList() fail $e");
+    }
+  }
 }
