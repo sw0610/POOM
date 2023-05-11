@@ -87,7 +87,7 @@ public class MemberServiceImpl implements MemberService{
             String hash = ipfsService.uploadImage(profileImage);
             member.setProfileImgUrl(hash);
         }
-        if(nickname != null) {
+        if(nickname != null && nickname != "null") {
             member.setNickname(nickname);
         }
         memberRepository.save(member);
