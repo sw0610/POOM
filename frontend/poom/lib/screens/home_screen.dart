@@ -132,6 +132,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   left: 24,
                   right: 24,
                   top: 30,
+                  bottom: 20,
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -207,7 +208,7 @@ class HomeIntroWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
-      height: 400,
+      height: MediaQuery.of(context).size.width,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

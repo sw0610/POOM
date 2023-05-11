@@ -27,9 +27,6 @@ class HomeDogCard extends StatelessWidget {
       onTap: goDogSpecificScreen,
       child: Column(
         children: [
-          const SizedBox(
-            height: 20,
-          ),
           Container(
             height: 120,
             decoration: BoxDecoration(
@@ -175,6 +172,9 @@ class HomeDogCard extends StatelessWidget {
                 ],
               ),
             ),
+          ),
+          const SizedBox(
+            height: 20,
           ),
         ],
       ),
