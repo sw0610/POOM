@@ -15,9 +15,15 @@ class _HomeScreenState extends State<HomeScreen> {
   String nickname = '';
   bool isShelter = false;
   final _sortType = ['모집 중', '모집완료'];
+  bool _isClosed = false;
   String? _selectedSortType;
-  bool hasMore = false;
+  bool _hasMore = false;
   List<dynamic> fundraiserList = [];
+  int _page = 0;
+  static const int SIZE = 2;
+
+  //무한스크롤 감지 컨트롤러
+  final ScrollController _scrollController = ScrollController();
 
   //현재 로그인한 유저의 닉네임 가져오기
   void getNicknameAndIsShelter() async {
@@ -32,16 +38,35 @@ class _HomeScreenState extends State<HomeScreen> {
 
   //후원 모집 목록 가져오기
   void getFundraiserList() async {
+    print('isClosed: $_isClosed \n page: $_page \n size: $SIZE');
     List<dynamic> hasMoreAndfundraiserList = await HomeApi.getFundraiserList(
       context: context,
-      isClosed: false,
-      page: 0,
-      size: 10,
+      isClosed: _isClosed,
+      page: _page,
+      size: SIZE,
     );
     setState(() {
-      hasMore = hasMoreAndfundraiserList[0];
-      fundraiserList = fundraiserList + hasMoreAndfundraiserList[1];
+      if (hasMoreAndfundraiserList.isNotEmpty) {
+        _hasMore = hasMoreAndfundraiserList[0];
+        fundraiserList = fundraiserList + hasMoreAndfundraiserList[1];
+      }
     });
+  }
+
+  @override
+  void dispose() {
+    // 스크롤 이벤트 리스너 해제
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  // 스크롤 이벤트 핸들러
+  void _onScroll() {
+    // 스크롤이 끝에 도달한 경우
+    if (_hasMore && _scrollController.position.extentAfter < 10) {
+      _page += 1;
+      getFundraiserList();
+    }
   }
 
   @override
@@ -52,6 +77,8 @@ class _HomeScreenState extends State<HomeScreen> {
       _selectedSortType = _sortType[0];
     });
     getFundraiserList();
+    // 스크롤 이벤트 리스너 등록
+    _scrollController.addListener(_onScroll);
   }
 
   @override
@@ -120,6 +147,7 @@ class _HomeScreenState extends State<HomeScreen> {
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
         child: ListView.builder(
+          controller: _scrollController,
           itemBuilder: (context, index) {
             //첫번째 자식요소
             if (index == 0) {
@@ -162,6 +190,16 @@ class _HomeScreenState extends State<HomeScreen> {
                         onChanged: (value) {
                           setState(() {
                             _selectedSortType = value;
+                            _page = 0;
+                            setState(() {
+                              if (value == "모집 중") {
+                                _isClosed = false;
+                              } else {
+                                _isClosed = true;
+                              }
+                            });
+                            fundraiserList = [];
+                            getFundraiserList();
                           });
                         })
                   ],
