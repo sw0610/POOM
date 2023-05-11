@@ -52,7 +52,10 @@ public class JwtFilter extends GenericFilterBean {
                 // 토큰 재발급 요청 메소드 차후 개선
                 logger.info("JWT 토큰이 유효하지 않습니다.");
             }
+        }else {
+            log.info("토큰이 없습니다.");
         }
+
         filterChain.doFilter(servletRequest, servletResponse);
     }
 

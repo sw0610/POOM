@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Getter
 public class NftListRes {
 
+  private boolean hasMore;
   private String nickname;
   private int nftCount;
   private String[] nftImgUrls;

@@ -4,6 +4,7 @@ import com.poom.backend.api.dto.member.LoginRes;
 import com.poom.backend.api.dto.member.SignupCond;
 import com.poom.backend.api.dto.shelter.ShelterAuthCond;
 import com.poom.backend.api.dto.shelter.ShelterAuthMMCond;
+import com.poom.backend.api.dto.test.TestDto;
 import com.poom.backend.api.service.mattermost.MattermostService;
 import com.poom.backend.api.service.member.MemberService;
 import com.poom.backend.config.jwt.TokenProvider;
@@ -11,10 +12,7 @@ import com.poom.backend.db.entity.Member;
 import com.poom.backend.db.entity.Shelter;
 import com.poom.backend.db.repository.MemberRepository;
 import com.poom.backend.enums.ShelterStatus;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.log4j.Log4j;
@@ -25,6 +23,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
@@ -42,6 +41,21 @@ public class TestController {
     private final MattermostService mattermostService;
     private final MemberRepository memberRepository;
     private final TokenProvider tokenProvider;
+
+    @PostMapping("/test/cond")
+    @ApiOperation(value = "Request Part with DTO 테스트", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "OK(등록 성공)"),
+            @ApiResponse(code = 400, message = "BAD REQUEST(요청 실패)"),
+            @ApiResponse(code = 401, message = "UNAUTHORIZED(권한 없음)"),
+            @ApiResponse(code = 500, message = "서버에러")
+    })
+    public ResponseEntity<?> requestShelterAuth(HttpServletRequest request,
+                                                @RequestPart("certificateImages") List<MultipartFile> certificateImages,
+                                                @RequestPart("cond") ShelterAuthCond shelterAuthCond){
+        System.out.println(shelterAuthCond.getShelterId());
+        return ResponseEntity.status(200).build();
+    }
 
 
     @GetMapping("/test/log")

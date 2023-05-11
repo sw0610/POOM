@@ -11,14 +11,14 @@ public class ConvertUtil {
 
   // Double -> uint
   public static BigInteger etherToWei(Double amount){
-    return new BigDecimal(amount).multiply(BigDecimal.TEN.pow(18)).toBigInteger();
+    return new BigDecimal(amount).multiply( new BigDecimal("1000000000000000000")).toBigInteger();
   }
 
   // uint -> Double
-  public static Double weiToEther(BigInteger amount){
-    return amount.doubleValue() / Math.pow(10, 18);
+  public static Double weiToEther(BigInteger amount) {
+    BigDecimal divisor = new BigDecimal("1000000000000000000"); // 10^18
+    return new BigDecimal(amount).divide(divisor).doubleValue();
   }
-
   // LocalDateTime -> uint
   public static BigInteger dateTimeToBigInteger(LocalDateTime localDateTime){
     Instant instant = localDateTime.atZone(ZoneId.of("Asia/Seoul")).toInstant();
