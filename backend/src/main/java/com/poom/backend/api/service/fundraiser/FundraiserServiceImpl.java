@@ -148,13 +148,13 @@ public class FundraiserServiceImpl implements FundraiserService{
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-//
-//                Shelter shelter = shelterRepository.findShelterByAdminId(smartContractFundraiserDto.getShelterId())
-//                        .orElseThrow(()->new BadRequestException("보호소 정보가 없습니다"));
-//                String shelterName = shelter.getShelterName();
+
+                Shelter shelter = shelterRepository.findShelterByAdminId(smartContractFundraiserDto.getShelterId())
+                        .orElseThrow(()->new BadRequestException("보호소 정보가 없습니다"));
+                String shelterName = shelter.getShelterName();
             FundraiserDto fundraiserDto = FundraiserDto.builder()
                     .fundraiserId(smartContractFundraiserDto.getFundraiserId())
-                    .shelterName("testshelter") // TODO: 보호소 이름 받아야함
+                    .shelterName(shelter.getShelterName()) // TODO: 보호소 이름 받아야함
                     .dogName(ipfsFundraiserDto.getDogName())
                     .dogGender(ipfsFundraiserDto.getDogGender())
                     .mainImgUrl(ipfsFundraiserDto.getMainImage())
@@ -190,8 +190,6 @@ public class FundraiserServiceImpl implements FundraiserService{
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-        System.out.println("??");
 
         List<FundraiserDonationDto> donationList = donationService.getFundraiserDonationList(fundraiserId);
 
