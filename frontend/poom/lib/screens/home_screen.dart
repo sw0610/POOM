@@ -34,7 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    getNicknameAndIsShelter();
+    // getNicknameAndIsShelter();
     setState(() {
       _selectedSortType = _sortType[0];
     });
