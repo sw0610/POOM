@@ -1,11 +1,16 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 Future<Dio> authDio(BuildContext context) async {
   const String baseUrl = 'https://k8a805.p.ssafy.io/api';
   var dio = Dio(BaseOptions(baseUrl: baseUrl));
   const storage = FlutterSecureStorage();
+
+  void goFirstPage() {
+    Navigator.of(context).popUntil((route) => route.isFirst);
+  }
 
   dio.interceptors.clear();
 
@@ -31,12 +36,12 @@ Future<Dio> authDio(BuildContext context) async {
           .add(InterceptorsWrapper(onError: (error, handler) async {
         // 다시 인증 오류가 발생했을 경우: RefreshToken의 만료
         if (error.response?.statusCode == 401) {
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+
           // 기기의 자동 로그인 정보 삭제
           await storage.deleteAll();
-
-          // . . .
-          // 로그인 만료 dialog 발생 후 로그인 페이지로 이동
-          // . . .
+          await prefs.clear();
+          goFirstPage();
         }
         return handler.next(error);
       }));
