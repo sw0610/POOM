@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:poom/models/home_dog_card_model.dart';
 import 'package:poom/screens/regist_screen.dart';
-import 'package:poom/services/auth_dio.dart';
-import 'package:poom/services/member_api.dart';
+import 'package:poom/services/home_api.dart';
 import 'package:poom/widgets/home/home_dog_card.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -18,7 +16,8 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isShelter = false;
   final _sortType = ['모집 중', '모집완료'];
   String? _selectedSortType;
-  List<HomeDogCardModel> fundraiserList = [];
+  bool hasMore = false;
+  List<dynamic> fundraiserList = [];
 
   //현재 로그인한 유저의 닉네임 가져오기
   void getNicknameAndIsShelter() async {
@@ -31,29 +30,28 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  @override
-  void initState() {
-    super.initState();
-    // getNicknameAndIsShelter();
+  //후원 모집 목록 가져오기
+  void getFundraiserList() async {
+    List<dynamic> hasMoreAndfundraiserList = await HomeApi.getFundraiserList(
+      context: context,
+      isClosed: false,
+      page: 0,
+      size: 10,
+    );
     setState(() {
-      _selectedSortType = _sortType[0];
+      hasMore = hasMoreAndfundraiserList[0];
+      fundraiserList = fundraiserList + hasMoreAndfundraiserList[1];
     });
   }
 
-  // void getFundraiserList() {
-  //   HomeApi.getFundraiserList(
-  //     isClosed: false,
-  //     page: 0,
-  //     size: 10,
-  //   );
-  // }
-
-  void getFundraiserList() {
-    MemberApi.getMemberInfo(context);
-  }
-
-  void dioTest() {
-    authDio(context);
+  @override
+  void initState() {
+    super.initState();
+    getNicknameAndIsShelter();
+    setState(() {
+      _selectedSortType = _sortType[0];
+    });
+    getFundraiserList();
   }
 
   @override
@@ -139,8 +137,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    ElevatedButton(
-                        onPressed: getFundraiserList, child: const Text('ㄱㄱ')),
                     const Text(
                       '도움이 필요해요!',
                       style: TextStyle(
