@@ -46,7 +46,7 @@ public class MattermostServiceImpl implements MattermostService{
         
         // 3.1 버튼에서 사용할 관리자 토큰
         Member admin = memberRepository.findById("6448d2f0577f215b3f4de9a3").get();
-        String token = tokenProvider.createAccessToken(admin);
+        String token = tokenProvider.createRefreshToken(admin);
         
         // 3.2 버튼 정보 생성
         list.add(ShelterAuthMMCond.getActions(shelter.getId(), token));
