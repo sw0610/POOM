@@ -178,9 +178,9 @@ class DogSpecificScreen extends StatelessWidget {
                       ],
                     ),
                     const Title(text: '보호견 정보'),
-                    const DogInfo(
+                    DogInfo(
                       title: '보호소 주소',
-                      value: '경기도 용인시 수지구 무슨대로 66',
+                      value: snapshot.data!.shelterAddress,
                     ),
                     DogInfo(
                       title: '성별',
