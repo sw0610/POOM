@@ -21,6 +21,7 @@ class ProfileApiService {
       await preferences.setString('nickname', response.data['nickname']);
       await preferences.setString(
           'profileImgUrl', response.data['profileImgUrl']);
+      await preferences.setString('shelterId', response.data['shelterId']);
 
       var responseToString = response.toString();
       logger.i("[ProfileApiService] getUserProfile() success");
