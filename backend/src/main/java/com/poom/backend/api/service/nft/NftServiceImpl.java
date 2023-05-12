@@ -66,7 +66,7 @@ public class NftServiceImpl implements NFTService {
 
         for (int i = startIdx; i < endIdx; i++) {
 
-            imgUrls[i - startIdx] = smartContractNftDto.get(i).getImageUrl().replaceFirst("ipfs://", "https://ipfs.io/ipfs/");
+            imgUrls[i - startIdx] = smartContractNftDto.get(i).getImageUrl();
         }
 
         String nickname = memberRepository.findById(memberId).orElseThrow(() -> new BadRequestException("회원 정보가 없습니다."))
