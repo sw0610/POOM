@@ -92,6 +92,8 @@ public class OauthServiceImpl implements OauthService {
 
         // redis에 토큰을 저장합니다.
         redisService.saveRefreshToken(member.getId(), refreshToken);
+        log.info("Redis에 refresh token을 저장했습니다.");
+        log.info("redis에 있는 토큰 정보 : {}", redisService.getRefreshToken(member.getId()));
 
         return MemberDto.from(member, accessToken, refreshToken);
     }
