@@ -23,7 +23,7 @@ Future<Dio> authDio(BuildContext context) async {
     return handler.next(options);
   }, onError: (error, handler) async {
     // 인증 오류가 발생했을 경우: AccessToken의 만료
-    if (error.response?.statusCode == 500) {
+    if (error.response?.statusCode == 401) {
       // 기기에 저장된 AccessToken과 RefreshToken 로드
       final refreshToken = await storage.read(key: 'refreshtoken');
 

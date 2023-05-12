@@ -47,23 +47,18 @@ class HomeApi {
         },
       );
 
-      if (response.statusCode == 200) {
-        Map<String, dynamic> responseData = response.data;
-        List<HomeDogCardModel> fundraiserInstances = [];
-        bool hasMore = responseData['hasMore'];
-        List<dynamic> fundraisers = responseData['fundraiser'];
+      Map<String, dynamic> responseData = response.data;
+      List<HomeDogCardModel> fundraiserInstances = [];
+      bool hasMore = responseData['hasMore'];
+      List<dynamic> fundraisers = responseData['fundraiser'];
 
-        for (var fundraiser in fundraisers) {
-          fundraiserInstances.add(HomeDogCardModel.fromJson(fundraiser));
-        }
-
-        return [hasMore, fundraiserInstances];
-      } else {
-        print('getFundraiserList ERROR: ${response.statusCode}');
-        throw Error();
+      for (var fundraiser in fundraisers) {
+        fundraiserInstances.add(HomeDogCardModel.fromJson(fundraiser));
       }
+
+      return [hasMore, fundraiserInstances];
     } catch (e) {
-      print(e);
+      print('getFundraiserList ERROR: $e');
       throw Error();
     }
   }
