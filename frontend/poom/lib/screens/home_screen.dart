@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:poom/screens/regist_screen.dart';
 import 'package:poom/services/home_api.dart';
 import 'package:poom/widgets/home/home_dog_card.dart';
@@ -69,6 +70,13 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  //access token 보려고 임시로
+  static const storage = FlutterSecureStorage();
+  void getAccessToken() async {
+    var accesstoken = await storage.read(key: 'accesstoken');
+    print('홈화면 accesstoken: $accesstoken');
+  }
+
   @override
   void initState() {
     super.initState();
@@ -79,6 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
     getFundraiserList();
     // 스크롤 이벤트 리스너 등록
     _scrollController.addListener(_onScroll);
+    getAccessToken(); //access token 보려고 임시로
   }
 
   @override
