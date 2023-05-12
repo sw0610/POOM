@@ -74,7 +74,9 @@ class _HomeScreenState extends State<HomeScreen> {
   static const storage = FlutterSecureStorage();
   void getAccessToken() async {
     var accesstoken = await storage.read(key: 'accesstoken');
+    var refreshtoken = await storage.read(key: 'refreshtoken');
     print('홈화면 accesstoken: $accesstoken');
+    print('홈화면 refreshtoken: $refreshtoken');
   }
 
   @override

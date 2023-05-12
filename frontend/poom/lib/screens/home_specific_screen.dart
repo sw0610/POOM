@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:poom/models/home/fundraiser_specific_model.dart';
@@ -61,6 +62,33 @@ class DogSpecificScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    CarouselSlider(
+                      items: [
+                        snapshot.data!.mainImgUrl,
+                        ...snapshot.data!.dogImgUrls
+                      ].map((imgUrl) {
+                        return Builder(
+                          builder: (BuildContext context) {
+                            return Container(
+                              width: MediaQuery.of(context).size.width,
+                              decoration: const BoxDecoration(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(10),
+                                ),
+                              ),
+                              child: Image.network(
+                                imgUrl,
+                                fit: BoxFit.cover,
+                              ),
+                            );
+                          },
+                        );
+                      }).toList(),
+                      options: CarouselOptions(
+                        enableInfiniteScroll: false,
+                        height: 270,
+                      ),
+                    ),
                     const SizedBox(
                       height: 20,
                     ),
