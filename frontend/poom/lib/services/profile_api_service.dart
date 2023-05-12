@@ -80,4 +80,18 @@ class ProfileApiService {
       throw Error();
     }
   }
+
+  void getMySupportRequestList(
+      BuildContext context, int pageNum, bool isClosed) async {
+    var logger = Logger();
+    try {
+      var dio = await authDio(context);
+      final response = await dio.get(
+          "/members/shelters/fundraisers?page=$pageNum&isClosed=$isClosed&size=10");
+      logger
+          .i("[ProfileApiService] getMySupportRequestList() success $response");
+    } catch (e) {
+      logger.e("[ProfileApiService] getMySupportRequestList() fail $e");
+    }
+  }
 }
