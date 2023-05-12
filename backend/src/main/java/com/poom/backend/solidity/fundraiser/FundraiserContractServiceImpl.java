@@ -61,7 +61,6 @@ public class FundraiserContractServiceImpl implements FundraiserContractService 
         SmartContractFundraiserDto fundraiser = null;
         try {
              fundraiser = SmartContractFundraiserDto.fromFundraiserContract(poomContract.getFundraiserDetail(BigInteger.valueOf(fundraiserId)).send());
-            System.out.println("-------"+fundraiser.getFundraiserId());
              if(fundraiser.getFundraiserId()==0){
                  throw new BadRequestException("모금 정보가 없습니다.");
              }
