@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 class FundraiserSpecificModel {
   String dogName,
       shelterId,
@@ -12,7 +10,7 @@ class FundraiserSpecificModel {
   int dogGender, dogAge;
   bool ageIsEstimated, isClosed;
   double targetAmount, currentAmount;
-  Array donations;
+  List donations, dogImgUrls;
 
   FundraiserSpecificModel.fromJson(Map<String, dynamic> json)
       : dogName = json['dogName'],
@@ -21,6 +19,7 @@ class FundraiserSpecificModel {
         shelterEthWalletAddress = json['shelterEthWalletAddress'],
         mainImgUrl = json['mainImgUrl'],
         nftImgUrl = json['nftImgUrl'],
+        dogImgUrls = json['dogImgUrls'],
         dogFeature = json['dogFeature'],
         endDate = json['endDate'],
         dogGender = json['dogGender'],

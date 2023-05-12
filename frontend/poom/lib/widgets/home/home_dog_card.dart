@@ -14,10 +14,14 @@ class HomeDogCard extends StatelessWidget {
   Widget build(BuildContext context) {
     //보호견 상세페이지로 이동
     void goDogSpecificScreen() {
+      print('dogCard fundraiserId: ${dogInfo.fundraiserId}');
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => const DogSpecificScreen(),
+          builder: (context) => DogSpecificScreen(
+            fundraiserId: dogInfo.fundraiserId,
+            context: context,
+          ),
           fullscreenDialog: false,
         ),
       );
