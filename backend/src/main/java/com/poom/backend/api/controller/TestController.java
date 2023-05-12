@@ -62,10 +62,10 @@ public class TestController {
     })
     public ResponseEntity<?> request1Auth(HttpServletRequest request,
                                                 @RequestPart("certificateImages") List<MultipartFile> certificateImages,
-                                                @RequestPart("cond") ShelterAuthCond shelterAuthCond){
+                                                @ModelAttribute("cond") ShelterAuthCond shelterAuthCond){
         log.info("이미지 갯수 : {}", certificateImages.size());
         log.info("보호소 이름 : {}", shelterAuthCond.getShelterName());
-        return ResponseEntity.status(200).body("성공했나봐요!");
+        return ResponseEntity.status(200).body("성공했나봐요! 보호소 이름은 "+ shelterAuthCond.getShelterName());
     }
 
     @PostMapping(value = "/test/cond/second", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
@@ -82,7 +82,7 @@ public class TestController {
         return ResponseEntity.status(200).body("성공했나봐요!");
     }
 
-    @PostMapping(value = "/test/cond/third", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    @PostMapping(value = "/test/cond/third")
     @ApiOperation(value = "DTO")
     @ApiResponses({
             @ApiResponse(code = 200, message = "OK(등록 성공)"),
@@ -91,23 +91,9 @@ public class TestController {
             @ApiResponse(code = 500, message = "서버에러")
     })
     public ResponseEntity<?> request3Auth(HttpServletRequest request,
-                                          @RequestPart("cond") ShelterAuthCond shelterAuthCond){
+                                          @ModelAttribute("cond") ShelterAuthCond shelterAuthCond){
         log.info("보호소 이름 : {}", shelterAuthCond.getShelterName());
-        return ResponseEntity.status(200).body("성공했나봐요!");
-    }
-
-    @PostMapping("/test/cond")
-    @ApiOperation(value = "Request Part with DTO 테스트", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "OK(등록 성공)"),
-            @ApiResponse(code = 400, message = "BAD REQUEST(요청 실패)"),
-            @ApiResponse(code = 401, message = "UNAUTHORIZED(권한 없음)"),
-            @ApiResponse(code = 500, message = "서버에러")
-    })
-    public ResponseEntity<?> requestShelterAuth(HttpServletRequest request,
-                                                @RequestPart("certificateImages") List<MultipartFile> certificateImages,
-                                                @RequestPart("cond") ShelterAuthCond shelterAuthCond){
-        return ResponseEntity.status(200).body("hello");
+        return ResponseEntity.status(200).body("성공했나봐요! 보호소 이름은 "+ shelterAuthCond.getShelterName());
     }
 
 
