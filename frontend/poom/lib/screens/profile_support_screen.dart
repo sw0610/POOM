@@ -15,9 +15,9 @@ class _ProfileSupportScreenState extends State<ProfileSupportScreen> {
   static const _textColor = Color(0xFF333333);
   late Future<List<dynamic>> result;
   late List<SupportModel> supportList;
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     result = ProfileApiService().getMySupportList(context, 0);
   }

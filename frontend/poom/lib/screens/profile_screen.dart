@@ -23,9 +23,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   // 임시 데이터 처리
 
   late Future<UserInfoModel> user;
-  String nickname = "songo427";
-  String email = "songo427@gmail.com";
-  String profileImgUrl = "https://avatars.githubusercontent.com/u/38373150?v=4";
   bool isHideMenu = false;
   int authStatus = 2;
 
