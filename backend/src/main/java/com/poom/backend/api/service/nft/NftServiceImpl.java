@@ -85,7 +85,13 @@ public class NftServiceImpl implements NFTService {
         Optional<Member> member = memberRepository.findById(memberId);
 
         FundraiserDetailRes fundraiserDto = fundraiserService.getFundraiserDetail(fundraiserId);
-
+        int nftIsIssued = donationService.getNftIsIssued(nftIssueCond.getDonationId());
+        if (nftIsIssued == 0) {
+            throw new BadRequestException("후원 진행중");
+        }
+        else if(nftIsIssued == 1){
+            throw new BadRequestException("발급 완료된 NFT입니다.");
+        }
         // 종료 되었고 후원 순위 해시 있는지 체크하기
         if (fundraiserDto.getIsClosed()) {
             String hashString = donationContractService.getDonationSort(fundraiserId)
@@ -95,7 +101,6 @@ public class NftServiceImpl implements NFTService {
                 hashString = donationService.setDonationSort(fundraiserId); // 생성하기
 
             }
-
 
             int myRank = donationService.getMyRank(fundraiserId, memberId); // 내 등수 가져오기
             Double myAmount = donationService.getMyAmount(fundraiserId, memberId); // 내 후원 금액 가져오기
@@ -121,9 +126,9 @@ public class NftServiceImpl implements NFTService {
             }
 
             // 발급 전에 서명 확인
-            boolean verify = memberService.verifySignature(nftIssueCond.getMemberAddress(), nftIssueCond.getMemberSignature(), nftIssueCond.getSignMessage());
+//            boolean verify = memberService.verifySignature(nftIssueCond.getMemberAddress(), nftIssueCond.getMemberSignature(), nftIssueCond.getSignMessage());
             // 발급하기
-            if (verify) {
+//            if (verify) {
             SmartContractNftDto smartContractNftDto = SmartContractNftDto.builder()
                     .imageUrl(myNftImageUrl)
                     .metadataUri(nftJson)
@@ -131,7 +136,7 @@ public class NftServiceImpl implements NFTService {
 
 
             nftContractService.mintNft(smartContractNftDto, memberId, nftIssueCond.getMemberAddress(), nftIssueCond.getDonationId(), fundraiserId);
-            }
+//            }
 
         }
 
