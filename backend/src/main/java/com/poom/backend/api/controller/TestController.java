@@ -5,8 +5,10 @@ import com.poom.backend.api.dto.member.SignupCond;
 import com.poom.backend.api.dto.shelter.ShelterAuthCond;
 import com.poom.backend.api.dto.shelter.ShelterAuthMMCond;
 import com.poom.backend.api.dto.test.TestDto;
+import com.poom.backend.api.service.ipfs.IpfsService;
 import com.poom.backend.api.service.mattermost.MattermostService;
 import com.poom.backend.api.service.member.MemberService;
+import com.poom.backend.api.service.oauth.OauthService;
 import com.poom.backend.api.service.shelter.ShelterService;
 import com.poom.backend.config.jwt.TokenProvider;
 import com.poom.backend.db.entity.Member;
@@ -18,17 +20,21 @@ import lombok.RequiredArgsConstructor;
 
 import lombok.extern.log4j.Log4j;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.disk.DiskFileItem;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.io.IOUtils;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 import java.util.List;
 
@@ -39,10 +45,12 @@ import java.util.List;
 public class TestController {
 
     private final MemberService memberService;
+    private final IpfsService ipfsService;
     private final ShelterService shelterService;
     private final MattermostService mattermostService;
     private final MemberRepository memberRepository;
     private final TokenProvider tokenProvider;
+    private final OauthService oauthService;
 
     @PostMapping("/test/cond")
     @ApiOperation(value = "Request Part with DTO 테스트", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -81,7 +89,7 @@ public class TestController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
     public ResponseEntity<?> generateTokenTest(){
-        Member member = memberRepository.findById("644f55055989655e694476b1").get();
+        Member member = memberRepository.findById("6448d2f0577f215b3f4de9a3").get();
         String token = tokenProvider.createAccessToken(member);
         return ResponseEntity.status(200).body("Bearer "+token);
     }
@@ -105,33 +113,78 @@ public class TestController {
             @ApiResponse(code = 200, message = "OK(조회 성공)"),
             @ApiResponse(code = 500, message = "서버 오류")
     })
-    public ResponseEntity<?> tokenTest(@RequestPart MultipartFile file){
+    public ResponseEntity<?> ImageTest(){
+        String imageUrl = "https://ipfs.io/ipfs/QmNXpZA7KghqTX757wh54PxfowAWm63ydjhpeiv9WztACV";
+        MultipartFile nftImageFile = ipfsService.downloadImage(imageUrl);// 이미지 url->multipart file
+        int rank = 4;
+//        String url = ipfsService.uploadImage(image);
+//        System.out.println(url);
+//        MultipartFile nftImageFile = ipfsService.downloadImage(url);
+
         try {
             // 이미지 파일 읽기
-            BufferedImage originalImage = ImageIO.read(file.getInputStream());
+            BufferedImage originalImage = ImageIO.read(nftImageFile.getInputStream());
+
+            // 이미지 크기 확대
+//            int newWidth = originalImage.getWidth() * 2;
+//            int newHeight = originalImage.getHeight() * 2;
+//            BufferedImage resizedImage = new BufferedImage(newWidth, newHeight, originalImage.getType());
+//            Graphics2D resizedGraphics = resizedImage.createGraphics();
+//            resizedGraphics.drawImage(originalImage, 0, 0, newWidth, newHeight, null);
+//            resizedGraphics.dispose();
 
             // 글자 쓰기
             Graphics2D graphics = originalImage.createGraphics();
             graphics.setColor(Color.GREEN);
-            graphics.setFont(new Font("Malgun Gothic", Font.BOLD, 30));
-            graphics.drawString("#" + 100, 10, 30);
 
-            String name = "진수형 카와이";
-            int x = originalImage.getWidth() - graphics.getFontMetrics().stringWidth(name) - 10; // x 좌표 지정
-            int y = originalImage.getHeight() - 10; // y 좌표 지정
-            graphics.drawString(name, x, y);
+            try {
+                Font customFont = Font.createFont(Font.TRUETYPE_FONT, new File("src/main/resources/fontB.ttf"));
+                graphics.setFont(customFont.deriveFont(Font.BOLD, 10));
+            } catch (FontFormatException | IOException e) {
+                e.printStackTrace();
+            }
+            graphics.drawString("#" + rank, 10, 30);
+            graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+
+//            String name = "진수형 카와이";
+//            int x = originalImage.getWidth() - graphics.getFontMetrics().stringWidth(name) - 10; // x 좌표 지정
+//            int y = originalImage.getHeight() - 10; // y 좌표 지정
+//            graphics.drawString(name, x, y);
 
             // 이미지 파일 저장
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ImageIO.write(originalImage, "png", baos);
+            ImageIO.write(originalImage, "jpg", baos);
             byte[] bytes = baos.toByteArray();
-            String fileName = file.getOriginalFilename();
+            String fileName = nftImageFile.getOriginalFilename();
             String modifiedFileName = "signed_" + fileName;
             HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.IMAGE_PNG);
+            headers.setContentType(MediaType.IMAGE_JPEG);
             headers.setContentDispositionFormData("attachment", modifiedFileName);
 
-            return new ResponseEntity<>(bytes, headers, HttpStatus.OK);
+            // Convert byte array to MultipartFile
+            ByteArrayInputStream contentStream = new ByteArrayInputStream(bytes);
+
+            // Create a DiskFileItem
+            FileItem fileItem = new DiskFileItemFactory().createItem(
+                    modifiedFileName,
+                    MediaType.IMAGE_JPEG_VALUE,
+                    true,
+                    modifiedFileName
+            );
+
+            // Use a transformer to write the file item
+            try (InputStream in = contentStream; OutputStream out = fileItem.getOutputStream()) {
+                IOUtils.copy(in, out);
+            } catch (IOException e) {
+                throw new IllegalArgumentException("Error copying file", e);
+            }
+
+            // Create a MultipartFile
+            MultipartFile multipartFile = new CommonsMultipartFile(fileItem);
+
+            String hash = ipfsService.uploadImage(multipartFile);
+
+            return ResponseEntity.status(200).body(hash);
         } catch (IOException e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -171,14 +224,17 @@ public class TestController {
         log.info("왔어요");
     }
 
-    @PostMapping("/test/loginres")
-    @ApiOperation(value = "로그인 리스폰스 테스트", notes = "")
+    @PostMapping("/test/token/auth/name")
+    @ApiOperation(value = "토큰 auth 테스트", notes = "")
     @ApiResponses({
             @ApiResponse(code = 200, message = "OK(조회 성공)"),
             @ApiResponse(code = 500, message = "서버 오류")
     })
-    public ResponseEntity<?> loginTest(){
-        Member member = memberRepository.findById("644f55055989655e694476b1").get();
-        return ResponseEntity.status(200).body(LoginRes.from(member));
+    public ResponseEntity<?> tokenAuthTest2(HttpServletRequest request){
+        String token = memberService.getToken(request);
+        if(oauthService.checkAdmin(token)){
+            return ResponseEntity.status(200).body("admin입니다.");
+        }
+        return ResponseEntity.status(200).body("admin이 아닙니다.");
     }
 }
