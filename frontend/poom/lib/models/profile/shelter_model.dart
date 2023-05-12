@@ -3,8 +3,9 @@ class ShelterModel {
       shelterName,
       shelterAddress,
       shelterPhoneNumber,
-      shelterStatus,
-      regDate;
+      shelterStatus;
+
+  String? regDate;
 
   ShelterModel.fromJson(Map<String, dynamic> json)
       : shelterId = json["shelterId"],
