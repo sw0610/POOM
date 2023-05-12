@@ -116,78 +116,77 @@ public class TestController {
     public ResponseEntity<?> ImageTest(){
         String imageUrl = "https://ipfs.io/ipfs/QmNXpZA7KghqTX757wh54PxfowAWm63ydjhpeiv9WztACV";
         MultipartFile nftImageFile = ipfsService.downloadImage(imageUrl);// 이미지 url->multipart file
-        int rank = 4;
+        int rank = 901;
 //        String url = ipfsService.uploadImage(image);
 //        System.out.println(url);
 //        MultipartFile nftImageFile = ipfsService.downloadImage(url);
 
         try {
-            // 이미지 파일 읽기
             BufferedImage originalImage = ImageIO.read(nftImageFile.getInputStream());
 
-            // 이미지 크기 확대
-//            int newWidth = originalImage.getWidth() * 2;
-//            int newHeight = originalImage.getHeight() * 2;
-//            BufferedImage resizedImage = new BufferedImage(newWidth, newHeight, originalImage.getType());
-//            Graphics2D resizedGraphics = resizedImage.createGraphics();
-//            resizedGraphics.drawImage(originalImage, 0, 0, newWidth, newHeight, null);
-//            resizedGraphics.dispose();
+            BufferedImage highQualityImage = new BufferedImage(originalImage.getWidth(), originalImage.getHeight(), BufferedImage.TYPE_INT_RGB);
+            Graphics2D graphics = highQualityImage.createGraphics();
+            graphics.drawImage(originalImage, 0, 0, null);
+            graphics.dispose();
 
             // 글자 쓰기
-            Graphics2D graphics = originalImage.createGraphics();
-            graphics.setColor(Color.GREEN);
-
-            try {
-                Font customFont = Font.createFont(Font.TRUETYPE_FONT, new File("src/main/resources/fontB.ttf"));
-                graphics.setFont(customFont.deriveFont(Font.BOLD, 10));
-            } catch (FontFormatException | IOException e) {
-                e.printStackTrace();
-            }
-            graphics.drawString("#" + rank, 10, 30);
+            graphics = highQualityImage.createGraphics();
             graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
-//            String name = "진수형 카와이";
-//            int x = originalImage.getWidth() - graphics.getFontMetrics().stringWidth(name) - 10; // x 좌표 지정
-//            int y = originalImage.getHeight() - 10; // y 좌표 지정
-//            graphics.drawString(name, x, y);
+            // 글자 색상 설정 (배경에 맞게 선택)
+            graphics.setColor(Color.WHITE); // 예시로 흰색으로 설정
+
+            // 폰트 로드
+            Font customFont = Font.createFont(Font.TRUETYPE_FONT, new File("src/main/resources/fontB.ttf"));
+            graphics.setFont(customFont.deriveFont(Font.BOLD, 30));
+
+            // 글자 위치 설정
+            int x = 10;
+            int y = 30;
+
+            // 배경과 대비되는 테두리 그리기
+            graphics.setStroke(new BasicStroke(10)); // 테두리 굵기 설정
+            graphics.setColor(new Color(0xFF8E01)); // 테두리 색상 설정
+            graphics.drawString("#" + rank, x - 1, y);
+            graphics.drawString("#" + rank, x + 1, y);
+            graphics.drawString("#" + rank, x, y - 1);
+            graphics.drawString("#" + rank, x, y + 1);
+
+            // 실제 글자 그리기
+            graphics.setColor(Color.white); // 글자 색상 설정
+            graphics.drawString("#" + rank, x, y);
 
             // 이미지 파일 저장
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ImageIO.write(originalImage, "jpg", baos);
+            ImageIO.write(highQualityImage, "jpg", baos);
             byte[] bytes = baos.toByteArray();
+
+            // 파일 이름 및 헤더 설정
             String fileName = nftImageFile.getOriginalFilename();
             String modifiedFileName = "signed_" + fileName;
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.IMAGE_JPEG);
             headers.setContentDispositionFormData("attachment", modifiedFileName);
 
-            // Convert byte array to MultipartFile
+            // MultipartFile 생성
             ByteArrayInputStream contentStream = new ByteArrayInputStream(bytes);
-
-            // Create a DiskFileItem
-            FileItem fileItem = new DiskFileItemFactory().createItem(
-                    modifiedFileName,
-                    MediaType.IMAGE_JPEG_VALUE,
-                    true,
-                    modifiedFileName
-            );
-
-            // Use a transformer to write the file item
+            FileItem fileItem = new DiskFileItemFactory().createItem(modifiedFileName, MediaType.IMAGE_JPEG_VALUE, true, modifiedFileName);
             try (InputStream in = contentStream; OutputStream out = fileItem.getOutputStream()) {
                 IOUtils.copy(in, out);
             } catch (IOException e) {
                 throw new IllegalArgumentException("Error copying file", e);
             }
-
-            // Create a MultipartFile
             MultipartFile multipartFile = new CommonsMultipartFile(fileItem);
 
+            // 이미지 업로드
             String hash = ipfsService.uploadImage(multipartFile);
 
             return ResponseEntity.status(200).body(hash);
         } catch (IOException e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (FontFormatException e) {
+            throw new RuntimeException(e);
         }
     }
 
