@@ -105,6 +105,17 @@ public class DonationServiceImpl implements DonationService {
     }
 
     @Override
+    public int getNftIsIssued(Long donationId) {
+
+        SmartContractDonationDto smartContractDonationDto = donationContractService.getDonation(donationId)
+                .orElseThrow(()->new BadRequestException("후원 정보가 없습니다."));
+
+        int isIssued = smartContractDonationDto.getIsIssued();
+
+        return isIssued;
+    }
+
+    @Override
     public String setDonationSort(Long fundraiserId) {
         List<SmartContractDonationDto> donationList = donationContractService.getDonationList()
                 .stream()

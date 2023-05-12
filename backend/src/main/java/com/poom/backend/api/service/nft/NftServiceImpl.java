@@ -85,7 +85,13 @@ public class NftServiceImpl implements NFTService {
         Optional<Member> member = memberRepository.findById(memberId);
 
         FundraiserDetailRes fundraiserDto = fundraiserService.getFundraiserDetail(fundraiserId);
-
+        int nftIsIssued = donationService.getNftIsIssued(nftIssueCond.getDonationId());
+        if (nftIsIssued == 0) {
+            throw new BadRequestException("후원 진행중");
+        }
+        else if(nftIsIssued == 1){
+            throw new BadRequestException("발급 완료된 NFT입니다.");
+        }
         // 종료 되었고 후원 순위 해시 있는지 체크하기
         if (fundraiserDto.getIsClosed()) {
             String hashString = donationContractService.getDonationSort(fundraiserId)
@@ -96,14 +102,13 @@ public class NftServiceImpl implements NFTService {
 
             }
 
-
             int myRank = donationService.getMyRank(fundraiserId, memberId); // 내 등수 가져오기
             Double myAmount = donationService.getMyAmount(fundraiserId, memberId); // 내 후원 금액 가져오기
 
 
             String myNftImageUrl = fundraiserDto.getNftImgUrl(); // 이미지 url
             String dogName = fundraiserDto.getDogName();
-            String description = member.get().getNickname() + "님께서 " + dogName + "에게 "
+            String description = member.get().getNickname() + " 님께서 " + dogName + "에게 "
                     + myAmount + " ETH 후원한 내역에 대한 후원 증서입니다.";
 
 
