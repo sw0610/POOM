@@ -16,13 +16,13 @@ public class ShelterAuthMMActionDto {
     String name;
     Map<String, Object> integration;
 
-    public static List<ShelterAuthMMActionDto> getActions(String shelterId){
-        return List.of(new ShelterAuthMMActionDto(shelterId, true),
-                        new ShelterAuthMMActionDto(shelterId, false));
+    public static List<ShelterAuthMMActionDto> getActions(String shelterId, String token){
+        return List.of(new ShelterAuthMMActionDto(shelterId, true, token),
+                        new ShelterAuthMMActionDto(shelterId, false, token));
     }
 
-    public ShelterAuthMMActionDto(String shelterId, boolean isApproved){
-        this.integration = getIntegration(shelterId, isApproved);
+    public ShelterAuthMMActionDto(String shelterId, boolean isApproved, String token){
+        this.integration = getIntegration(shelterId, isApproved, token);
         if(isApproved){
             this.name = "승인";
             return;
@@ -30,9 +30,9 @@ public class ShelterAuthMMActionDto {
         this.name = "거절";
     }
 
-    public static Map<String, Object> getIntegration(String shelterId, boolean isApproved){
+    public static Map<String, Object> getIntegration(String shelterId, boolean isApproved, String token){
         Map<String, Object> integration = new HashMap<>();
-        String queryParams = "?shelterId=" + shelterId + "&isApproved=" + isApproved;
+        String queryParams = "?shelterId=" + shelterId + "&isApproved=" + isApproved + "&token=" + token;
         integration.put("url", "https://k8a805.p.ssafy.io/api/admin/shelter/auth" + queryParams);
         return integration;
     }
