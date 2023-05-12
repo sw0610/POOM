@@ -20,10 +20,10 @@ public class ShelterAuthMMCond {
     String imageUrl; // add this field
     List<ShelterAuthMMActionDto> actions;
 
-    public static ShelterAuthMMCond getActions(String shelterId){
+    public static ShelterAuthMMCond getActions(String shelterId, String token){
         ShelterAuthMMCond shelter = new ShelterAuthMMCond();
         shelter.setText("### 승인하시겠습니까?");
-        shelter.setActions(ShelterAuthMMActionDto.getActions(shelterId));
+        shelter.setActions(ShelterAuthMMActionDto.getActions(shelterId, token));
         return shelter;
     }
 
