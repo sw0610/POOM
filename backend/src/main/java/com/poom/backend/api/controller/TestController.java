@@ -114,19 +114,37 @@ public class TestController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
     public ResponseEntity<?> ImageTest(){
-        String imageUrl = "https://ipfs.io/ipfs/QmV637KHwPNyd7YzgSaL5Fdn6rk6AsD1cKFbFm3yYmt7QH";
+        String imageUrl = "https://ipfs.io/ipfs/QmNXpZA7KghqTX757wh54PxfowAWm63ydjhpeiv9WztACV";
         MultipartFile nftImageFile = ipfsService.downloadImage(imageUrl);// 이미지 url->multipart file
-        int rank = 1;
+        int rank = 4;
+//        String url = ipfsService.uploadImage(image);
+//        System.out.println(url);
+//        MultipartFile nftImageFile = ipfsService.downloadImage(url);
 
         try {
             // 이미지 파일 읽기
             BufferedImage originalImage = ImageIO.read(nftImageFile.getInputStream());
 
+            // 이미지 크기 확대
+//            int newWidth = originalImage.getWidth() * 2;
+//            int newHeight = originalImage.getHeight() * 2;
+//            BufferedImage resizedImage = new BufferedImage(newWidth, newHeight, originalImage.getType());
+//            Graphics2D resizedGraphics = resizedImage.createGraphics();
+//            resizedGraphics.drawImage(originalImage, 0, 0, newWidth, newHeight, null);
+//            resizedGraphics.dispose();
+
             // 글자 쓰기
             Graphics2D graphics = originalImage.createGraphics();
             graphics.setColor(Color.GREEN);
-            graphics.setFont(new Font("Malgun Gothic", Font.BOLD, 30));
+
+            try {
+                Font customFont = Font.createFont(Font.TRUETYPE_FONT, new File("src/main/resources/fontB.ttf"));
+                graphics.setFont(customFont.deriveFont(Font.BOLD, 10));
+            } catch (FontFormatException | IOException e) {
+                e.printStackTrace();
+            }
             graphics.drawString("#" + rank, 10, 30);
+            graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
 //            String name = "진수형 카와이";
 //            int x = originalImage.getWidth() - graphics.getFontMetrics().stringWidth(name) - 10; // x 좌표 지정
@@ -146,7 +164,7 @@ public class TestController {
             // Convert byte array to MultipartFile
             ByteArrayInputStream contentStream = new ByteArrayInputStream(bytes);
 
-// Create a DiskFileItem
+            // Create a DiskFileItem
             FileItem fileItem = new DiskFileItemFactory().createItem(
                     modifiedFileName,
                     MediaType.IMAGE_JPEG_VALUE,
@@ -154,14 +172,14 @@ public class TestController {
                     modifiedFileName
             );
 
-// Use a transformer to write the file item
+            // Use a transformer to write the file item
             try (InputStream in = contentStream; OutputStream out = fileItem.getOutputStream()) {
                 IOUtils.copy(in, out);
             } catch (IOException e) {
                 throw new IllegalArgumentException("Error copying file", e);
             }
 
-// Create a MultipartFile
+            // Create a MultipartFile
             MultipartFile multipartFile = new CommonsMultipartFile(fileItem);
 
             String hash = ipfsService.uploadImage(multipartFile);
