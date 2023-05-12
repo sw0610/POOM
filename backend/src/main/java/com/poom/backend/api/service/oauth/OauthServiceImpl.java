@@ -12,12 +12,17 @@ import com.poom.backend.api.service.redis.RedisService;
 import com.poom.backend.config.jwt.TokenProvider;
 import com.poom.backend.db.entity.Member;
 import com.poom.backend.db.repository.MemberRepository;
+import com.poom.backend.enums.Role;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
@@ -89,5 +94,17 @@ public class OauthServiceImpl implements OauthService {
         redisService.saveRefreshToken(member.getId(), refreshToken);
 
         return MemberDto.from(member, accessToken, refreshToken);
+    }
+
+    @Override
+    public boolean checkAdmin(String token) {
+        if(tokenProvider.validateToken(token)){
+            Authentication authentication = tokenProvider.getAuthentication(token); // Authentication 객체(권한 정보들)를 가져온다.
+            SecurityContextHolder.getContext().setAuthentication(authentication); // SecurityContext에 set한다.
+            for (GrantedAuthority authority : authentication.getAuthorities()) {
+                if(authority.getAuthority().equals(Role.ROLE_ADMIN.name())) return true;
+            }
+        }
+        return false;
     }
 }

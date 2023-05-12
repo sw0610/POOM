@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -149,12 +150,12 @@ public class FundraiserServiceImpl implements FundraiserService{
                 throw new RuntimeException(e);
             }
 
-//                Shelter shelter = shelterRepository.findShelterByAdminId(smartContractFundraiserDto.getShelterId())
-//                        .orElseThrow(()->new BadRequestException("보호소 정보가 없습니다"));
-//                String shelterName = shelter.getShelterName();
+                Shelter shelter = shelterRepository.findById(smartContractFundraiserDto.getShelterId())
+                        .orElseThrow(()->new BadRequestException("보호소 정보가 없습니다"));
+                String shelterName = shelter.getShelterName();
             FundraiserDto fundraiserDto = FundraiserDto.builder()
                     .fundraiserId(smartContractFundraiserDto.getFundraiserId())
-                    .shelterName("테스트보호소") // TODO: 보호소 이름 받아야함
+                    .shelterName(shelterName)
                     .dogName(ipfsFundraiserDto.getDogName())
                     .dogGender(ipfsFundraiserDto.getDogGender())
                     .mainImgUrl(ipfsFundraiserDto.getMainImage())
@@ -192,11 +193,14 @@ public class FundraiserServiceImpl implements FundraiserService{
         }
 
         List<FundraiserDonationDto> donationList = donationService.getFundraiserDonationList(fundraiserId);
+        Optional<Shelter> shelter = shelterRepository.findById(smartContractFundraiserDto.getShelterId());
 
         FundraiserDetailRes fundraiserDetailRes =
                 FundraiserDetailRes.builder()
                         .shelterId(smartContractFundraiserDto.getShelterId())
-                        .shelterAddress(smartContractFundraiserDto.getShelterAddress())
+                        .shelterName(shelter.get().getShelterName())
+                        .shelterEthWalletAddress(smartContractFundraiserDto.getShelterAddress())
+                        .shelterAddress(shelter.get().getShelterAddress())
                         .dogName(ipfsFundraiserDto.getDogName())
                         .mainImgUrl(ipfsFundraiserDto.getMainImage())
                         .nftImgUrl(ipfsFundraiserDto.getNftImage())
@@ -205,6 +209,7 @@ public class FundraiserServiceImpl implements FundraiserService{
                         .dogAge(ipfsFundraiserDto.getDogAge())
                         .ageIsEstimated(ipfsFundraiserDto.getAgeIsEstimated())
                         .dogFeature(ipfsFundraiserDto.getDogFeature())
+                        .endDate(ipfsFundraiserDto.getEndDate())
                         .currentAmount(smartContractFundraiserDto.getCurrentAmount())
                         .targetAmount(smartContractFundraiserDto.getTargetAmount())
                         .donations(donationList)

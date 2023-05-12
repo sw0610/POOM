@@ -10,6 +10,7 @@ import java.util.List;
 public interface DonationService {
     DonationRes getMyDonationList(HttpServletRequest request, int size, int page);
     List<FundraiserDonationDto> getFundraiserDonationList(Long fundraiserId);
+    int getNftIsIssued(Long donationId);
     String setDonationSort(Long fundraiserId);
     int getMyRank(Long fundraiserId, String memberId);
     Double getMyAmount(Long fundraiserId, String memberId);

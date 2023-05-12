@@ -11,4 +11,5 @@ public interface OauthService {
 //    String getTokenResponse(String code);
     void logout(HttpServletRequest request);
     MemberDto generateToken(Member member);
+    boolean checkAdmin(String token);
 }
