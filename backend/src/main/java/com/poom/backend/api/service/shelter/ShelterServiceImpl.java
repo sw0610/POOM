@@ -95,8 +95,8 @@ public class ShelterServiceImpl implements ShelterService{
         }
         else{
             shelter = shelterAuthCond.createEntity(memberId, getCertificateImageUrls(certificateImages));
+            shelter = shelterRepository.save(shelter);
         }
-
         return shelter;
     }
 
