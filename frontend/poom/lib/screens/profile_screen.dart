@@ -13,6 +13,13 @@ import 'package:shimmer/shimmer.dart';
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
+  static const shelterStatusData = {
+    "UN_AUTH": "미인증",
+    "AUTH": "승인완료",
+    "REJECT": "승인거절",
+    "UNDER_REVIEW": "승인심사",
+  };
+
   static const _textColor = Color(0xFF333333);
 
   @override
@@ -25,7 +32,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   late Future<UserInfoModel> user;
   bool isHideMenu = false;
-  int authStatus = 2;
+  late String? shelterStatus;
 
   void setHideMenu() {
     setState(() {
@@ -89,6 +96,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   future: user,
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
+                      shelterStatus = snapshot.data!.shelterStatus;
                       return ProfileForm(
                         nickname: snapshot.data!.nickname,
                         email: snapshot.data!.email,
@@ -181,7 +189,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(builder: (context) {
-                                  if (authStatus == 1) {
+                                  if (shelterStatus == "AUTH") {
                                     // 인증 상태
                                     return const ShelterAuthScreen();
                                   }
