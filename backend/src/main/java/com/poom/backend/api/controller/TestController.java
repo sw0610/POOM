@@ -7,6 +7,7 @@ import com.poom.backend.api.dto.shelter.ShelterAuthMMCond;
 import com.poom.backend.api.dto.test.TestDto;
 import com.poom.backend.api.service.mattermost.MattermostService;
 import com.poom.backend.api.service.member.MemberService;
+import com.poom.backend.api.service.shelter.ShelterService;
 import com.poom.backend.config.jwt.TokenProvider;
 import com.poom.backend.db.entity.Member;
 import com.poom.backend.db.entity.Shelter;
@@ -38,6 +39,7 @@ import java.util.List;
 public class TestController {
 
     private final MemberService memberService;
+    private final ShelterService shelterService;
     private final MattermostService mattermostService;
     private final MemberRepository memberRepository;
     private final TokenProvider tokenProvider;
@@ -53,7 +55,7 @@ public class TestController {
     public ResponseEntity<?> requestShelterAuth(HttpServletRequest request,
                                                 @RequestPart("certificateImages") List<MultipartFile> certificateImages,
                                                 @RequestPart("cond") ShelterAuthCond shelterAuthCond){
-        System.out.println(shelterAuthCond.getShelterId());
+        shelterService.requestShelterAuth(request, certificateImages, shelterAuthCond);
         return ResponseEntity.status(200).build();
     }
 
