@@ -1,5 +1,6 @@
 package com.poom.backend.api.dto.fundraiser;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.poom.backend.api.dto.donation.FundraiserDonationDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,6 +31,7 @@ public class FundraiserDetailRes {
     private Double targetAmount;
     private Double currentAmount;
     private Boolean isClosed;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yy.MM.dd", timezone = "Asia/Seoul")
     private LocalDate endDate;
     private List<FundraiserDonationDto> donations;
 
