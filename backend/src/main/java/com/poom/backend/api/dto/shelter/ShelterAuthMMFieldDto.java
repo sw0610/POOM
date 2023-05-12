@@ -27,6 +27,12 @@ public class ShelterAuthMMFieldDto {
         list.add(new ShelterAuthMMFieldDto(true, "memberId", member.getId()));
         list.add(new ShelterAuthMMFieldDto(true, "memberEmail", member.getEmail()));
         list.add(new ShelterAuthMMFieldDto(true, "nickname", member.getNickname()));
+        if(cond != null){
+            System.out.println(cond.shelterId);
+            System.out.println(cond.shelterAddress);
+        }else{
+            System.out.println("cond is null");
+        }
         addFields(cond, list);
         return list;
     }

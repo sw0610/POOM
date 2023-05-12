@@ -8,6 +8,7 @@ import com.poom.backend.db.repository.ShelterRepository;
 import com.poom.backend.enums.ShelterStatus;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,7 +39,7 @@ public class ShelterController {
                 .body(shelterService.getShelterInfo(shelterId));
     }
 
-    @PostMapping("/shelters/auth")
+    @PostMapping(value = "/shelters/auth" , consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     @ApiOperation(value = "보호소 심사 등록", notes = "<strong>보호소의 id</strong>를 입력받아 보호소의 정보를 조회합니다.")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "cond", value = "cond", dataType = "com.poom.backend.api.dto.shelter.ShelterAuthCond", paramType = "body")
