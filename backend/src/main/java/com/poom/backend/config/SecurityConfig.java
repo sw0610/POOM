@@ -4,6 +4,7 @@ import com.poom.backend.config.jwt.JwtAccessDeniedHandler;
 import com.poom.backend.config.jwt.JwtAuthenticationEntryPoint;
 import com.poom.backend.config.jwt.JwtSecurityConfig;
 import com.poom.backend.config.jwt.TokenProvider;
+import com.poom.backend.enums.Role;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -17,6 +18,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsUtils;
+
+import static com.poom.backend.enums.Role.ROLE_SHELTER;
 
 @EnableWebSecurity // 기본적인 웹 보안을 활성화하겠다는 의미이다.
 @EnableMethodSecurity
@@ -76,13 +79,15 @@ public class SecurityConfig {
                 .and()
                 .authorizeRequests() // HttpServletRequest를 사용하는 요청들에 대한 접근 제한을 설정하겠다는 의미
                 .antMatchers("/authenticate","/v2/api-docs/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**").permitAll()
+                // 로그인은 권한이 없어도 접근 가능
+                .antMatchers("/member/login").permitAll()
+                .antMatchers("/test/**", "/admin/**").permitAll()
                 // 인증된 사용자만 접근
-                .antMatchers("/auth/**").authenticated()
-                .antMatchers("/fundraiser/**").permitAll()
+                .antMatchers("/fundraiser/**").hasRole("SHELTER")
                 // 누구나 접근 가능하도록 설정
 //                .antMatchers("/api/test/**").permitAll() // authenticated로 차후 변경
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-                .anyRequest().permitAll()
+                .anyRequest().authenticated()
                 //  CORS(Cross-Origin Resource Sharing)를 허용
                 .and()
                 .cors()
