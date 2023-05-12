@@ -9,11 +9,12 @@ class TextInput extends StatelessWidget {
     required this.title,
     required this.placeholder,
     required this.onSaved,
+    required this.onChanged,
     required this.validator,
   });
 
   final String initValue, title, placeholder;
-  final FormFieldSetter onSaved;
+  final FormFieldSetter onSaved, onChanged;
   final FormFieldValidator validator;
 
   @override
@@ -42,7 +43,7 @@ class TextInput extends StatelessWidget {
           height: 10,
         ),
         TextFormField(
-          initialValue: "",
+          initialValue: initValue,
           autovalidateMode: AutovalidateMode.onUserInteraction,
           decoration: InputDecoration(
             hintText: placeholder,
@@ -67,6 +68,7 @@ class TextInput extends StatelessWidget {
           ),
           onSaved: onSaved,
           validator: validator,
+          onChanged: onChanged,
         ),
       ],
     );
