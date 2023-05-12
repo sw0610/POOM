@@ -108,7 +108,7 @@ public class NftServiceImpl implements NFTService {
 
             String myNftImageUrl = fundraiserDto.getNftImgUrl(); // 이미지 url
             String dogName = fundraiserDto.getDogName();
-            String description = member.get().getNickname() + "님께서 " + dogName + "에게 "
+            String description = member.get().getNickname() + " 님께서 " + dogName + "에게 "
                     + myAmount + " ETH 후원한 내역에 대한 후원 증서입니다.";
 
 
@@ -126,9 +126,9 @@ public class NftServiceImpl implements NFTService {
             }
 
             // 발급 전에 서명 확인
-//            boolean verify = memberService.verifySignature(nftIssueCond.getMemberAddress(), nftIssueCond.getMemberSignature(), nftIssueCond.getSignMessage());
+            boolean verify = memberService.verifySignature(nftIssueCond.getMemberAddress(), nftIssueCond.getMemberSignature(), nftIssueCond.getSignMessage());
             // 발급하기
-//            if (verify) {
+            if (verify) {
             SmartContractNftDto smartContractNftDto = SmartContractNftDto.builder()
                     .imageUrl(myNftImageUrl)
                     .metadataUri(nftJson)
@@ -136,7 +136,7 @@ public class NftServiceImpl implements NFTService {
 
 
             nftContractService.mintNft(smartContractNftDto, memberId, nftIssueCond.getMemberAddress(), nftIssueCond.getDonationId(), fundraiserId);
-//            }
+            }
 
         }
 
