@@ -8,6 +8,7 @@ import 'package:poom/screens/shelter_auth_screen.dart';
 import 'package:poom/services/profile_api_service.dart';
 import 'package:poom/widgets/profile/profile_form.dart';
 import 'package:poom/widgets/profile/profile_menu.dart';
+import 'package:shimmer/shimmer.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -95,11 +96,44 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         setHideMenu: setHideMenu,
                       );
                     }
-                    return ProfileForm(
-                      nickname: "",
-                      email: "",
-                      profileImgUrl: "",
-                      setHideMenu: setHideMenu,
+                    return Shimmer.fromColors(
+                      baseColor: Colors.grey.shade100,
+                      highlightColor: Colors.white,
+                      child: Center(
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Container(
+                                  width: 60,
+                                  height: 16,
+                                  decoration: BoxDecoration(
+                                      color: Colors.grey.shade400),
+                                ),
+                              ],
+                            ),
+                            Container(
+                              width: 100,
+                              height: 100,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.grey.shade400,
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Container(
+                              width: 100,
+                              height: 16,
+                              decoration: BoxDecoration(
+                                color: Colors.grey.shade400,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     );
                   }),
             ),
