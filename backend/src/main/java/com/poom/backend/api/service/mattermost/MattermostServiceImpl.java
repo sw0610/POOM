@@ -3,6 +3,8 @@ package com.poom.backend.api.service.mattermost;
 import com.poom.backend.api.dto.shelter.Content;
 import com.poom.backend.api.dto.shelter.ShelterAuthCond;
 import com.poom.backend.api.dto.shelter.ShelterAuthMMCond;
+import com.poom.backend.config.jwt.TokenProvider;
+import com.poom.backend.db.entity.Member;
 import com.poom.backend.db.entity.Shelter;
 import com.poom.backend.db.repository.MemberRepository;
 import com.poom.backend.db.repository.ShelterRepository;
@@ -21,6 +23,7 @@ import java.util.*;
 public class MattermostServiceImpl implements MattermostService{
     private static final String META_MOST_WEBHOOK_URL = "https://meeting.ssafy.com/hooks/dz3nra3df7yc7gbsuab6n16pme";
     private final MemberRepository memberRepository;
+    private final TokenProvider tokenProvider;
 //    private final RestTemplate restTemplate = new RestTemplate();
 
     @Override
@@ -40,8 +43,13 @@ public class MattermostServiceImpl implements MattermostService{
         list.add(new ShelterAuthMMCond(memberRepository.findById(shelter.getAdminId()).get(), shelter));
         // 2. 서류 정보
         addAuthImageUrlsToReq(shelter, list);
-        // 3. 버튼 정보
-        list.add(ShelterAuthMMCond.getActions(shelter.getId()));
+        
+        // 3.1 버튼에서 사용할 관리자 토큰
+        Member admin = memberRepository.findById("6448d2f0577f215b3f4de9a3").get();
+        String token = tokenProvider.createAccessToken(admin);
+        
+        // 3.2 버튼 정보 생성
+        list.add(ShelterAuthMMCond.getActions(shelter.getId(), token));
 
         requestBody.put("attachments", list);
         return requestBody;
