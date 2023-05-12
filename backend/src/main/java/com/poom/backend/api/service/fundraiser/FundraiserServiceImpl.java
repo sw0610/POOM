@@ -200,6 +200,7 @@ public class FundraiserServiceImpl implements FundraiserService{
                         .shelterId(smartContractFundraiserDto.getShelterId())
                         .shelterName(shelter.get().getShelterName())
                         .shelterEthWalletAddress(smartContractFundraiserDto.getShelterAddress())
+                        .shelterAddress(shelter.get().getShelterAddress())
                         .dogName(ipfsFundraiserDto.getDogName())
                         .mainImgUrl(ipfsFundraiserDto.getMainImage())
                         .nftImgUrl(ipfsFundraiserDto.getNftImage())

@@ -18,6 +18,7 @@ public class FundraiserDetailRes {
     private String dogName;
     private String shelterId;
     private String shelterName;
+    private String shelterAddress;
     private String shelterEthWalletAddress;
     private String mainImgUrl;
     private String nftImgUrl;
