@@ -69,16 +69,26 @@ class DogSpecificScreen extends StatelessWidget {
                       ].map((imgUrl) {
                         return Builder(
                           builder: (BuildContext context) {
-                            return Container(
-                              width: MediaQuery.of(context).size.width,
-                              decoration: const BoxDecoration(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(10),
+                            return Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 4),
+                              child: Container(
+                                width: MediaQuery.of(context).size.width,
+                                decoration: BoxDecoration(
+                                  borderRadius: const BorderRadius.all(
+                                    Radius.circular(10),
+                                  ),
+                                  image: DecorationImage(
+                                    image: NetworkImage(imgUrl),
+                                    fit: BoxFit
+                                        .cover, // 이미지가 Container에 맞게 적용되도록 합니다.
+                                  ),
                                 ),
-                              ),
-                              child: Image.network(
-                                imgUrl,
-                                fit: BoxFit.cover,
+
+                                // child: Image.network(
+                                //   imgUrl,
+                                //   fit: BoxFit.cover,
+                                // ),
                               ),
                             );
                           },
@@ -87,6 +97,7 @@ class DogSpecificScreen extends StatelessWidget {
                       options: CarouselOptions(
                         enableInfiniteScroll: false,
                         height: 270,
+                        viewportFraction: 1,
                       ),
                     ),
                     const SizedBox(
