@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:poom/models/home/fundraiser_specific_model.dart';
 import 'package:poom/models/home/fundraiser_specific_sponsor_model.dart';
 import 'package:poom/screens/donate_screen.dart';
+import 'package:poom/screens/full_image_screen.dart';
 import 'package:poom/services/home_api.dart';
 import 'package:poom/widgets/home/home_specific_supporter.dart';
 
@@ -21,18 +22,30 @@ class DogSpecificScreen extends StatelessWidget {
           context: context,
         );
 
+  void goFullImageScreen(String imgUrl) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => FullImageScreen(
+          imgUrl: imgUrl,
+        ),
+        fullscreenDialog: true,
+      ),
+    );
+  }
+
+  void goDonateScreen() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const DonateScreen(),
+        fullscreenDialog: true,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    void goDonateScreen() {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const DonateScreen(),
-          fullscreenDialog: true,
-        ),
-      );
-    }
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.background,
@@ -67,15 +80,18 @@ class DogSpecificScreen extends StatelessWidget {
                             return Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 5),
-                              child: Container(
-                                width: MediaQuery.of(context).size.width,
-                                decoration: BoxDecoration(
-                                  borderRadius: const BorderRadius.all(
-                                    Radius.circular(10),
-                                  ),
-                                  image: DecorationImage(
-                                    image: NetworkImage(imgUrl),
-                                    fit: BoxFit.cover,
+                              child: GestureDetector(
+                                onTap: () => goFullImageScreen(imgUrl),
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  decoration: BoxDecoration(
+                                    borderRadius: const BorderRadius.all(
+                                      Radius.circular(10),
+                                    ),
+                                    image: DecorationImage(
+                                      image: NetworkImage(imgUrl),
+                                      fit: BoxFit.cover,
+                                    ),
                                   ),
                                 ),
                               ),
