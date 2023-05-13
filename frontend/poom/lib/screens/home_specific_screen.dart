@@ -52,17 +52,12 @@ class DogSpecificScreen extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.only(
-                  right: 30,
-                  left: 30,
-                  top: 24,
-                  bottom: 100,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CarouselSlider(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 24),
+                    child: CarouselSlider(
                       items: [
                         snapshot.data!.mainImgUrl,
                         ...snapshot.data!.dogImgUrls
@@ -71,7 +66,7 @@ class DogSpecificScreen extends StatelessWidget {
                           builder: (BuildContext context) {
                             return Padding(
                               padding:
-                                  const EdgeInsets.symmetric(horizontal: 4),
+                                  const EdgeInsets.symmetric(horizontal: 5),
                               child: Container(
                                 width: MediaQuery.of(context).size.width,
                                 decoration: BoxDecoration(
@@ -80,15 +75,9 @@ class DogSpecificScreen extends StatelessWidget {
                                   ),
                                   image: DecorationImage(
                                     image: NetworkImage(imgUrl),
-                                    fit: BoxFit
-                                        .cover, // 이미지가 Container에 맞게 적용되도록 합니다.
+                                    fit: BoxFit.cover,
                                   ),
                                 ),
-
-                                // child: Image.network(
-                                //   imgUrl,
-                                //   fit: BoxFit.cover,
-                                // ),
                               ),
                             );
                           },
@@ -97,167 +86,179 @@ class DogSpecificScreen extends StatelessWidget {
                       options: CarouselOptions(
                         enableInfiniteScroll: false,
                         height: 270,
-                        viewportFraction: 1,
+                        viewportFraction: 0.9,
                       ),
                     ),
-                    const SizedBox(
-                      height: 20,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      right: 30,
+                      left: 30,
+                      bottom: 100,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              snapshot.data!.dogName,
-                              style: TextStyle(
-                                color: Theme.of(context).primaryColor,
-                                fontSize: 24,
-                                fontWeight: FontWeight.w700,
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  snapshot.data!.dogName,
+                                  style: TextStyle(
+                                    color: Theme.of(context).primaryColor,
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 2,
+                                ),
+                                GestureDetector(
+                                  onTap: () {},
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        snapshot.data!.shelterName,
+                                        style: const TextStyle(
+                                          color: Color(0xFF666666),
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                      const Icon(
+                                        Icons.chevron_right_rounded,
+                                        color: Color(0xFF666666),
+                                        size: 14,
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                            Container(
+                              clipBehavior: Clip.antiAlias,
+                              width: 46,
+                              height: 46,
+                              decoration: const BoxDecoration(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(10),
+                                ),
+                              ),
+                              child: Image.network(
+                                snapshot.data!.nftImgUrl,
+                                fit: BoxFit.cover,
                               ),
                             ),
-                            const SizedBox(
-                              height: 2,
-                            ),
-                            GestureDetector(
-                              onTap: () {},
-                              child: Row(
-                                children: [
-                                  Text(
-                                    snapshot.data!.shelterName,
-                                    style: const TextStyle(
-                                      color: Color(0xFF666666),
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                  const Icon(
-                                    Icons.chevron_right_rounded,
-                                    color: Color(0xFF666666),
-                                    size: 14,
-                                  ),
-                                ],
-                              ),
-                            )
                           ],
                         ),
+                        const SizedBox(
+                          height: 20,
+                        ),
                         Container(
-                          clipBehavior: Clip.antiAlias,
-                          width: 46,
-                          height: 46,
+                          height: 85,
+                          width: MediaQuery.of(context).size.width,
                           decoration: const BoxDecoration(
+                            color: Color(0xFFFFF4E6),
                             borderRadius: BorderRadius.all(
                               Radius.circular(10),
                             ),
                           ),
-                          child: Image.network(
-                            snapshot.data!.nftImgUrl,
-                            fit: BoxFit.cover,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              const Text(''),
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const SummaryTitle(text: '후원 마감'),
+                                  SummaryValue(value: snapshot.data!.endDate),
+                                ],
+                              ),
+                              const DivideLine(),
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const SummaryTitle(text: '현재 모금액'),
+                                  SummaryValue(
+                                      value: snapshot.data!.currentAmount
+                                          .toString()),
+                                ],
+                              ),
+                              const DivideLine(),
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const SummaryTitle(text: '목표액'),
+                                  SummaryValue(
+                                      value: snapshot.data!.targetAmount
+                                          .toString()),
+                                ],
+                              ),
+                              const Text(''),
+                            ],
                           ),
                         ),
+                        const Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text(
+                              '단위: eth',
+                              style: TextStyle(
+                                color: Color(0xFF999999),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const Title(text: '보호견 정보'),
+                        DogInfo(
+                          title: '보호소 주소',
+                          value: snapshot.data!.shelterAddress,
+                        ),
+                        DogInfo(
+                          title: '성별',
+                          value: snapshot.data!.dogGender == 0 ? '암컷' : '수컷',
+                        ),
+                        DogInfo(
+                          title: '나이',
+                          value: snapshot.data!.ageIsEstimated
+                              ? '${snapshot.data!.dogAge}세'
+                              : '${snapshot.data!.dogAge}세 추정',
+                        ),
+                        DogInfo(
+                          title: '특징',
+                          value: snapshot.data!.dogFeature,
+                        ),
+                        const Title(
+                          text: '후원자 목록',
+                        ),
+                        if (snapshot.data!.donations.isNotEmpty)
+                          for (FundraiserSpecificSponsorModel supporter
+                              in snapshot.data!.donations)
+                            Supporter(
+                              nickname: supporter.nickname,
+                              imgPath: supporter.profileImgUrl,
+                              amount: supporter.donationAmount,
+                            ),
+                        if (snapshot.data!.donations.isEmpty)
+                          const Center(
+                              child: Column(
+                            children: [
+                              SizedBox(
+                                height: 30,
+                              ),
+                              Text('후원자 목록이 없습니다.'),
+                            ],
+                          )),
                       ],
                     ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Container(
-                      height: 85,
-                      width: MediaQuery.of(context).size.width,
-                      decoration: const BoxDecoration(
-                        color: Color(0xFFFFF4E6),
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10),
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const Text(''),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const SummaryTitle(text: '후원 마감'),
-                              SummaryValue(value: snapshot.data!.endDate),
-                            ],
-                          ),
-                          const DivideLine(),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const SummaryTitle(text: '현재 모금액'),
-                              SummaryValue(
-                                  value:
-                                      snapshot.data!.currentAmount.toString()),
-                            ],
-                          ),
-                          const DivideLine(),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const SummaryTitle(text: '목표액'),
-                              SummaryValue(
-                                  value:
-                                      snapshot.data!.targetAmount.toString()),
-                            ],
-                          ),
-                          const Text(''),
-                        ],
-                      ),
-                    ),
-                    const Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Text(
-                          '단위: eth',
-                          style: TextStyle(
-                            color: Color(0xFF999999),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const Title(text: '보호견 정보'),
-                    DogInfo(
-                      title: '보호소 주소',
-                      value: snapshot.data!.shelterAddress,
-                    ),
-                    DogInfo(
-                      title: '성별',
-                      value: snapshot.data!.dogGender == 0 ? '암컷' : '수컷',
-                    ),
-                    DogInfo(
-                      title: '나이',
-                      value: snapshot.data!.ageIsEstimated
-                          ? '${snapshot.data!.dogAge}세'
-                          : '${snapshot.data!.dogAge}세 추정',
-                    ),
-                    DogInfo(
-                      title: '특징',
-                      value: snapshot.data!.dogFeature,
-                    ),
-                    const Title(
-                      text: '후원자 목록',
-                    ),
-                    if (snapshot.data!.donations.isNotEmpty)
-                      for (FundraiserSpecificSponsorModel supporter
-                          in snapshot.data!.donations)
-                        Supporter(
-                          nickname: supporter.nickname,
-                          imgPath: supporter.profileImgUrl,
-                          amount: supporter.donationAmount,
-                        ),
-                    if (snapshot.data!.donations.isEmpty)
-                      const Center(
-                          child: Column(
-                        children: [
-                          SizedBox(
-                            height: 30,
-                          ),
-                          Text('후원자 목록이 없습니다.'),
-                        ],
-                      )),
-                  ],
-                ),
+                  ),
+                ],
               ),
             );
           }
