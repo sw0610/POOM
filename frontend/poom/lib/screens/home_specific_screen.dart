@@ -1,10 +1,25 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:poom/models/home/fundraiser_specific_model.dart';
+import 'package:poom/models/home/fundraiser_specific_sponsor_model.dart';
 import 'package:poom/screens/donate_screen.dart';
+import 'package:poom/services/home_api.dart';
 import 'package:poom/widgets/home/home_specific_supporter.dart';
 
 class DogSpecificScreen extends StatelessWidget {
-  const DogSpecificScreen({super.key});
+  final int fundraiserId;
+  final Future<FundraiserSpecificModel> specificInfo;
+  final BuildContext context;
+
+  DogSpecificScreen({
+    super.key,
+    required this.fundraiserId,
+    required this.context,
+  }) : specificInfo = HomeApi.getSpecificFundraiser(
+          fundraiserId: fundraiserId,
+          context: context,
+        );
 
   @override
   Widget build(BuildContext context) {
@@ -32,159 +47,214 @@ class DogSpecificScreen extends StatelessWidget {
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.only(
-            right: 30,
-            left: 30,
-            top: 24,
-            bottom: 100,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(
-                height: 20,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '뭉이',
-                        style: TextStyle(
-                          color: Theme.of(context).primaryColor,
-                          fontSize: 24,
-                          fontWeight: FontWeight.w700,
-                        ),
+      body: FutureBuilder(
+        future: specificInfo,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.only(
+                  right: 30,
+                  left: 30,
+                  top: 24,
+                  bottom: 100,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CarouselSlider(
+                      items: [
+                        snapshot.data!.mainImgUrl,
+                        ...snapshot.data!.dogImgUrls
+                      ].map((imgUrl) {
+                        return Builder(
+                          builder: (BuildContext context) {
+                            return Container(
+                              width: MediaQuery.of(context).size.width,
+                              decoration: const BoxDecoration(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(10),
+                                ),
+                              ),
+                              child: Image.network(
+                                imgUrl,
+                                fit: BoxFit.cover,
+                              ),
+                            );
+                          },
+                        );
+                      }).toList(),
+                      options: CarouselOptions(
+                        enableInfiniteScroll: false,
+                        height: 270,
                       ),
-                      const SizedBox(
-                        height: 2,
-                      ),
-                      GestureDetector(
-                        onTap: () {},
-                        child: const Row(
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              '용인시 보호소',
+                              snapshot.data!.dogName,
                               style: TextStyle(
-                                color: Color(0xFF666666),
-                                fontSize: 14,
+                                color: Theme.of(context).primaryColor,
+                                fontSize: 24,
+                                fontWeight: FontWeight.w700,
                               ),
                             ),
-                            Icon(
-                              Icons.chevron_right_rounded,
-                              color: Color(0xFF666666),
-                              size: 14,
+                            const SizedBox(
+                              height: 2,
                             ),
+                            GestureDetector(
+                              onTap: () {},
+                              child: Row(
+                                children: [
+                                  Text(
+                                    snapshot.data!.shelterName,
+                                    style: const TextStyle(
+                                      color: Color(0xFF666666),
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                  const Icon(
+                                    Icons.chevron_right_rounded,
+                                    color: Color(0xFF666666),
+                                    size: 14,
+                                  ),
+                                ],
+                              ),
+                            )
                           ],
                         ),
-                      )
-                    ],
-                  ),
-                  Container(
-                    clipBehavior: Clip.antiAlias,
-                    width: 46,
-                    height: 46,
-                    decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(10),
+                        Container(
+                          clipBehavior: Clip.antiAlias,
+                          width: 46,
+                          height: 46,
+                          decoration: const BoxDecoration(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10),
+                            ),
+                          ),
+                          child: Image.network(
+                            snapshot.data!.nftImgUrl,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Container(
+                      height: 85,
+                      width: MediaQuery.of(context).size.width,
+                      decoration: const BoxDecoration(
+                        color: Color(0xFFFFF4E6),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(10),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const Text(''),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const SummaryTitle(text: '후원 마감'),
+                              SummaryValue(value: snapshot.data!.endDate),
+                            ],
+                          ),
+                          const DivideLine(),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const SummaryTitle(text: '현재 모금액'),
+                              SummaryValue(
+                                  value:
+                                      snapshot.data!.currentAmount.toString()),
+                            ],
+                          ),
+                          const DivideLine(),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const SummaryTitle(text: '목표액'),
+                              SummaryValue(
+                                  value:
+                                      snapshot.data!.targetAmount.toString()),
+                            ],
+                          ),
+                          const Text(''),
+                        ],
                       ),
                     ),
-                    child: Image.network(
-                      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRm5q9thkNI7sXmH0ysGnn4_ugIwQxgoec3WQ&usqp=CAU',
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Container(
-                height: 85,
-                width: MediaQuery.of(context).size.width,
-                decoration: const BoxDecoration(
-                  color: Color(0xFFFFF4E6),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(10),
-                  ),
-                ),
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(''),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                    const Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        SummaryTitle(text: '후원 마감'),
-                        SummaryValue(value: '23.01.01'),
+                        Text(
+                          '단위: eth',
+                          style: TextStyle(
+                            color: Color(0xFF999999),
+                          ),
+                        ),
                       ],
                     ),
-                    DivideLine(),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SummaryTitle(text: '현재 모금액'),
-                        SummaryValue(value: '0.562'),
-                      ],
+                    const Title(text: '보호견 정보'),
+                    DogInfo(
+                      title: '보호소 주소',
+                      value: snapshot.data!.shelterAddress,
                     ),
-                    DivideLine(),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SummaryTitle(text: '목표액'),
-                        SummaryValue(value: '1.111'),
-                      ],
+                    DogInfo(
+                      title: '성별',
+                      value: snapshot.data!.dogGender == 0 ? '암컷' : '수컷',
                     ),
-                    Text(''),
+                    DogInfo(
+                      title: '나이',
+                      value: snapshot.data!.ageIsEstimated
+                          ? '${snapshot.data!.dogAge}세'
+                          : '${snapshot.data!.dogAge}세 추정',
+                    ),
+                    DogInfo(
+                      title: '특징',
+                      value: snapshot.data!.dogFeature,
+                    ),
+                    const Title(
+                      text: '후원자 목록',
+                    ),
+                    if (snapshot.data!.donations.isNotEmpty)
+                      for (FundraiserSpecificSponsorModel supporter
+                          in snapshot.data!.donations)
+                        Supporter(
+                          nickname: supporter.nickname,
+                          imgPath: supporter.profileImgUrl,
+                          amount: supporter.donationAmount,
+                        ),
+                    if (snapshot.data!.donations.isEmpty)
+                      const Center(
+                          child: Column(
+                        children: [
+                          SizedBox(
+                            height: 30,
+                          ),
+                          Text('후원자 목록이 없습니다.'),
+                        ],
+                      )),
                   ],
                 ),
               ),
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text(
-                    '단위: eth',
-                    style: TextStyle(
-                      color: Color(0xFF999999),
-                    ),
-                  ),
-                ],
-              ),
-              const Title(text: '보호견 정보'),
-              const DogInfo(
-                title: '보호소 주소',
-                value: '경기도 용인시 수지구 무슨대로 66',
-              ),
-              const DogInfo(
-                title: '성별',
-                value: '수컷',
-              ),
-              const DogInfo(
-                title: '나이',
-                value: '8세 추정',
-              ),
-              const DogInfo(
-                title: '특징',
-                value:
-                    '가나다라마바사아자차카타파하가나다라마바사아자차카타파하가나다라마바사아자차카타파하가나다라마바사아자차카타파하가나다라마바사아자차카타파하',
-              ),
-              const Title(
-                text: '후원자 목록',
-              ),
-              const Supporter(
-                nickname: '닉네임',
-                imgPath:
-                    'https://img.segye.com/content/image/2020/07/01/20200701515451.JPG',
-                amount: 3.3,
-              ),
-            ],
-          ),
-        ),
+            );
+          }
+          return Center(
+              child: CircularProgressIndicator(
+            color: Theme.of(context).primaryColor,
+          ));
+        },
       ),
       floatingActionButton: Container(
         width: MediaQuery.of(context).size.width - 48,
