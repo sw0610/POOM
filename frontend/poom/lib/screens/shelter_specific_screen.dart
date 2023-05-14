@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:poom/models/home/shelter_info_model.dart';
 import 'package:poom/services/home_api.dart';
+import 'package:poom/widgets/shelter/kakao_map_widget.dart';
 
 class ShelterInfoScreen extends StatelessWidget {
   final String shelterId;
@@ -19,6 +20,7 @@ class ShelterInfoScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.background,
         foregroundColor: const Color(0xFF333333),
@@ -63,6 +65,37 @@ class ShelterInfoScreen extends StatelessWidget {
                   ShelterInfo(
                     title: '주소',
                     value: snapshot.data!.shelterAddress,
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Align(
+                        alignment: Alignment.topRight,
+                        child: SizedBox(
+                          width: 44,
+                          child: Text(
+                            '위치',
+                            textAlign: TextAlign.right,
+                            style: TextStyle(
+                              color: Color(0xFF666666),
+                              fontSize: 12,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      Expanded(
+                        child: KakaoMapWidget(
+                          shelterAddress: snapshot.data!.shelterAddress,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
