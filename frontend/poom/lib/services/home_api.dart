@@ -1,9 +1,27 @@
 import 'package:poom/models/home/fundraiser_specific_model.dart';
 import 'package:poom/models/home/fundraiser_specific_sponsor_model.dart';
 import 'package:poom/models/home/home_dog_card_model.dart';
+import 'package:poom/models/home/shelter_info_model.dart';
 import 'package:poom/services/auth_dio.dart';
 
 class HomeApi {
+  static Future<ShelterInfoModel> getShelterInfo({
+    required context,
+    required String shelterId,
+  }) async {
+    try {
+      var dio = await authDio(context);
+      final response = await dio.get('/shelters/$shelterId');
+      ShelterInfoModel shlterInfoInstance =
+          ShelterInfoModel.fromJson(response.data);
+      print(response.data);
+      return shlterInfoInstance;
+    } catch (e) {
+      print('getShelterInfo ERROR: $e');
+      throw Error();
+    }
+  }
+
   // static Future<List<dynamic>> getSpecificFundraiser({context, required int fundraiserId,}) {
   static Future<FundraiserSpecificModel> getSpecificFundraiser({
     required context,

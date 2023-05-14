@@ -5,6 +5,7 @@ import 'package:poom/models/home/fundraiser_specific_model.dart';
 import 'package:poom/models/home/fundraiser_specific_sponsor_model.dart';
 import 'package:poom/screens/donate_screen.dart';
 import 'package:poom/screens/full_image_screen.dart';
+import 'package:poom/screens/shelter_specific_screen.dart';
 import 'package:poom/services/home_api.dart';
 import 'package:poom/widgets/home/home_specific_supporter.dart';
 
@@ -21,6 +22,19 @@ class DogSpecificScreen extends StatelessWidget {
           fundraiserId: fundraiserId,
           context: context,
         );
+
+  void goShelterInfoScreen(String shelterId) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ShelterInfoScreen(
+          context: context,
+          shelterId: shelterId,
+        ),
+        fullscreenDialog: true,
+      ),
+    );
+  }
 
   void goFullImageScreen(String imgUrl) {
     Navigator.push(
@@ -136,7 +150,8 @@ class DogSpecificScreen extends StatelessWidget {
                                   height: 2,
                                 ),
                                 GestureDetector(
-                                  onTap: () {},
+                                  onTap: () => goShelterInfoScreen(
+                                      snapshot.data!.shelterId),
                                   child: Row(
                                     children: [
                                       Text(
