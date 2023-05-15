@@ -1,7 +1,9 @@
 package com.poom.backend.api.dto.fundraiser;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.poom.backend.enums.DogGender;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -33,6 +35,8 @@ public class OpenFundraiserCond {
     @Builder.Default
     private LocalDateTime startDate = LocalDateTime.now();
     @NotNull(message = "종료 날짜가 비어있습니다.")
+    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss.SSS")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")
     private LocalDateTime endDate;
     @NotNull(message = "강아지 성별이 비어있습니다.")
     private int dogGender;
