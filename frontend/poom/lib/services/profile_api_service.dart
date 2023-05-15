@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
+import 'package:poom/models/profile/request_item_model.dart';
 import 'package:poom/models/profile/support_model.dart';
 import 'package:poom/models/profile/user_info_model.dart';
 import 'package:poom/services/auth_dio.dart';
@@ -81,17 +82,31 @@ class ProfileApiService {
     }
   }
 
-  void getMySupportRequestList(
+  Future<List<dynamic>> getMySupportRequestList(
       BuildContext context, int pageNum, bool isClosed) async {
     var logger = Logger();
     try {
+      List<RequestItemModel> fundraisersInstances = [];
       var dio = await authDio(context);
       final response = await dio.get(
           "/members/shelters/fundraisers?page=$pageNum&isClosed=$isClosed&size=10");
+
+      final Map<String, dynamic> result = response.data;
+      final bool hasMore = result["hasMore"];
+      final String shelterName = result["shelterName"];
+      final List<dynamic> fundraisers = result["fundraisers"];
+
+      for (var fundraisersItem in fundraisers) {
+        fundraisersInstances.add(RequestItemModel.fromJson(fundraisersItem));
+      }
+
       logger
           .i("[ProfileApiService] getMySupportRequestList() success $response");
+
+      return [hasMore, shelterName, fundraisersInstances];
     } catch (e) {
       logger.e("[ProfileApiService] getMySupportRequestList() fail $e");
+      throw Error();
     }
   }
 }
