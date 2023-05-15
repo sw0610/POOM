@@ -84,6 +84,7 @@ class _ProfileSupportScreenState extends State<ProfileSupportScreen> {
                           donateDate: item["donateDate"],
                           donateAmount: item["donateAmount"],
                           isIssued: item["isIssued"],
+                          nftImgUrl: item["nftImgUrl"],
                         );
                       },
                       separatorBuilder: (context, index) => const SizedBox(
