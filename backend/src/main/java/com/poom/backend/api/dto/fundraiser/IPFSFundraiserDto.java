@@ -8,6 +8,7 @@ import lombok.*;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Builder
@@ -40,7 +41,7 @@ public class IPFSFundraiserDto {
             .dogImage(dogImageHash)
             .nftImage(nftImageHash)
             .mainImage(mainImageHash)
-            .endDate(openFundraiserCond.getEndDate())
+            .endDate(openFundraiserCond.getEndDate().toLocalDate())
             .build();
     }
 

@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -92,7 +93,7 @@ public class FundraiserServiceImpl implements FundraiserService {
     }
 
     @Override
-    public void createFundraiser(HttpServletRequest request, List<MultipartFile> dogImages, MultipartFile nftImage, MultipartFile mainImage, OpenFundraiserCond openFundraiserCond) {
+    public Long createFundraiser(HttpServletRequest request, List<MultipartFile> dogImages, MultipartFile nftImage, MultipartFile mainImage, OpenFundraiserCond openFundraiserCond) {
         String memberId = memberService.getMemberIdFromHeader(request);
         Shelter shelter = shelterRepository.findShelterByAdminId(memberId)
                 .orElseThrow(() -> new BadRequestException("보호소 정보가 없습니다"));
@@ -118,8 +119,9 @@ public class FundraiserServiceImpl implements FundraiserService {
         SmartContractFundraiserDto sc = SmartContractFundraiserDto.from(openFundraiserCond, hashString, shelter.getId());
 
         // 스마트 컨트랙트 호출해 저장한다.
-        fundraiserContractService.createFundraiser(sc);
+        Long id = fundraiserContractService.createFundraiser(sc);
 
+        return id;
     }
 
     @Override
