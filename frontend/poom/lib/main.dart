@@ -27,15 +27,11 @@ class _MyAppState extends State<MyApp> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       int? value = prefs.getInt('loginStatus');
-      print("loginStatus 값: $value");
-      print("loginStatus 타입: ${value.runtimeType}");
 
       if (value == null) {
         loginStatus = 0;
-        print('받은 value가 null임!');
       } else {
         loginStatus = value;
-        print('받은 value가 null이 아님!');
       }
     });
   }
