@@ -17,8 +17,8 @@ public class RedisServiceImpl implements RedisService{
     @Override
     public void saveRefreshToken(String memberId, String refreshToken) {
         ValueOperations<String, String> valueOperations = stringRedisTemplate.opsForValue();
-        valueOperations.set(memberId, refreshToken);
-        stringRedisTemplate.expire(memberId, 14L, TimeUnit.DAYS);
+        Duration duration = Duration.ofDays(14);
+        valueOperations.set(memberId, refreshToken, duration);
     }
 
     @Override
