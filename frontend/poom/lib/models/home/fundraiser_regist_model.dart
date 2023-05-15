@@ -24,7 +24,7 @@ class FundraiserRegistModel {
       dogFeature: json['dogFeature'],
       dogName: json['dogName'],
       shelterEthWalletAddress: json['shelterEthWalletAddress'],
-      endDate: DateTime.parse(json['endDate']),
+      endDate: json['endDate'],
       targetAmount: json['targetAmount'],
     );
   }

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-class Loading extends StatelessWidget {
+class LoadingWidget extends StatelessWidget {
   final String? title, description;
 
-  const Loading({
+  const LoadingWidget({
     super.key,
     this.title,
     this.description,
