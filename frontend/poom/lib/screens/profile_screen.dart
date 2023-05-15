@@ -39,7 +39,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   late Future<UserInfoModel> user;
   bool isHideMenu = false;
-  late String? shelterStatus;
+  String? shelterStatus;
 
   void setHideMenu() {
     setState(() {
@@ -159,83 +159,101 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 isHideMenu
                     ? const SizedBox()
-                    : Column(
-                        children: [
-                          MenuItem(
-                            icon: Icons.request_page,
-                            title: "후원 요청 목록",
-                            isShelter: true,
-                            onTapMenu: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      const SupportRequestScreen(),
+                    : FutureBuilder(
+                        future: user,
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            return Column(
+                              children: [
+                                snapshot.data!.shelterStatus == "AUTH"
+                                    ? MenuItem(
+                                        icon: Icons.request_page,
+                                        title: "후원 요청 목록",
+                                        isShelter: true,
+                                        onTapMenu: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const SupportRequestScreen(),
+                                            ),
+                                          );
+                                        },
+                                      )
+                                    : const SizedBox(),
+                                MenuItem(
+                                  icon: Icons.receipt,
+                                  title: "나의 후원 내역",
+                                  onTapMenu: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const ProfileSupportScreen(),
+                                      ),
+                                    );
+                                  },
                                 ),
-                              );
-                            },
-                          ),
-                          MenuItem(
-                            icon: Icons.receipt,
-                            title: "나의 후원 내역",
-                            onTapMenu: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      const ProfileSupportScreen(),
-                                ),
-                              );
-                            },
-                          ),
-                          Stack(
-                            children: [
-                              MenuItem(
-                                icon: Icons.night_shelter_rounded,
-                                title: "보호소 회원 인증",
-                                isShelter: true,
-                                onTapMenu: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (context) {
-                                      if (shelterStatus == "AUTH") {
-                                        // 인증 상태
-                                        return const ShelterAuthScreen();
-                                      }
-                                      return const ShelterAuthFormScreen();
-                                    }),
-                                  );
-                                },
-                              ),
-                              Positioned(
-                                top: 20,
-                                right: 0,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: ProfileScreen
-                                        .shelterStatusColorSet[shelterStatus],
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(4)),
-                                  ),
-                                  child: const Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: 3, horizontal: 4),
-                                    child: Text(
-                                      "인증상태",
-                                      style: TextStyle(
-                                        color: ProfileScreen._textColor,
-                                        fontWeight: FontWeight.w500,
+                                Stack(
+                                  children: [
+                                    MenuItem(
+                                      icon: Icons.night_shelter_rounded,
+                                      title: "보호소 회원 인증",
+                                      isShelter: true,
+                                      onTapMenu: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (context) {
+                                            if (snapshot.data!.shelterStatus ==
+                                                "AUTH") {
+                                              // 인증 상태
+                                              return const ShelterAuthScreen();
+                                            }
+                                            return const ShelterAuthFormScreen();
+                                          }),
+                                        );
+                                      },
+                                    ),
+                                    Positioned(
+                                      top: 20,
+                                      right: 0,
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: ProfileScreen
+                                                  .shelterStatusColorSet[
+                                              shelterStatus],
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(4)),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 3, horizontal: 4),
+                                          child: Text(
+                                            ProfileScreen.shelterStatusData[
+                                                snapshot.data!.shelterStatus]!,
+                                            style: const TextStyle(
+                                              color: ProfileScreen._textColor,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ),
                                       ),
                                     ),
-                                  ),
+                                  ],
                                 ),
-                              ),
-                            ],
-                          ),
-                        ],
+                              ],
+                            );
+                          }
+
+                          return Shimmer.fromColors(
+                            baseColor: Colors.grey.shade100,
+                            highlightColor: Colors.white,
+                            child: Container(),
+                          );
+                        },
                       ),
               ],
-            )
+            ),
           ],
         ),
       ),

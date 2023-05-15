@@ -72,6 +72,10 @@ class _ProfileSupportScreenState extends State<ProfileSupportScreen> {
                     var hasMore = snapshot.data!.first;
                     var supportList = snapshot.data!.last;
 
+                    if (supportList.length == 0) {
+                      return const Text("아직 후원한 내역이 없어요!");
+                    }
+
                     return ListView.separated(
                       itemCount: supportList.length,
                       scrollDirection: Axis.vertical,
