@@ -20,7 +20,6 @@ class _CollectionScreenState extends State<CollectionScreen> {
   final bool _isOwner = false;
   bool _isDialogOpen = false;
   final imagePicker = ImagePicker();
-
   late Future<Map<String, dynamic>> result;
 
   @override
