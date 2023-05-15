@@ -20,7 +20,7 @@ contract NftProcess is ERC721URIStorage, FundraiserProcess, DonationProcess  {
 
     constructor() ERC721("PoomNFT", "POOM") {}
 
-    function _mintNft(NFT memory _nft, address _memberAddress, string memory _memberId, uint64 _donationId, uint64 _fundraiserId) internal returns (uint64){
+    function _mintNft(NFT memory _nft, address _memberAddress, string memory _memberId, uint64 _donationId, uint64 _fundraiserId) internal{
         require(fundraisers[_fundraiserId].isEnded==true, "Fundraiser is not ended.");
         require(donations[_donationId].isIssued==0 || donations[_donationId].isIssued==2, "Already issued.");
 
@@ -37,9 +37,14 @@ contract NftProcess is ERC721URIStorage, FundraiserProcess, DonationProcess  {
         _nftList[_nftIds] = _nft;
         donations[_donationId].isIssued = 1;
 
-        return _nftIds-1;
 
     }
+
+    function _getNftId() internal view returns(uint64){
+        return _nftIds;
+    }
+
+
 
 
     // nft 목록

@@ -65,7 +65,7 @@ public class DonationServiceImpl implements DonationService {
                     .nftImgUrl(ipfsFundraiserDto.getNftImage())
                     .dogName(ipfsFundraiserDto.getDogName())
                     .donateAmount(smartContractDonation.getDonationAmount())
-                    .donateDate(smartContractDonation.getDonationTime())
+                    .donateDate(smartContractDonation.getDonationTime().toLocalDate())
                     .isIssued(smartContractDonation.getIsIssued())
                     .build();
 

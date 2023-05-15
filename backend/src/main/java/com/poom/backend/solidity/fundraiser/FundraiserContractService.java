@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface FundraiserContractService {
 
-    void createFundraiser(SmartContractFundraiserDto smartContractFundraiserDto);
+    Long createFundraiser(SmartContractFundraiserDto smartContractFundraiserDto);
     Optional<List<SmartContractFundraiserDto>> getFundraiserList();
     Optional<SmartContractFundraiserDto> getFundraiserDetail(Long fundraiserId);
     void endFundraiser(Long fundraiserId);

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -58,7 +59,7 @@ public class FundraiserController {
             "이미지 제외한 후원 모집 정보를 담은 data key: cond \n" +
             "shelterEthWalletAddress: String - 보호소 지갑 주소\n" +
             "dogName: String \n" +
-            "endDate: LocalDate \n" +
+            "endDate: LocalDateTime \n" +
             "dogGender: int \n" +
             "dogAge: int \n" +
             "ageIsEstimated : boolean - 나이 추청: true \n" +
@@ -74,9 +75,9 @@ public class FundraiserController {
                                             @RequestPart("dogImages") List<MultipartFile> dogImages,
                                             @RequestPart("nftImage") MultipartFile nftImage,
                                             @RequestPart("mainImage") MultipartFile mainImage,
-                                            @ModelAttribute("cond") OpenFundraiserCond openFundraiserCond){
-        fundraiserService.createFundraiser(request, dogImages, nftImage, mainImage, openFundraiserCond);
-        return ResponseEntity.status(200).build();
+                                            @Valid @ModelAttribute("cond") OpenFundraiserCond openFundraiserCond){
+
+        return ResponseEntity.status(200).body(fundraiserService.createFundraiser(request, dogImages, nftImage, mainImage, openFundraiserCond));
     }
 
     @GetMapping("/fundraisers")
