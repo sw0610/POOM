@@ -34,6 +34,7 @@ spring:
         max-active: 8
         max-idle: 8
         min-idle: 0
+    password: poompwd1234
 
   # Spring MVC 경로 매칭
   mvc:
