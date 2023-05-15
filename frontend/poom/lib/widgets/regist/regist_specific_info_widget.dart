@@ -2,20 +2,21 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:poom/models/home/fundraiser_regist_model.dart';
 import 'package:poom/widgets/regist/regist_input_form_widget.dart';
 
 class RegistSpecificInfo extends StatefulWidget {
   final List<File> dogPhotoList;
   final void Function() pickDogPhotoImage;
   final void Function(int) deleteDogPhotoImage;
-  final void Function() doRegist;
+  final void Function(FundraiserRegistModel) updateInfo;
 
   const RegistSpecificInfo({
     super.key,
     required this.dogPhotoList,
     required this.pickDogPhotoImage,
     required this.deleteDogPhotoImage,
-    required this.doRegist,
+    required this.updateInfo,
   });
 
   static Color inputBackground = const Color(0xFFD9D9D9).withOpacity(0.15);
@@ -29,10 +30,29 @@ class RegistSpecificInfo extends StatefulWidget {
 class _RegistSpecificInfoState extends State<RegistSpecificInfo> {
   int _dogGender = 0; //0: 암컷, 1: 수컷
   bool _ageIsEstimated = false;
-
+  late String _dogAge;
+  late String _dogFeature;
+  late String _dogName;
+  // late String _shelterEthWalletAddress;
+  final String _shelterEthWalletAddress = '0x111111111111';
+  late String _targetAmount;
   DateTime _endDate = DateTime.now().add(const Duration(days: 3));
 
   final formKey = GlobalKey<FormState>();
+
+  void makeFundraiserModel() {
+    final instance = FundraiserRegistModel(
+      ageIsEstimated: _ageIsEstimated,
+      dogAge: int.parse(_dogAge),
+      dogGender: _dogGender,
+      dogFeature: _dogFeature,
+      dogName: _dogName,
+      shelterEthWalletAddress: _shelterEthWalletAddress,
+      endDate: _endDate,
+      targetAmount: double.parse(_targetAmount),
+    );
+    widget.updateInfo(instance);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,22 +81,19 @@ class _RegistSpecificInfoState extends State<RegistSpecificInfo> {
                 color: RegistSpecificInfo.textColor,
               ),
             ),
-            Form(
-              key: formKey,
-              child: const Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Title(title: '강아지 사진'),
-                      Description(
-                        description: '(최대 4장)',
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+            const Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Title(title: '강아지 사진'),
+                    Description(
+                      description: '(최대 4장)',
+                    ),
+                  ],
+                ),
+              ],
             ),
             const SizedBox(height: 10),
             SizedBox(
@@ -165,150 +182,175 @@ class _RegistSpecificInfoState extends State<RegistSpecificInfo> {
                 separatorBuilder: (context, index) => const SizedBox(width: 10),
               ),
             ),
-
-            RegistInputForm(
-              title: '강아지 이름',
-              placeholder: '강아지의 이름을 입력하세요.',
-              onSaved: (val) {},
-              validator: (val) {
-                return null;
-              },
-            ),
-            RegistInputForm(
-              title: '강아지 나이',
-              placeholder: '강아지의 나이를 입력하세요.',
-              isOnlyNum: true,
-              onSaved: (val) {},
-              validator: (val) {
-                return null;
-              },
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                SizedBox(
-                  width: 30,
-                  height: 30,
-                  child: Checkbox(
-                    value: _ageIsEstimated,
-                    onChanged: ((value) {
-                      setState(() {
-                        _ageIsEstimated = value!;
-                      });
-                    }),
-                    activeColor: Theme.of(context).primaryColor,
-                    visualDensity:
-                        const VisualDensity(horizontal: 0, vertical: 0),
-                  ),
-                ),
-                const Text(
-                  '추정',
-                  style: TextStyle(
-                    color: RegistSpecificInfo.textColor,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w300,
-                  ),
-                )
-              ],
-            ),
-            const Title(title: '성별'),
-            Row(
-              children: [
-                SizedBox(
-                  width: 100,
-                  child: RadioListTile(
-                    title: const Text('암컷'),
-                    value: 0,
-                    groupValue: _dogGender,
-                    onChanged: (value) {
-                      setState(() {
-                        _dogGender = value!;
-                      });
-                    },
-                    contentPadding: EdgeInsets.zero,
-                    dense: true,
-                    activeColor: Theme.of(context).primaryColor,
-                  ),
-                ),
-                SizedBox(
-                  width: 100,
-                  child: RadioListTile(
-                    title: const Text('수컷'),
-                    value: 1,
-                    groupValue: _dogGender,
-                    onChanged: (value) {
-                      setState(() {
-                        _dogGender = value!;
-                      });
-                    },
-                    contentPadding: EdgeInsets.zero,
-                    dense: true,
-                    activeColor: Theme.of(context).primaryColor,
-                  ),
-                ),
-              ],
-            ),
-
-            RegistInputForm(
-              title: '특징',
-              description: '상세하게 작성할 수록 후원받을 확률이 높아져요!',
-              placeholder: '강아지의 특징을 입력하세요.',
-              isTextarea: true,
-              onSaved: (val) {},
-              validator: (val) {
-                return null;
-              },
-            ),
-            RegistInputForm(
-              title: '목표 후원 금액',
-              placeholder: '1.000',
-              isOnlyNum: true,
-              isPositionedRight: true,
-              isHasSuffix: true,
-              onSaved: (val) {},
-              validator: (val) {
-                return null;
-              },
-            ),
-            const Title(
-              title: '후원 마감',
-            ),
-            const Description(
-                description: '지금으로부터 최소 3일 이후, 최대 3달 이내로 설정할 수 있어요!'),
-            TextButton(
-              onPressed: () async {
-                final selectedDate = await showDatePicker(
-                  context: context,
-                  // initialDate: DateTime.now().add(const Duration(days: 3)),
-                  initialDate: _endDate,
-                  firstDate: DateTime.now().add(const Duration(days: 3)),
-                  lastDate: DateTime.now().add(const Duration(days: 90)),
-                  initialEntryMode: DatePickerEntryMode.calendarOnly,
-                );
-                if (selectedDate != null) {
-                  setState(() {
-                    _endDate = selectedDate;
-                  });
-                }
-              },
-              style: ButtonStyle(
-                padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.zero),
-              ),
-              child: Text(
-                '${_endDate.year}.${_endDate.month.toString().padLeft(2, '0')}.${_endDate.day.toString().padLeft(2, '0')}',
-                style: const TextStyle(
-                  color: RegistSpecificInfo.textColor,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
+            Form(
+                key: formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    RegistInputForm(
+                      title: '강아지 이름',
+                      placeholder: '강아지의 이름을 입력하세요.',
+                      onSaved: (val) {
+                        setState(() {
+                          _dogName = val;
+                        });
+                      },
+                      validator: (val) {
+                        return null;
+                      },
+                    ),
+                    RegistInputForm(
+                      title: '강아지 나이',
+                      placeholder: '강아지의 나이를 입력하세요.',
+                      isOnlyNum: true,
+                      onSaved: (val) {
+                        setState(() {
+                          _dogAge = val;
+                        });
+                      },
+                      validator: (val) {
+                        return null;
+                      },
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        SizedBox(
+                          width: 30,
+                          height: 30,
+                          child: Checkbox(
+                            value: _ageIsEstimated,
+                            onChanged: ((value) {
+                              setState(() {
+                                _ageIsEstimated = value!;
+                              });
+                            }),
+                            activeColor: Theme.of(context).primaryColor,
+                            visualDensity:
+                                const VisualDensity(horizontal: 0, vertical: 0),
+                          ),
+                        ),
+                        const Text(
+                          '추정',
+                          style: TextStyle(
+                            color: RegistSpecificInfo.textColor,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w300,
+                          ),
+                        )
+                      ],
+                    ),
+                    const Title(title: '성별'),
+                    Row(
+                      children: [
+                        SizedBox(
+                          width: 100,
+                          child: RadioListTile(
+                            title: const Text('암컷'),
+                            value: 0,
+                            groupValue: _dogGender,
+                            onChanged: (value) {
+                              setState(() {
+                                _dogGender = value!;
+                              });
+                            },
+                            contentPadding: EdgeInsets.zero,
+                            dense: true,
+                            activeColor: Theme.of(context).primaryColor,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 100,
+                          child: RadioListTile(
+                            title: const Text('수컷'),
+                            value: 1,
+                            groupValue: _dogGender,
+                            onChanged: (value) {
+                              setState(() {
+                                _dogGender = value!;
+                              });
+                            },
+                            contentPadding: EdgeInsets.zero,
+                            dense: true,
+                            activeColor: Theme.of(context).primaryColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                    RegistInputForm(
+                      title: '특징',
+                      description: '상세하게 작성할 수록 후원받을 확률이 높아져요!',
+                      placeholder: '강아지의 특징을 입력하세요.',
+                      isTextarea: true,
+                      onSaved: (val) {
+                        setState(() {
+                          _dogFeature = val;
+                        });
+                      },
+                      validator: (val) {
+                        return null;
+                      },
+                    ),
+                    RegistInputForm(
+                      title: '목표 후원 금액',
+                      placeholder: '1.000',
+                      isOnlyNum: true,
+                      isPositionedRight: true,
+                      isHasSuffix: true,
+                      onSaved: (val) {
+                        _targetAmount = val;
+                      },
+                      validator: (val) {
+                        return null;
+                      },
+                    ),
+                    const Title(
+                      title: '후원 마감',
+                    ),
+                    const Description(
+                        description: '지금으로부터 최소 3일 이후, 최대 3달 이내로 설정할 수 있어요!'),
+                    TextButton(
+                      onPressed: () async {
+                        final selectedDate = await showDatePicker(
+                          context: context,
+                          // initialDate: DateTime.now().add(const Duration(days: 3)),
+                          initialDate: _endDate,
+                          firstDate:
+                              DateTime.now().add(const Duration(days: 3)),
+                          lastDate:
+                              DateTime.now().add(const Duration(days: 90)),
+                          initialEntryMode: DatePickerEntryMode.calendarOnly,
+                        );
+                        if (selectedDate != null) {
+                          setState(() {
+                            _endDate = selectedDate;
+                          });
+                        }
+                      },
+                      style: ButtonStyle(
+                        padding: MaterialStateProperty.all<EdgeInsets>(
+                            EdgeInsets.zero),
+                      ),
+                      child: Text(
+                        '${_endDate.year}.${_endDate.month.toString().padLeft(2, '0')}.${_endDate.day.toString().padLeft(2, '0')}',
+                        style: const TextStyle(
+                          color: RegistSpecificInfo.textColor,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
+                )),
 
             //------------------------------------------------------------------
             Padding(
               padding: const EdgeInsets.only(top: 20),
               child: GestureDetector(
-                onTap: widget.doRegist,
+                onTap: () {
+                  formKey.currentState!.save();
+                  makeFundraiserModel();
+                },
                 child: Container(
                   height: 50,
                   width: MediaQuery.of(context).size.width,

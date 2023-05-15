@@ -52,11 +52,9 @@ class _RegistScreenState extends State<RegistScreen> {
     });
   }
 
-  void doRegist(inputInfo) {
+  void updateInfo(FundraiserRegistModel inputInfo) {
     dogRegistInfo = inputInfo;
-
-    //등록 API 작성하기
-    print('등록버튼 누름');
+    
   }
 
   //페이지 관리
@@ -104,7 +102,7 @@ class _RegistScreenState extends State<RegistScreen> {
             dogPhotoList: dogPhotoList,
             pickDogPhotoImage: _pickDogPhotoImage,
             deleteDogPhotoImage: _deleteDogPhotoImage,
-            doRegist: () => doRegist,
+            updateInfo: updateInfo,
           ),
         ],
       ),
