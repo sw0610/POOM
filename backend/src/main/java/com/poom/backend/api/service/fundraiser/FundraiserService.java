@@ -9,7 +9,7 @@ import java.util.List;
 public interface FundraiserService {
     MyFundraiserListRes getMyFundraiserList(HttpServletRequest request, int size, int page, boolean isClosed);
 
-    void createFundraiser(HttpServletRequest request, List<MultipartFile> dogImages, MultipartFile nftImage, MultipartFile mainImage, OpenFundraiserCond openFundraiserCond);
+    Long createFundraiser(HttpServletRequest request, List<MultipartFile> dogImages, MultipartFile nftImage, MultipartFile mainImage, OpenFundraiserCond openFundraiserCond);
 
     FundraiserListRes getFundraiserList(int size, int page, boolean isClosed);
 

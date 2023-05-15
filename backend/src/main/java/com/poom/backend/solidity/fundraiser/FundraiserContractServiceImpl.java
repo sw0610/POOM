@@ -18,35 +18,40 @@ public class FundraiserContractServiceImpl implements FundraiserContractService 
     private PoomContract poomContract;
 
     @Autowired
-    private FundraiserContractServiceImpl(Web3jConfig web3jConfig){
+    private FundraiserContractServiceImpl(Web3jConfig web3jConfig) {
         poomContract = web3jConfig.getContractApi();
     }
 
     // 모금 등록
     @Override
-    public void createFundraiser(SmartContractFundraiserDto smartContractFundraiserDto){
+    public Long createFundraiser(SmartContractFundraiserDto smartContractFundraiserDto) {
 
         SmartContractFundraiserDto fundraiser = new SmartContractFundraiserDto();
-
+        BigInteger id = null;
         try {
             poomContract.createFundraiser(fundraiser.toFundraiserContract(smartContractFundraiserDto)).send();
+            id = poomContract.getFundraiserId().send();
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+
+        return id.longValue();
+
     }
 
     // 모금 목록
     @Override
-    public Optional<List<SmartContractFundraiserDto>> getFundraiserList(){
+    public Optional<List<SmartContractFundraiserDto>> getFundraiserList() {
 
         List<SmartContractFundraiserDto> fundraiserContractList = null;
 
         try {
-            List<PoomContract.Fundraiser> fundraiserList =  poomContract.getFundraiserList().send();
+            List<PoomContract.Fundraiser> fundraiserList = poomContract.getFundraiserList().send();
             fundraiserContractList = fundraiserList.stream()
-                .map(fundraiser ->SmartContractFundraiserDto.fromFundraiserContract(fundraiser))
-                .sorted(Comparator.comparing(SmartContractFundraiserDto::getStartDate).reversed())
-                .collect(Collectors.toList());
+                    .map(fundraiser -> SmartContractFundraiserDto.fromFundraiserContract(fundraiser))
+                    .sorted(Comparator.comparing(SmartContractFundraiserDto::getStartDate).reversed())
+                    .collect(Collectors.toList());
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -57,13 +62,13 @@ public class FundraiserContractServiceImpl implements FundraiserContractService 
 
     // 모금 상세
     @Override
-    public Optional<SmartContractFundraiserDto> getFundraiserDetail(Long fundraiserId){
+    public Optional<SmartContractFundraiserDto> getFundraiserDetail(Long fundraiserId) {
         SmartContractFundraiserDto fundraiser = null;
         try {
-             fundraiser = SmartContractFundraiserDto.fromFundraiserContract(poomContract.getFundraiserDetail(BigInteger.valueOf(fundraiserId)).send());
-             if(fundraiser.getFundraiserId()==0){
-                 throw new BadRequestException("모금 정보가 없습니다.");
-             }
+            fundraiser = SmartContractFundraiserDto.fromFundraiserContract(poomContract.getFundraiserDetail(BigInteger.valueOf(fundraiserId)).send());
+            if (fundraiser.getFundraiserId() == 0) {
+                throw new BadRequestException("모금 정보가 없습니다.");
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -79,7 +84,6 @@ public class FundraiserContractServiceImpl implements FundraiserContractService 
             throw new RuntimeException(e);
         }
     }
-
 
 
 }
