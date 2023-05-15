@@ -32,7 +32,6 @@ class HomeDogCard extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            height: 120,
             decoration: BoxDecoration(
               borderRadius: const BorderRadius.all(
                 Radius.circular(10),
@@ -53,8 +52,8 @@ class HomeDogCard extends StatelessWidget {
                     children: [
                       Container(
                         clipBehavior: Clip.antiAlias,
-                        width: 100,
-                        height: 100,
+                        width: 112,
+                        height: 112,
                         decoration: const BoxDecoration(
                           borderRadius: BorderRadius.all(
                             Radius.circular(10),
@@ -89,60 +88,57 @@ class HomeDogCard extends StatelessWidget {
                   ),
                   Expanded(
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                Text(
-                                  dogInfo.dogName,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 16,
-                                    color: Color(0xFF333333),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  width: 5,
-                                ),
-                                Text(
-                                  dogInfo.dogGender == 0 ? '♀' : '♂',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 16,
-                                    color: dogInfo.dogGender == 0
-                                        ? Colors.pink
-                                        : Colors.blue,
-                                  ),
-                                ),
-                              ],
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(4),
                             ),
-                            Container(
-                              decoration: BoxDecoration(
-                                borderRadius: const BorderRadius.all(
-                                  Radius.circular(10),
-                                ),
-                                color: Theme.of(context).primaryColor,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 6,
+                              vertical: 2,
+                            ),
+                            child: Text(
+                              dogInfo.shelterName,
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.background,
                               ),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 6,
-                                  vertical: 2,
-                                ),
-                                child: Text(
-                                  dogInfo.shelterName,
-                                  style: TextStyle(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .background,
-                                  ),
-                                ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Row(
+                          children: [
+                            Text(
+                              dogInfo.dogName,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 16,
+                                color: Color(0xFF333333),
                               ),
-                            )
+                            ),
+                            const SizedBox(
+                              width: 5,
+                            ),
+                            Text(
+                              dogInfo.dogGender == 0 ? '♀' : '♂',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 16,
+                                color: dogInfo.dogGender == 0
+                                    ? Colors.pink
+                                    : Colors.blue,
+                              ),
+                            ),
                           ],
                         ),
-                        const SizedBox(height: 10),
+                        const SizedBox(
+                          height: 6,
+                        ),
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
