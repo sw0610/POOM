@@ -113,7 +113,13 @@ class _ProfileImageState extends State<ProfileImage> {
                               const Icon(Icons.error),
                         );
                       }
-                      return const Text("heoll");
+                      return Container(
+                        width: 100,
+                        height: 100,
+                        decoration: BoxDecoration(
+                            color: Colors.grey.shade400,
+                            shape: BoxShape.circle),
+                      );
                     },
                   ),
                 ),
