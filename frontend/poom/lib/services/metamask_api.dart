@@ -1,3 +1,4 @@
+import 'package:logger/logger.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:walletconnect_dart/walletconnect_dart.dart';
 
@@ -22,6 +23,7 @@ class MetamaskUtil {
 
   // 메타마스크 연결 메서드
   static void handleConnectMetamask() async {
+    Logger logger = Logger();
     // connected 여부 확인
     if (!_connector.connected) {
       try {
@@ -32,16 +34,17 @@ class MetamaskUtil {
 
             // metamask 설치여부에 따른 가이드 제공
             if (!isLaunched) {
-              print("설치 필요 가이드 제공");
+              logger.d("[MetamaskUtil] Metamask 설치 필요");
               return;
             }
           },
         );
         // 지갑주소 및 체인아이디 설정
         _senderAddress = _session.accounts.first;
+        logger.d("[MetamaskUtil] 지갑 연결 성공 $_senderAddress");
       } catch (e) {
         // 연결 거절 상태 처리 예정
-        print("[MetamaskUtil] 메타마스크 연결 거절 : $e");
+        logger.e("[MetamaskUtil] 지갑 연결 거절 및 오류 상태 $e");
         return;
       }
     }
@@ -54,6 +57,7 @@ class MetamaskUtil {
 
   // 후원 발생 및 후원 메서드
   static void handleGenerateSupport() async {
+    Logger logger = Logger();
     EthereumWalletConnectProvider provider =
         EthereumWalletConnectProvider(_connector);
 
@@ -63,10 +67,10 @@ class MetamaskUtil {
         to: "0xb3d8D0965c8Df86DC7f4772115aC03f2D9487CB4",
         value: BigInt.one,
       );
-      print("[MetamaskUtil] 후원 성공");
+      logger.d("[MetamaskUtil] 후원 요청 성공 $result");
     } catch (e) {
       // 후원 거절 상태 처리 예정
-      print("[MetamaskUtil] 후원 실패 $e");
+      logger.e("[MetamaskUtil] 후원 요청 실패 $e");
     }
   }
 

@@ -1,14 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:poom/models/profile/user_info_model.dart';
 import 'package:poom/screens/profile_settings_screen.dart';
 import 'package:poom/screens/profile_support_request_screen.dart';
 import 'package:poom/screens/profile_support_screen.dart';
 import 'package:poom/screens/shelter_auth_form_screen.dart';
 import 'package:poom/screens/shelter_auth_screen.dart';
+import 'package:poom/services/profile_api_service.dart';
 import 'package:poom/widgets/profile/profile_form.dart';
 import 'package:poom/widgets/profile/profile_menu.dart';
+import 'package:shimmer/shimmer.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
+
+  static const shelterStatusData = {
+    "UN_AUTH": "미인증",
+    "AUTH": "승인완료",
+    "REJECT": "승인거절",
+    "UNDER_REVIEW": "승인심사",
+  };
 
   static const _textColor = Color(0xFF333333);
 
@@ -19,16 +29,22 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   // API호출을 통해 받아올 Future 데이터 처리(userId, userEmail, profileImg)
   // 임시 데이터 처리
-  String nickname = "songo427";
-  String email = "songo427@gmail.com";
-  String profileImgUrl = "https://avatars.githubusercontent.com/u/38373150?v=4";
+
+  late Future<UserInfoModel> user;
   bool isHideMenu = false;
-  int authStatus = 2;
+  late String? shelterStatus;
 
   void setHideMenu() {
     setState(() {
       isHideMenu = !isHideMenu;
     });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    user = ProfileApiService().getUserProfile(context);
   }
 
   @override
@@ -76,12 +92,58 @@ class _ProfileScreenState extends State<ProfileScreen> {
           children: [
             SizedBox(
               height: 286,
-              child: ProfileForm(
-                nickname: nickname,
-                email: email,
-                profileImgUrl: profileImgUrl,
-                setHideMenu: setHideMenu,
-              ),
+              child: FutureBuilder(
+                  future: user,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      shelterStatus = snapshot.data!.shelterStatus;
+                      return ProfileForm(
+                        nickname: snapshot.data!.nickname,
+                        email: snapshot.data!.email,
+                        profileImgUrl: snapshot.data!.profileImgUrl,
+                        setHideMenu: setHideMenu,
+                      );
+                    }
+                    return Shimmer.fromColors(
+                      baseColor: Colors.grey.shade100,
+                      highlightColor: Colors.white,
+                      child: Center(
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Container(
+                                  width: 60,
+                                  height: 16,
+                                  decoration: BoxDecoration(
+                                      color: Colors.grey.shade400),
+                                ),
+                              ],
+                            ),
+                            Container(
+                              width: 100,
+                              height: 100,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.grey.shade400,
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Container(
+                              width: 100,
+                              height: 16,
+                              decoration: BoxDecoration(
+                                color: Colors.grey.shade400,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }),
             ),
             Column(
               children: [
@@ -127,7 +189,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(builder: (context) {
-                                  if (authStatus == 1) {
+                                  if (shelterStatus == "AUTH") {
                                     // 인증 상태
                                     return const ShelterAuthScreen();
                                   }

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:poom/services/profile_api_service.dart';
 import 'package:poom/widgets/profile/profile_image.dart';
 
 // Form
 class ProfileForm extends StatefulWidget {
-  const ProfileForm({
+  ProfileForm({
     super.key,
     required this.nickname,
     required this.email,
@@ -11,7 +12,8 @@ class ProfileForm extends StatefulWidget {
     required this.setHideMenu,
   });
 
-  final String nickname, email, profileImgUrl;
+  String? nickname;
+  final String email, profileImgUrl;
   final Function setHideMenu; // 프로필 페이지 메뉴 숨김 여부
   static const _textColor = Color(0xFF333333);
 
@@ -21,25 +23,43 @@ class ProfileForm extends StatefulWidget {
 
 class _ProfileFormState extends State<ProfileForm> {
   static const _inputBackgroundColor = Color(0xFFFAFAFA);
-
+  dynamic file;
+  String? changedNickname;
   bool isEditMode = false;
 
-  void onUpdateProfile() {
+  void onUpdateProfile() async {
+    var isUpdated = false;
     widget.setHideMenu();
+
+    if (isEditMode) {
+      Map<String, dynamic> data = {
+        "file": file,
+        "nickname": changedNickname == "" ? widget.nickname : changedNickname
+      };
+      isUpdated = await ProfileApiService().updateUserProfile(context, data);
+    }
+
     setState(() {
       isEditMode = !isEditMode;
+      widget.nickname =
+          changedNickname == "" ? widget.nickname : changedNickname;
+      if (isUpdated) {
+        ProfileApiService().getUserProfile(context);
+      }
     });
+  }
+
+  void pickProfileImage(dynamic pickedFile) {
+    file = pickedFile;
   }
 
   // form key 설정
   final _formKey = GlobalKey<FormState>();
-  late String _nickname, _profileImgUrl;
 
   @override
   void initState() {
     super.initState();
-    _nickname = widget.nickname;
-    _profileImgUrl = widget.profileImgUrl;
+    changedNickname = widget.nickname;
   }
 
   @override
@@ -65,7 +85,10 @@ class _ProfileFormState extends State<ProfileForm> {
                 ),
               ],
             ),
-            ProfileImage(isEditMode: isEditMode),
+            ProfileImage(
+                profileImgUrl: widget.profileImgUrl,
+                isEditMode: isEditMode,
+                pickProfileImage: pickProfileImage),
             const SizedBox(
               height: 20,
             ),
@@ -74,7 +97,12 @@ class _ProfileFormState extends State<ProfileForm> {
                     width: 312,
                     height: 48,
                     child: TextFormField(
-                      initialValue: _nickname,
+                      initialValue: widget.nickname,
+                      onChanged: (value) {
+                        setState(() {
+                          changedNickname = value;
+                        });
+                      },
                       decoration: InputDecoration(
                         filled: true,
                         fillColor: _inputBackgroundColor,
@@ -98,7 +126,7 @@ class _ProfileFormState extends State<ProfileForm> {
                     ),
                   )
                 : Text(
-                    _nickname,
+                    widget.nickname!,
                     style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w500,

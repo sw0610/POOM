@@ -55,6 +55,21 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/filepaths" />
         </provider>
+
+        <!-- 카카오 로그인 -->
+       <activity
+           android:name="com.kakao.sdk.flutter.AuthCodeCustomTabsActivity"
+           android:exported="true">
+           <intent-filter android:label="flutter_web_auth">
+               <action android:name="android.intent.action.VIEW" />
+               <category android:name="android.intent.category.DEFAULT" />
+               <category android:name="android.intent.category.BROWSABLE" />
+
+               <!-- Redirect URI, "kakao${YOUR_NATIVE_APP_KEY}://oauth" 형식 -->
+               <data android:scheme="kakao0902572b5f1cb7155e2c40b83d1d0fc6" android:host="oauth"/>
+           </intent-filter>
+       </activity>
+
     </application>
      <queries>
         <!-- If your app opens https URLs -->

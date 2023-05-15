@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:poom/screens/collection_screen.dart';
+import 'package:poom/widgets/collection/cahced_image.dart';
 
 class SupportItem extends StatelessWidget {
   static const _primaryColor = Color(0xFFFF8E01);
@@ -10,11 +10,14 @@ class SupportItem extends StatelessWidget {
     Colors.green.shade400
   ];
 
-  final String dogName, donateAmount, donateDate;
-  final int isIssued;
+  final int donationId, fundraiserId, isIssued;
+  final double donateAmount;
+  final String dogName, donateDate;
 
   const SupportItem({
     super.key,
+    required this.donationId,
+    required this.fundraiserId,
     required this.dogName,
     required this.donateAmount,
     required this.donateDate,

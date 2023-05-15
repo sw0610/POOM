@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:poom/services/eth_per_krw_api.dart';
+import 'package:poom/services/metamask_api.dart';
 
 class DonateScreen extends StatefulWidget {
   const DonateScreen({super.key});
@@ -77,7 +78,7 @@ class _DonateScreenState extends State<DonateScreen> {
     print(ethAmount);
 
     // metamask 연결
-    //MetamaskUtil.handleConnectMetamask();
+    MetamaskUtil.handleConnectMetamask();
   }
 
   @override
