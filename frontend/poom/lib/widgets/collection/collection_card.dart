@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:poom/widgets/collection/cahced_image.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:social_share/social_share.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as path;
@@ -28,7 +29,7 @@ class CollectionCard extends StatefulWidget {
 }
 
 class _CollectionCardState extends State<CollectionCard> {
-  final _appId = "542113181199892";
+  static const _appId = "542113181199892";
 
   Future<bool?> fileFromImageUrl(String imageUrl) async {
     final response = await http.get(Uri.parse(imageUrl));
@@ -50,6 +51,7 @@ class _CollectionCardState extends State<CollectionCard> {
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: Colors.white.withOpacity(0.9),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
       ),
@@ -57,8 +59,27 @@ class _CollectionCardState extends State<CollectionCard> {
       child: SizedBox(
         child: Column(
           children: [
-            CachedImage(
-              imageUrl: widget.imageUrl,
+            Stack(
+              children: [
+                CachedImage(
+                  imageUrl: widget.imageUrl,
+                ),
+                Positioned(
+                  left: 0,
+                  top: 0,
+                  child: Shimmer.fromColors(
+                    baseColor: Colors.grey.shade100.withOpacity(0.5),
+                    highlightColor: Colors.white,
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.width,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.15),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
             widget.isGrid & !widget.isOwner
                 ? const SizedBox()

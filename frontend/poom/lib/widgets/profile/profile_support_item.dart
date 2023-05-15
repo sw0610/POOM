@@ -12,7 +12,7 @@ class SupportItem extends StatelessWidget {
 
   final int donationId, fundraiserId, isIssued;
   final double donateAmount;
-  final String dogName, donateDate;
+  final String dogName, donateDate, nftImgUrl;
 
   const SupportItem({
     super.key,
@@ -22,6 +22,7 @@ class SupportItem extends StatelessWidget {
     required this.donateAmount,
     required this.donateDate,
     required this.isIssued,
+    required this.nftImgUrl,
   });
   @override
   Widget build(BuildContext context) {
@@ -37,11 +38,10 @@ class SupportItem extends StatelessWidget {
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(4),
-                  child: const SizedBox(
+                  child: SizedBox(
                     width: 68,
                     child: CachedImage(
-                      imageUrl:
-                          "https://i1.sndcdn.com/artworks-000660272461-rmfvxq-t500x500.jpg",
+                      imageUrl: nftImgUrl,
                     ),
                   ),
                 ),

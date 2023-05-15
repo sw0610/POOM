@@ -16,11 +16,10 @@ class CollectionScreen extends StatefulWidget {
 }
 
 class _CollectionScreenState extends State<CollectionScreen> {
-  final bool _isGrid = false;
+  bool _isGrid = false;
   final bool _isOwner = false;
   bool _isDialogOpen = false;
   final imagePicker = ImagePicker();
-
   late Future<Map<String, dynamic>> result;
 
   @override
@@ -115,110 +114,110 @@ class _CollectionScreenState extends State<CollectionScreen> {
           ),
         ),
       ),
-      body: const Padding(
-        padding: EdgeInsets.symmetric(
+      body: Padding(
+        padding: const EdgeInsets.symmetric(
           vertical: 20,
           horizontal: 24,
         ),
-        // child: FutureBuilder(
-        //   future: result,
-        //   builder: (context, snapshot) {
-        //     if (snapshot.hasData) {
-        //       // var hasMore = snapshot.data!["hasMore"];
-        //       var nickname = snapshot.data!["nickname"];
-        //       var nftCount = snapshot.data!["nftCount"];
-        //       var nftImgUrls = snapshot.data!["nftImgUrls"];
+        child: FutureBuilder(
+          future: result,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              var hasMore = snapshot.data!["hasMore"];
+              var nickname = snapshot.data!["nickname"];
+              var nftCount = snapshot.data!["nftCount"];
+              var nftImgUrls = snapshot.data!["nftImgUrls"];
 
-        //       return Column(
-        //         children: [
-        //           Row(
-        //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        //             children: [
-        //               CollectionHeader(
-        //                   nickName: nickname, totalCount: nftCount),
-        //               GestureDetector(
-        //                 onTap: () {
-        //                   setState(() {
-        //                     _isGrid = !_isGrid;
-        //                   });
-        //                 },
-        //                 child: Icon(_isGrid
-        //                     ? Icons.view_agenda
-        //                     : Icons.grid_view_rounded),
-        //               ),
-        //             ],
-        //           ),
-        //           const SizedBox(
-        //             height: 20,
-        //           ),
-        //           Expanded(
-        //             child: GridView.builder(
-        //               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        //                 crossAxisCount: _isGrid ? 2 : 1,
-        //                 mainAxisSpacing: 20,
-        //                 crossAxisSpacing: 5,
-        //                 childAspectRatio: _isGrid ? 1 : 1 / 1.32,
-        //               ),
-        //               itemCount: nftCount,
-        //               itemBuilder: (BuildContext context, int index) {
-        //                 return CollectionCard(
-        //                     imageUrl: nftImgUrls[index],
-        //                     isGrid: _isGrid,
-        //                     isOwner: _isOwner,
-        //                     isDialogOpen: _isDialogOpen,
-        //                     showCustomDialog: showCustomDialog,
-        //                     setShowDialog: () {
-        //                       _isDialogOpen = true;
-        //                     });
-        //               },
-        //             ),
-        //           ),
-        //         ],
-        //       );
-        //     }
+              return Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CollectionHeader(
+                          nickName: nickname, totalCount: nftCount),
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _isGrid = !_isGrid;
+                          });
+                        },
+                        child: Icon(_isGrid
+                            ? Icons.view_agenda
+                            : Icons.grid_view_rounded),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Expanded(
+                    child: GridView.builder(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: _isGrid ? 2 : 1,
+                        mainAxisSpacing: 20,
+                        crossAxisSpacing: 5,
+                        childAspectRatio: _isGrid ? 1 : 1 / 1.32,
+                      ),
+                      itemCount: nftCount,
+                      itemBuilder: (BuildContext context, int index) {
+                        return CollectionCard(
+                            imageUrl: nftImgUrls[index],
+                            isGrid: _isGrid,
+                            isOwner: _isOwner,
+                            isDialogOpen: _isDialogOpen,
+                            showCustomDialog: showCustomDialog,
+                            setShowDialog: () {
+                              _isDialogOpen = true;
+                            });
+                      },
+                    ),
+                  ),
+                ],
+              );
+            }
 
-        //     return Shimmer.fromColors(
-        //       baseColor: Colors.grey.shade100,
-        //       highlightColor: Colors.white,
-        //       child: Column(
-        //         children: [
-        //           Row(
-        //             children: [
-        //               Container(
-        //                 decoration: BoxDecoration(color: Colors.grey.shade400),
-        //                 width: 160,
-        //                 height: 20,
-        //               ),
-        //             ],
-        //           ),
-        //           const SizedBox(
-        //             height: 20,
-        //           ),
-        //           Expanded(
-        //             child: GridView.builder(
-        //               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        //                 crossAxisCount: _isGrid ? 2 : 1,
-        //                 mainAxisSpacing: 20,
-        //                 crossAxisSpacing: 5,
-        //                 childAspectRatio: _isGrid ? 1 : 1 / 1.32,
-        //               ),
-        //               itemCount: 2,
-        //               itemBuilder: (BuildContext context, int index) {
-        //                 return Card(
-        //                   color: Colors.grey.shade400,
-        //                   shape: RoundedRectangleBorder(
-        //                     borderRadius: BorderRadius.circular(20),
-        //                   ),
-        //                   clipBehavior: Clip.hardEdge,
-        //                 );
-        //               },
-        //             ),
-        //           ),
-        //         ],
-        //       ),
-        //     );
-        //   },
-        // ),
+            return Shimmer.fromColors(
+              baseColor: Colors.grey.shade100,
+              highlightColor: Colors.white,
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(color: Colors.grey.shade400),
+                        width: 160,
+                        height: 20,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Expanded(
+                    child: GridView.builder(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: _isGrid ? 2 : 1,
+                        mainAxisSpacing: 20,
+                        crossAxisSpacing: 5,
+                        childAspectRatio: _isGrid ? 1 : 1 / 1.32,
+                      ),
+                      itemCount: 2,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Card(
+                          color: Colors.grey.shade400,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          clipBehavior: Clip.hardEdge,
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }
