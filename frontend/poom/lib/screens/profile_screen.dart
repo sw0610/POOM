@@ -20,6 +20,13 @@ class ProfileScreen extends StatefulWidget {
     "UNDER_REVIEW": "승인심사",
   };
 
+  static const shelterStatusColorSet = {
+    "UN_AUTH": Color(0xFFDDDDDD),
+    "AUTH": Color(0xFFECEFFF),
+    "REJECT": Color(0xFFFFE2E2),
+    "UNDER_REVIEW": Color(0xFFFFFBD9),
+  };
+
   static const _textColor = Color(0xFF333333);
 
   @override
@@ -181,22 +188,49 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               );
                             },
                           ),
-                          MenuItem(
-                            icon: Icons.night_shelter_rounded,
-                            title: "보호소 회원 인증",
-                            isShelter: true,
-                            onTapMenu: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) {
-                                  if (shelterStatus == "AUTH") {
-                                    // 인증 상태
-                                    return const ShelterAuthScreen();
-                                  }
-                                  return const ShelterAuthFormScreen();
-                                }),
-                              );
-                            },
+                          Stack(
+                            children: [
+                              MenuItem(
+                                icon: Icons.night_shelter_rounded,
+                                title: "보호소 회원 인증",
+                                isShelter: true,
+                                onTapMenu: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) {
+                                      if (shelterStatus == "AUTH") {
+                                        // 인증 상태
+                                        return const ShelterAuthScreen();
+                                      }
+                                      return const ShelterAuthFormScreen();
+                                    }),
+                                  );
+                                },
+                              ),
+                              Positioned(
+                                top: 20,
+                                right: 0,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: ProfileScreen
+                                        .shelterStatusColorSet[shelterStatus],
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(4)),
+                                  ),
+                                  child: const Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 3, horizontal: 4),
+                                    child: Text(
+                                      "인증상태",
+                                      style: TextStyle(
+                                        color: ProfileScreen._textColor,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
