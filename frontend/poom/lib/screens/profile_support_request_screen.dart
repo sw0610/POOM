@@ -1,9 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:poom/services/profile_api_service.dart';
 import 'package:poom/widgets/profile/request_drop_down.dart';
 
-class SupportRequestScreen extends StatelessWidget {
+class SupportRequestScreen extends StatefulWidget {
   const SupportRequestScreen({super.key});
   static const _textColor = Color(0xFF333333);
+
+  @override
+  State<SupportRequestScreen> createState() => _SupportRequestScreenState();
+}
+
+class _SupportRequestScreenState extends State<SupportRequestScreen> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    ProfileApiService().getMySupportRequestList(context, 0, false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +28,7 @@ class SupportRequestScreen extends StatelessWidget {
         child: AppBar(
           centerTitle: true,
           backgroundColor: Colors.white,
-          foregroundColor: _textColor,
+          foregroundColor: SupportRequestScreen._textColor,
           elevation: 1,
           title: const Text(
             "후원 요청 목록",
@@ -38,7 +51,7 @@ class SupportRequestScreen extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w700,
-                    color: _textColor,
+                    color: SupportRequestScreen._textColor,
                   ),
                 ),
                 RequestDropDown(),
