@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:poom/services/eth_per_krw_api.dart';
-import 'package:poom/services/metamask_api.dart';
+import 'package:poom/utils/metamask_util.dart';
 
 class DonateScreen extends StatefulWidget {
   const DonateScreen({super.key});
