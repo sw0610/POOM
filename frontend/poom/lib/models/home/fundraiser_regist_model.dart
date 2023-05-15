@@ -2,7 +2,7 @@ class FundraiserRegistModel {
   final bool ageIsEstimated;
   final int dogAge, dogGender;
   final String dogFeature, dogName, shelterEthWalletAddress;
-  final DateTime endDate, startDate;
+  final DateTime endDate;
   final double targetAmount;
 
   FundraiserRegistModel.fromJson(Map<String, dynamic> json)
@@ -13,6 +13,5 @@ class FundraiserRegistModel {
         dogName = json['dogName'],
         shelterEthWalletAddress = json['shelterEthWalletAddress'],
         endDate = json['endDate'],
-        startDate = json['startDate'],
         targetAmount = json['targetAmount'];
 }
