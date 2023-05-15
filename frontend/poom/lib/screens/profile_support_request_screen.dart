@@ -51,6 +51,11 @@ class _SupportRequestScreenState extends State<SupportRequestScreen> {
               var hasMore = snapshot.data!.first;
               var shelterName = snapshot.data![1];
               var fundraisers = snapshot.data!.last;
+
+              if (fundraisers.length == 0) {
+                return const Text("아직 등록한 후원 요청이 없어요!");
+              }
+
               return Column(
                 children: [
                   Row(
@@ -230,7 +235,6 @@ class RequestItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // DogSpecificScreen
         Navigator.push(
           context,
           MaterialPageRoute(
