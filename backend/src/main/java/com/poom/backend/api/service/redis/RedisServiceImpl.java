@@ -6,6 +6,7 @@ import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 
 @RequiredArgsConstructor
 @Service
@@ -16,8 +17,8 @@ public class RedisServiceImpl implements RedisService{
     @Override
     public void saveRefreshToken(String memberId, String refreshToken) {
         ValueOperations<String, String> valueOperations = stringRedisTemplate.opsForValue();
-        Duration expireDuration = Duration.ofDays(14); // Expire duration of 2 weeks
-        valueOperations.set(memberId, refreshToken, expireDuration);
+        Duration duration = Duration.ofDays(14);
+        valueOperations.set(memberId, refreshToken, duration);
     }
 
     @Override

@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -52,7 +53,7 @@ public class FundraiserController {
 //        return ResponseEntity.status(200).body(result);
 //    }
 
-    @PostMapping("/fundraiser/open")
+    @PostMapping(value = "/fundraiser/open",  consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     @ApiOperation(value = "후원 모집 생성", notes = "<strong>후원 모집 정보</strong>를 받아 모집을 등록합니다. \n" +
             "이미지 제외한 후원 모집 정보를 담은 data key: cond \n" +
             "shelterEthWalletAddress: String - 보호소 지갑 주소\n" +

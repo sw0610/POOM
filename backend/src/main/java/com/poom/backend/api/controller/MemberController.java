@@ -122,6 +122,10 @@ public class MemberController {
     })
     public ResponseEntity<?> refreshAccessToken(HttpServletRequest request){
         String memberId = memberService.getMemberIdFromHeader(request);
+        log.info("멤버 ID : {}", memberId);
+        log.info("REDIS에 있는 refresh Token : {} ", redisService.getRefreshToken(memberId));
+        log.info("Request에서 보낸 refresh token : {}", memberService.getToken(request));
+
         if(!redisService.getRefreshToken(memberId).equals(memberService.getToken(request)))
             return ResponseEntity.status(400).build();
         MemberDto dto = oauthService.generateToken(memberRepository.findById(memberId)
