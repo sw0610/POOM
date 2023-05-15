@@ -45,7 +45,7 @@ class HomeDogCard extends StatelessWidget {
               color: Theme.of(context).colorScheme.background,
             ),
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(10.0),
               child: Row(
                 children: [
                   Stack(
@@ -84,7 +84,7 @@ class HomeDogCard extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(
-                    width: 10,
+                    width: 16,
                   ),
                   Expanded(
                     child: Column(
