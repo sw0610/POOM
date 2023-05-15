@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:poom/screens/home_specific_screen.dart';
 import 'package:poom/services/profile_api_service.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -229,7 +230,16 @@ class RequestItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        print("아이템 클릭");
+        // DogSpecificScreen
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => DogSpecificScreen(
+              context: context,
+              fundraiserId: fundraiserId,
+            ),
+          ),
+        );
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 24),
