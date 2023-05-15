@@ -174,7 +174,8 @@ public class NftServiceImpl implements NFTService {
             graphics.setColor(Color.WHITE); // 예시로 흰색으로 설정
 
             // 폰트 로드
-            Font customFont = Font.createFont(Font.TRUETYPE_FONT, new File("src/main/resources/fontB.ttf"));
+            InputStream is = getClass().getResourceAsStream("/fontB.ttf");
+            Font customFont = Font.createFont(Font.TRUETYPE_FONT, is);
             graphics.setFont(customFont.deriveFont(Font.BOLD, 30));
 
             // 글자 위치 설정
