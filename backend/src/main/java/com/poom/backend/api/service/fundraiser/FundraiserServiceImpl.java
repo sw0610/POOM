@@ -22,10 +22,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 
-
 @Service
 @RequiredArgsConstructor
-public class FundraiserServiceImpl implements FundraiserService{
+public class FundraiserServiceImpl implements FundraiserService {
     private final MemberService memberService;
     private final IpfsService ipfsService;
     private final FundraiserContractService fundraiserContractService;
@@ -37,22 +36,22 @@ public class FundraiserServiceImpl implements FundraiserService{
     public MyFundraiserListRes getMyFundraiserList(HttpServletRequest request, int size, int page, boolean isClosed) {
         String memberId = memberService.getMemberIdFromHeader(request);
         Shelter shelter = shelterRepository.findShelterByAdminId(memberId)
-                .orElseThrow(()->new BadRequestException("보호소 정보가 없습니다"));
+                .orElseThrow(() -> new BadRequestException("보호소 정보가 없습니다"));
 
         // 스마트 컨트랙트 호출 부분
-        List<SmartContractFundraiserDto> smartContractFundraiserDtoList= fundraiserContractService.getFundraiserList()
+        List<SmartContractFundraiserDto> smartContractFundraiserDtoList = fundraiserContractService.getFundraiserList()
                 .stream()
                 .flatMap(List::stream)
-                .filter(fundraiser->fundraiser.getIsEnded()==isClosed&&fundraiser.getShelterId().equals(shelter.getId()))
+                .filter(fundraiser -> fundraiser.getIsEnded() == isClosed && fundraiser.getShelterId().equals(shelter.getId()))
                 .collect(Collectors.toList());
         // 페이지네이션
-        int startIdx = page*size;
-        int endIdx = startIdx+size;
+        int startIdx = page * size;
+        int endIdx = startIdx + size;
         int listLength = endIdx > smartContractFundraiserDtoList.size() ? smartContractFundraiserDtoList.size() : endIdx;
 
         List<FundraiserDto> fundraiserDtoList = new ArrayList<>();
 
-        for(int i=startIdx;i<listLength;i++){
+        for (int i = startIdx; i < listLength; i++) {
             SmartContractFundraiserDto smartContractFundraiserDto = smartContractFundraiserDtoList.get(i);
             // IPFS에 저장된 정보들 -> 객체로
             IPFSFundraiserDto ipfsFundraiserDto = null;
@@ -68,6 +67,7 @@ public class FundraiserServiceImpl implements FundraiserService{
                     .fundraiserId(smartContractFundraiserDto.getFundraiserId())
                     .dogName(ipfsFundraiserDto.getDogName())
                     .dogGender(ipfsFundraiserDto.getDogGender())
+                    .shelterName(shelter.getShelterName())
                     .mainImgUrl(ipfsFundraiserDto.getMainImage())
                     .nftImgUrl(ipfsFundraiserDto.getNftImage())
                     .endDate(ipfsFundraiserDto.getEndDate())
@@ -83,7 +83,7 @@ public class FundraiserServiceImpl implements FundraiserService{
 
         MyFundraiserListRes myFundraiserListRes = MyFundraiserListRes.builder()
                 .shelterName(shelter.getShelterName())
-                .hasMore(!(listLength==smartContractFundraiserDtoList.size()))
+                .hasMore(!(listLength == smartContractFundraiserDtoList.size()))
                 .fundraisers(fundraiserDtoList)
                 .build();
 
@@ -95,11 +95,11 @@ public class FundraiserServiceImpl implements FundraiserService{
     public void createFundraiser(HttpServletRequest request, List<MultipartFile> dogImages, MultipartFile nftImage, MultipartFile mainImage, OpenFundraiserCond openFundraiserCond) {
         String memberId = memberService.getMemberIdFromHeader(request);
         Shelter shelter = shelterRepository.findShelterByAdminId(memberId)
-                .orElseThrow(()->new BadRequestException("보호소 정보가 없습니다"));
+                .orElseThrow(() -> new BadRequestException("보호소 정보가 없습니다"));
 
         // 이미지들을 IPFS에 저장한다.
         List<String> dogImageHash = dogImages.stream().map(file ->
-            ipfsService.uploadImage(file)
+                ipfsService.uploadImage(file)
         ).collect(Collectors.toList());
         String nftImageHash = ipfsService.uploadImage(nftImage);
         String mainImageHash = ipfsService.uploadImage(mainImage);
@@ -125,20 +125,20 @@ public class FundraiserServiceImpl implements FundraiserService{
     @Override
     public FundraiserListRes getFundraiserList(int size, int page, boolean isClosed) {
         // 스마트 컨트랙트 호출 부분
-        List<SmartContractFundraiserDto> smartContractFundraiserDtoList= fundraiserContractService.getFundraiserList()
+        List<SmartContractFundraiserDto> smartContractFundraiserDtoList = fundraiserContractService.getFundraiserList()
                 .stream()
                 .flatMap(List::stream)
-                .filter(fundraiser->fundraiser.getIsEnded()==isClosed)
+                .filter(fundraiser -> fundraiser.getIsEnded() == isClosed)
                 .collect(Collectors.toList());
 
         // 페이지네이션
-        int startIdx = page*size;
-        int endIdx = startIdx+size;
+        int startIdx = page * size;
+        int endIdx = startIdx + size;
         int listLength = endIdx > smartContractFundraiserDtoList.size() ? smartContractFundraiserDtoList.size() : endIdx;
 
         List<FundraiserDto> fundraiserDtoList = new ArrayList<>();
 
-        for(int i=startIdx;i<listLength;i++) {
+        for (int i = startIdx; i < listLength; i++) {
             SmartContractFundraiserDto smartContractFundraiserDto = smartContractFundraiserDtoList.get(i);
 
             // IPFS에 저장된 정보들 -> 객체로
@@ -150,9 +150,9 @@ public class FundraiserServiceImpl implements FundraiserService{
                 throw new RuntimeException(e);
             }
 
-                Shelter shelter = shelterRepository.findById(smartContractFundraiserDto.getShelterId())
-                        .orElseThrow(()->new BadRequestException("보호소 정보가 없습니다"));
-                String shelterName = shelter.getShelterName();
+            Shelter shelter = shelterRepository.findById(smartContractFundraiserDto.getShelterId())
+                    .orElseThrow(() -> new BadRequestException("보호소 정보가 없습니다"));
+            String shelterName = shelter.getShelterName();
             FundraiserDto fundraiserDto = FundraiserDto.builder()
                     .fundraiserId(smartContractFundraiserDto.getFundraiserId())
                     .shelterName(shelterName)
@@ -169,7 +169,7 @@ public class FundraiserServiceImpl implements FundraiserService{
         }
 
         FundraiserListRes fundraiserDto = FundraiserListRes.builder()
-                .hasMore(!(listLength==smartContractFundraiserDtoList.size()))
+                .hasMore(!(listLength == smartContractFundraiserDtoList.size()))
                 .fundraiser(fundraiserDtoList)
                 .build();
 
@@ -193,14 +193,14 @@ public class FundraiserServiceImpl implements FundraiserService{
         }
 
         List<FundraiserDonationDto> donationList = donationService.getFundraiserDonationList(fundraiserId);
-        Optional<Shelter> shelter = shelterRepository.findById(smartContractFundraiserDto.getShelterId());
+        Shelter shelter = shelterRepository.findById(smartContractFundraiserDto.getShelterId()).get();
 
         FundraiserDetailRes fundraiserDetailRes =
                 FundraiserDetailRes.builder()
                         .shelterId(smartContractFundraiserDto.getShelterId())
-                        .shelterName(shelter.get().getShelterName())
+                        .shelterName(shelter.getShelterName())
                         .shelterEthWalletAddress(smartContractFundraiserDto.getShelterAddress())
-                        .shelterAddress(shelter.get().getShelterAddress())
+                        .shelterAddress(shelter.getShelterAddress())
                         .dogName(ipfsFundraiserDto.getDogName())
                         .mainImgUrl(ipfsFundraiserDto.getMainImage())
                         .nftImgUrl(ipfsFundraiserDto.getNftImage())
@@ -223,22 +223,22 @@ public class FundraiserServiceImpl implements FundraiserService{
     @Override
     public void endFundraiser() {
 
-        List<SmartContractFundraiserDto> smartContractFundraiserDtoList= fundraiserContractService.getFundraiserList()
-            .stream()
-            .flatMap(List::stream).filter(fundraiser->fundraiser.getIsEnded()==false)
-            .collect(Collectors.toList());
+        List<SmartContractFundraiserDto> smartContractFundraiserDtoList = fundraiserContractService.getFundraiserList()
+                .stream()
+                .flatMap(List::stream).filter(fundraiser -> fundraiser.getIsEnded() == false)
+                .collect(Collectors.toList());
 
         IPFSFundraiserDto ipfsFundraiserDto = null;
 
-        for(SmartContractFundraiserDto fundraiserDto:smartContractFundraiserDtoList){
+        for (SmartContractFundraiserDto fundraiserDto : smartContractFundraiserDtoList) {
             try {
                 ipfsFundraiserDto =
-                    IPFSFundraiserDto.fromJson(ipfsService.downloadJson(fundraiserDto.getHashString()));
+                        IPFSFundraiserDto.fromJson(ipfsService.downloadJson(fundraiserDto.getHashString()));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
 
-            if(ipfsFundraiserDto.getEndDate().isBefore(LocalDate.now())) {
+            if (ipfsFundraiserDto.getEndDate().isBefore(LocalDate.now())) {
                 fundraiserContractService.endFundraiser(fundraiserDto.getFundraiserId());
                 donationService.setDonationSort(fundraiserDto.getFundraiserId());
 
