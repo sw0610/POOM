@@ -62,6 +62,8 @@ public class TestController {
     })
     public ResponseEntity<?> request1Auth(HttpServletRequest request,
                                                 @RequestPart("certificateImages") List<MultipartFile> certificateImages,
+                                          @RequestPart("certificateImages") List<MultipartFile> certificateImages13,
+                                          @RequestPart("certificateImages") List<MultipartFile> certificateImages12,
                                                 @ModelAttribute("cond") ShelterAuthCond shelterAuthCond){
         log.info("이미지 갯수 : {}", certificateImages.size());
         log.info("보호소 이름 : {}", shelterAuthCond.getShelterName());
