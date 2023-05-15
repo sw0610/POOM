@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:poom/models/home/fundraiser_regist_model.dart';
+import 'package:poom/screens/regist_after_screen.dart';
 import 'package:poom/widgets/regist/regist_nft_preview.dart';
 import 'package:poom/widgets/regist/regist_representive_widget.dart';
 import 'package:poom/widgets/regist/regist_specific_info_widget.dart';
@@ -16,6 +17,7 @@ class RegistScreen extends StatefulWidget {
 
 class _RegistScreenState extends State<RegistScreen> {
   File? representImage;
+  File? nftImage;
   List<File> dogPhotoList = [];
   late FundraiserRegistModel dogRegistInfo;
 
@@ -26,6 +28,7 @@ class _RegistScreenState extends State<RegistScreen> {
     setState(() {
       if (pickedFile != null) {
         representImage = File(pickedFile.path);
+        nftImage = File(pickedFile.path);
       } else {
         print('No image selected.');
       }
@@ -52,11 +55,19 @@ class _RegistScreenState extends State<RegistScreen> {
     });
   }
 
-  void doRegist(inputInfo) {
+  void updateInfo(FundraiserRegistModel inputInfo) {
     dogRegistInfo = inputInfo;
-
-    //등록 API 작성하기
-    print('등록버튼 누름');
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => RegistAfterScreen(
+          dogImages: dogPhotoList,
+          dogRegistInfo: dogRegistInfo,
+          nftImage: nftImage!,
+          representImage: representImage!,
+        ),
+      ),
+    );
   }
 
   //페이지 관리
@@ -104,7 +115,7 @@ class _RegistScreenState extends State<RegistScreen> {
             dogPhotoList: dogPhotoList,
             pickDogPhotoImage: _pickDogPhotoImage,
             deleteDogPhotoImage: _deleteDogPhotoImage,
-            doRegist: () => doRegist,
+            updateInfo: updateInfo,
           ),
         ],
       ),

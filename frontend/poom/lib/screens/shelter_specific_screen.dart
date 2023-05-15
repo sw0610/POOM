@@ -75,7 +75,7 @@ class ShelterInfoScreen extends StatelessWidget {
                       const Align(
                         alignment: Alignment.topRight,
                         child: SizedBox(
-                          width: 44,
+                          width: 50,
                           child: Text(
                             '위치',
                             textAlign: TextAlign.right,
@@ -136,7 +136,7 @@ class ShelterInfo extends StatelessWidget {
             Align(
               alignment: Alignment.topRight,
               child: SizedBox(
-                width: 44,
+                width: 50,
                 child: Text(
                   title,
                   textAlign: TextAlign.right,
