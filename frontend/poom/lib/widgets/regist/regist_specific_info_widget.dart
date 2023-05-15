@@ -8,15 +8,16 @@ class RegistSpecificInfo extends StatefulWidget {
   final List<File> dogPhotoList;
   final void Function() pickDogPhotoImage;
   final void Function(int) deleteDogPhotoImage;
+  final void Function() doRegist;
 
   const RegistSpecificInfo({
     super.key,
     required this.dogPhotoList,
     required this.pickDogPhotoImage,
     required this.deleteDogPhotoImage,
+    required this.doRegist,
   });
 
-  // static const Color inputBackground = Color(0xFFF9F9F9);
   static Color inputBackground = const Color(0xFFD9D9D9).withOpacity(0.15);
   static const Color textColor = Color(0xFF333333);
   static const Color textSecondaryColor = Color(0xFF666666);
@@ -307,9 +308,7 @@ class _RegistSpecificInfoState extends State<RegistSpecificInfo> {
             Padding(
               padding: const EdgeInsets.only(top: 20),
               child: GestureDetector(
-                onTap: () {
-                  print('등록 버튼 클릭');
-                },
+                onTap: widget.doRegist,
                 child: Container(
                   height: 50,
                   width: MediaQuery.of(context).size.width,

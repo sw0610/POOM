@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
+import 'package:poom/main.dart';
 import 'package:poom/services/auth_dio.dart';
 import 'package:poom/services/kakao_api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -21,7 +22,15 @@ class MemberApi {
     }
   }
 
-  static Future<bool> login() async {
+  static Future<void> login(BuildContext context) async {
+    //페이지 새로고침 함수
+    void refreshScreen() {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const MyApp()),
+      );
+    }
+
     try {
       //카카오 토큰이 유효한지 체크
       bool isValidToken = await KakaoApi.checkKakaoToken();
@@ -40,6 +49,7 @@ class MemberApi {
           SharedPreferences prefs = await SharedPreferences.getInstance();
           await prefs.setString('nickname', response.data['nickname']);
           await prefs.setBool('isShelter', response.data['shelter']);
+          await prefs.setInt('loginStatus', 1);
 
           await storage.write(
               key: 'accesstoken', value: response.headers['accesstoken']![0]);
@@ -49,18 +59,18 @@ class MemberApi {
           var accesstoken = await storage.read(key: 'accesstoken');
           print('Access token: $accesstoken');
 
-          return true;
+          //페이지 새로고침
+          refreshScreen();
         } else {
           print('Error Code: ${response.statusCode}');
-          return false;
         }
       } else {
         print('Invalid Kakao Token');
-        return false;
+        await KakaoApi.kakaoLogin();
+        login(context); //다시 로그인 시도
       }
     } catch (e) {
       print(e);
-      return false;
     }
   }
 }
