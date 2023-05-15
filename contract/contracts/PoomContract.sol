@@ -15,6 +15,10 @@ contract PoomContract is FundraiserProcess, DonationProcess, NftProcess{
         _createFundraiser(_fundraiser);
     }
 
+    function getFundraiserId() external view returns (uint64){
+        return _getFundraiserId();
+    }
+
     // 모든 후원 요청 목록 조회
     function getFundraiserList() external view returns(Fundraiser[] memory){
         return _getFundraiserList();
@@ -72,8 +76,12 @@ contract PoomContract is FundraiserProcess, DonationProcess, NftProcess{
     }
 
     // 마감된 후원 NFT 발급
-    function mintNft(NFT memory _nft, address _memberAddress, string memory _memberId, uint64 _donationId, uint64 _fundraiserId) external returns (uint64){
-        return _mintNft(_nft, _memberAddress, _memberId, _donationId, _fundraiserId);
+    function mintNft(NFT memory _nft, address _memberAddress, string memory _memberId, uint64 _donationId, uint64 _fundraiserId) external{
+        _mintNft(_nft, _memberAddress, _memberId, _donationId, _fundraiserId);
+    }
+
+    function getNftId() external view returns (uint64){
+        return _getNftId();
     }
 
 }
