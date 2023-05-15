@@ -20,7 +20,7 @@ pipeline{
         stage('백엔드 이미지 생성'){
           steps{
             dir('backend'){
-              sh "./gradlew bootBuildImage"
+              sh "docker build -t backend:0.0.1-SNAPSHOT ."
             }
           }
         }
