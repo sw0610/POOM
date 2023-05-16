@@ -46,11 +46,11 @@ class MemberApi {
         var response = await dio.get('$baseUrl/member/login');
 
         if (response.statusCode == 200) {
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-          await prefs.setString('nickname', response.data['nickname']);
-          await prefs.setBool('isShelter', response.data['shelter']);
-          await prefs.setInt('loginStatus', 1);
-
+          SharedPreferences preferences = await SharedPreferences.getInstance();
+          await preferences.setString('nickname', response.data['nickname']);
+          await preferences.setBool('isShelter', response.data['shelter']);
+          await preferences.setInt('loginStatus', 1);
+          await preferences.setString('memberId', response.data["memberId"]);
           await storage.write(
               key: 'accesstoken', value: response.headers['accesstoken']![0]);
 
