@@ -167,8 +167,11 @@ public class TestController {
             // 글자 색상 설정 (배경에 맞게 선택)
             graphics.setColor(Color.WHITE); // 예시로 흰색으로 설정
 
+            InputStream is = getClass().getResourceAsStream("/fontB.ttf");
+            Font customFont = Font.createFont(Font.TRUETYPE_FONT, is);
+
             // 폰트 로드
-            Font customFont = Font.createFont(Font.TRUETYPE_FONT, new File("src/main/resources/fontB.ttf"));
+//            Font customFont = Font.createFont(Font.TRUETYPE_FONT, new File("src/main/resources/fontB.ttf"));
             graphics.setFont(customFont.deriveFont(Font.BOLD, 30));
 
             // 글자 위치 설정

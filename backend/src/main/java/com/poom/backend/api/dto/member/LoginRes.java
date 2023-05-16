@@ -10,11 +10,13 @@ import lombok.Setter;
 @Setter
 @Builder
 public class LoginRes {
+    String memberId;
     String nickname;
     boolean isShelter;
 
     public static LoginRes from(Member member){
         return LoginRes.builder()
+                .memberId(member.getId())
                 .nickname(member.getNickname())
                 .isShelter(member.getRoles().contains(Role.ROLE_SHELTER) ? true: false)
                 .build();

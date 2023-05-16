@@ -19,13 +19,16 @@ contract FundraiserProcess {
     uint64 private _fundraiserIdx;
     mapping(uint64 => Fundraiser) public fundraisers; // 모금
 
-
     function _createFundraiser(Fundraiser memory _fundraiser) internal {
         _fundraiserIdx++;
         _fundraiser.fundraiserId = _fundraiserIdx;
         fundraisers[_fundraiserIdx] = _fundraiser;
+
     }
 
+    function _getFundraiserId() internal view returns (uint64){
+        return _fundraiserIdx;
+    }
 
     // 모금 종료
     function _endFundraiser(uint64 _fundraiserId) internal {
