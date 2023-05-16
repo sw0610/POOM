@@ -78,7 +78,7 @@ class _DonateScreenState extends State<DonateScreen> {
     print(ethAmount);
 
     // metamask 연결
-    MetamaskUtil.handleConnectMetamask();
+    MetamaskUtil.handleGenerateSupport();
   }
 
   @override
