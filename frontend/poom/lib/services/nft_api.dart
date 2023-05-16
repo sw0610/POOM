@@ -9,7 +9,6 @@ class NftApiService {
     var logger = Logger();
     SharedPreferences preferences = await SharedPreferences.getInstance();
     var memberId = preferences.getString("memberId");
-    print("memberId? $memberId");
     try {
       var dio = await authDio(context);
       final response = await dio

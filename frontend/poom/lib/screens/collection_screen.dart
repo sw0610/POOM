@@ -27,7 +27,6 @@ class _CollectionScreenState extends State<CollectionScreen> {
   @override
   void initState() {
     super.initState();
-
     result = NftApiService().getUserNFTList(context, 0);
   }
 
