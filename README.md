@@ -111,14 +111,14 @@
 
 ## 📝 요구사항정의서
 
-![요구사항정의서](./assets/function_1.png)
-![요구사항정의서](./assets/function_2.png)
+![요구사항정의서](./assets/function_1.PNG)
+![요구사항정의서](./assets/function_2.PNG)
 
 ## 💄 디자인 시안
 
-![디자인 시안](./assets/login.png) 
-![디자인 시안](./assets/main.png)
-![디자인 시안](./assets/detail.png)
+![디자인 시안](./assets/login.PNG) 
+![디자인 시안](./assets/main.PNG)
+![디자인 시안](./assets/detail.PNG)
 
 ## 🔒 ERD
 
