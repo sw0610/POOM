@@ -12,10 +12,12 @@ import com.poom.backend.solidity.fundraiser.FundraiserContractService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -73,7 +75,7 @@ public class DonationServiceImpl implements DonationService {
         }
 
         DonationRes donationRes = DonationRes.builder()
-                .hasMore(!(endIdx==donationList.size()))
+                .hasMore(!(endIdx == donationList.size()))
                 .donationList(donationListDto)
                 .build();
 
@@ -108,7 +110,7 @@ public class DonationServiceImpl implements DonationService {
     public int getNftIsIssued(Long donationId) {
 
         SmartContractDonationDto smartContractDonationDto = donationContractService.getDonation(donationId)
-                .orElseThrow(()->new BadRequestException("후원 정보가 없습니다."));
+                .orElseThrow(() -> new BadRequestException("후원 정보가 없습니다."));
 
         int isIssued = smartContractDonationDto.getIsIssued();
 

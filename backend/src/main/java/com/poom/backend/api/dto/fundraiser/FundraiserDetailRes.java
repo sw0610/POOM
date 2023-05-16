@@ -19,6 +19,7 @@ public class FundraiserDetailRes {
 
     private String dogName;
     private String shelterId;
+    private String memberId;
     private String shelterName;
     private String shelterAddress;
     private String shelterEthWalletAddress;

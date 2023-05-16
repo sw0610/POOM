@@ -7,23 +7,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class FundraiserDto {
-//    {
-//        "fundraiserId": ObjectId
-//        "dogName": String
-//        "mainImgUrl": String
-//        "dogGender": String
-//        "nftImgUrl": String
-//        "endDate": Date (yy.MM.dd)
-//        "currendAmount": Number
-//        "targetAmount": Number
-//    }, ...
 
     private Long fundraiserId;
     private String dogName;

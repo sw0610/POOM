@@ -13,14 +13,6 @@ import java.time.LocalDateTime;
 @Setter
 @Getter
 public class SmartContractDonationDto {
-//    struct Donation { // 후원
-//        string memberId;
-//        uint256 donationId;
-//        uint256 donationAmount; // 후원 금액
-//        uint64 fundraiserId; // 모금 id
-//        uint256 donationTime; // 모금 시간
-//        uint8 isIssued; // nft 발급 여부
-//    }
 
     public String memberId;
     Long donationId;
@@ -30,7 +22,7 @@ public class SmartContractDonationDto {
     int isIssued; // nft 발급 여부
 
     // contract -> java
-    public static SmartContractDonationDto fromDonationContract(PoomContract.Donation donation){
+    public static SmartContractDonationDto fromDonationContract(PoomContract.Donation donation) {
 
         return SmartContractDonationDto.builder()
                 .memberId(donation.memberId)
@@ -43,7 +35,7 @@ public class SmartContractDonationDto {
     }
 
     // java -> contract
-    public static PoomContract.Donation toDonationContract(SmartContractDonationDto donationDto){
+    public static PoomContract.Donation toDonationContract(SmartContractDonationDto donationDto) {
         return new PoomContract.Donation(
                 donationDto.getMemberId(),
                 BigInteger.valueOf(donationDto.getDonationId()),
@@ -53,8 +45,6 @@ public class SmartContractDonationDto {
                 BigInteger.valueOf(donationDto.getIsIssued())
         );
     }
-
-
 
 
 }
