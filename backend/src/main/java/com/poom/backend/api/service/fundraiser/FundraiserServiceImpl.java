@@ -200,6 +200,7 @@ public class FundraiserServiceImpl implements FundraiserService {
         FundraiserDetailRes fundraiserDetailRes =
                 FundraiserDetailRes.builder()
                         .shelterId(smartContractFundraiserDto.getShelterId())
+                        .memberId(shelter.getAdminId())
                         .shelterName(shelter.getShelterName())
                         .shelterEthWalletAddress(smartContractFundraiserDto.getShelterAddress())
                         .shelterAddress(shelter.getShelterAddress())

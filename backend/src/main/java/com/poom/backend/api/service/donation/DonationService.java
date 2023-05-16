@@ -1,6 +1,5 @@
 package com.poom.backend.api.service.donation;
 
-import com.poom.backend.api.dto.donation.DonationDto;
 import com.poom.backend.api.dto.donation.DonationRes;
 import com.poom.backend.api.dto.donation.FundraiserDonationDto;
 

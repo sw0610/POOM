@@ -11,20 +11,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public class FundraiserDonationDto {
-    // 후원별 후원자 목록
-//    {
-//        "memberId":ObjectId
-//        "nickname": String,
-//            "profileImgUrl": String,
-//            "donationAmount": int
-//    }
+
     private String memberId;
     private String nickname;
     private String profileImgUrl;
     private Double donationAmount;
 
     // 테스트시 바꿔야함
-    public static FundraiserDonationDto toFundraiserDonationDto(SmartContractDonationDto donationDto, Member member){
+    public static FundraiserDonationDto toFundraiserDonationDto(SmartContractDonationDto donationDto, Member member) {
         return FundraiserDonationDto.builder()
                 .memberId(member.getId())
                 .nickname(member.getNickname())
