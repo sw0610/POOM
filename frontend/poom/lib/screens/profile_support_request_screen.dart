@@ -256,6 +256,8 @@ class RequestItem extends StatelessWidget {
                   child: Image.network(
                     mainImgUrl,
                     width: 100,
+                    height: 100,
+                    fit: BoxFit.cover,
                   ),
                 ),
                 Positioned(
@@ -266,6 +268,7 @@ class RequestItem extends StatelessWidget {
                     child: Image.network(
                       nftImgUrl,
                       width: 32,
+                      height: 32,
                     ),
                   ),
                 ),
