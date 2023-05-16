@@ -19,7 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _isClosed = false;
   String? _selectedSortType;
   bool _hasMore = false;
-  List<dynamic> fundraiserList = [];
+  List<dynamic>? fundraiserList;
   int _page = 0;
   static const int SIZE = 10;
 
@@ -49,7 +49,11 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       if (hasMoreAndfundraiserList.isNotEmpty) {
         _hasMore = hasMoreAndfundraiserList[0];
-        fundraiserList = fundraiserList + hasMoreAndfundraiserList[1];
+        if (fundraiserList == null) {
+          fundraiserList = hasMoreAndfundraiserList[1];
+        } else {
+          fundraiserList = fundraiserList! + hasMoreAndfundraiserList[1];
+        }
       }
     });
   }
@@ -209,7 +213,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 _isClosed = true;
                               }
                             });
-                            fundraiserList = [];
+                            fundraiserList = null;
                             getFundraiserList();
                           });
                         })
@@ -217,28 +221,43 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               );
             }
-            return fundraiserList.isNotEmpty
+            return fundraiserList == null
                 ? Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                    ),
-                    child: HomeDogCard(dogInfo: fundraiserList[index - 2]),
-                  )
-                : Padding(
                     padding: const EdgeInsets.all(24),
                     child: Container(
                       height: 120,
                       alignment: Alignment.center,
-                      child: const Text(
-                        '도움이 필요한 보호견이 없어요',
-                        style: TextStyle(
-                          fontSize: 16,
-                        ),
+                      child: CircularProgressIndicator(
+                        color: Theme.of(context).primaryColor,
                       ),
                     ),
-                  );
+                  )
+                : fundraiserList!.isEmpty
+                    ? Padding(
+                        padding: const EdgeInsets.all(24),
+                        child: Container(
+                          height: 120,
+                          alignment: Alignment.center,
+                          child: const Text(
+                            '도움이 필요한 보호견이 없어요',
+                            style: TextStyle(
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                      )
+                    : Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 24,
+                        ),
+                        child: HomeDogCard(dogInfo: fundraiserList![index - 2]),
+                      );
           },
-          itemCount: fundraiserList.isNotEmpty ? fundraiserList.length + 2 : 3,
+          itemCount: fundraiserList == null
+              ? 3
+              : fundraiserList!.isEmpty
+                  ? 3
+                  : fundraiserList!.length + 2,
         ),
       ),
     );
