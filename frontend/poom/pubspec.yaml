@@ -104,6 +104,7 @@ flutter:
     - assets/icons/
     - assets/gifs/
     - assets/config/.env
+    - assets/contract.json
 
   # 폰트 path 설정
   fonts:
