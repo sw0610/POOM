@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:poom/services/nft_api.dart';
@@ -25,8 +27,8 @@ class _CollectionScreenState extends State<CollectionScreen> {
   @override
   void initState() {
     super.initState();
-    result =
-        NftApiService().getUserNFTList(context, 0, "64584cc982f977110415a93c");
+
+    result = NftApiService().getUserNFTList(context, 0);
   }
 
   // 다이얼로그 안내

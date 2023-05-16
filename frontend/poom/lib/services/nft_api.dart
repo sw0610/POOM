@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:poom/services/auth_dio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class NftApiService {
   Future<Map<String, dynamic>> getUserNFTList(
-      BuildContext context, int pageNum, String memberId) async {
+      BuildContext context, int pageNum) async {
     var logger = Logger();
-
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    var memberId = preferences.getString("memberId");
+    print("memberId? $memberId");
     try {
       var dio = await authDio(context);
       final response = await dio
