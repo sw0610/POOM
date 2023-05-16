@@ -17,9 +17,6 @@ import java.util.List;
 @Getter
 @Setter
 public class IPFSFundraiserDto {
-    // IPFS에 저장할 후원 정보를 담는 DTO입니다.
-    // TODO IPFS에 무엇을 저장할지 차후 결정
-
 
     private String dogName;
     private List<String> dogImage;
@@ -31,18 +28,18 @@ public class IPFSFundraiserDto {
     private String dogFeature;
     private LocalDate endDate;
 
-    public static IPFSFundraiserDto toIPFSFundraiseDto(OpenFundraiserCond openFundraiserCond, List<String> dogImageHash,String nftImageHash, String mainImageHash){
+    public static IPFSFundraiserDto toIPFSFundraiseDto(OpenFundraiserCond openFundraiserCond, List<String> dogImageHash, String nftImageHash, String mainImageHash) {
         return IPFSFundraiserDto.builder()
-            .dogName(openFundraiserCond.getDogName())
-            .dogGender(openFundraiserCond.getDogGender())
-            .dogAge(openFundraiserCond.getDogAge())
-            .ageIsEstimated(openFundraiserCond.isAgeIsEstimated())
-            .dogFeature(openFundraiserCond.getDogFeature())
-            .dogImage(dogImageHash)
-            .nftImage(nftImageHash)
-            .mainImage(mainImageHash)
-            .endDate(openFundraiserCond.getEndDate().toLocalDate())
-            .build();
+                .dogName(openFundraiserCond.getDogName())
+                .dogGender(openFundraiserCond.getDogGender())
+                .dogAge(openFundraiserCond.getDogAge())
+                .ageIsEstimated(openFundraiserCond.isAgeIsEstimated())
+                .dogFeature(openFundraiserCond.getDogFeature())
+                .dogImage(dogImageHash)
+                .nftImage(nftImageHash)
+                .mainImage(mainImageHash)
+                .endDate(openFundraiserCond.getEndDate().toLocalDate())
+                .build();
     }
 
     public String toJson() throws JsonProcessingException { // 객체를 JSON으로 변환합니다.

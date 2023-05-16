@@ -13,18 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SmartContractFundraiserDto {
-    //
-//    struct Fundraiser { // 모금
-//        string shelterId;
-//        address payable shelterAddress;
-//        string hashString; // ipfs hash
-//        uint256 currentAmount; // 현재 모인 금액
-//        uint256 targetAmount;
-//        bool isEnded; // 종료 되었는지, default false
-//
-//        // uint64[] donations;
-//        // mapping(string => uint64) donations;
-//    }
+
     private Long fundraiserId;
     private String shelterId;
     private String shelterAddress;

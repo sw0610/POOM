@@ -20,19 +20,19 @@ public class SmartContractNftDto {
     @Builder.Default
     private LocalDateTime issuedDate = LocalDateTime.now();
 
-    public static SmartContractNftDto fromNftContract(PoomContract.NFT nft){
+    public static SmartContractNftDto fromNftContract(PoomContract.NFT nft) {
         return SmartContractNftDto.builder()
-            .imageUrl(nft.imageUrl)
-            .metadataUri(nft.metadataUri)
-            .issuedDate(ConvertUtil.bigIntegerToDateTime(nft.issuedDate))
-            .build();
+                .imageUrl(nft.imageUrl)
+                .metadataUri(nft.metadataUri)
+                .issuedDate(ConvertUtil.bigIntegerToDateTime(nft.issuedDate))
+                .build();
     }
 
-    public PoomContract.NFT toNftContract(SmartContractNftDto nftDto){
+    public PoomContract.NFT toNftContract(SmartContractNftDto nftDto) {
         return new PoomContract.NFT(
-            nftDto.getImageUrl(),
-            nftDto.getMetadataUri(),
-            ConvertUtil.dateTimeToBigInteger(nftDto.getIssuedDate())
+                nftDto.getImageUrl(),
+                nftDto.getMetadataUri(),
+                ConvertUtil.dateTimeToBigInteger(nftDto.getIssuedDate())
         );
     }
 
