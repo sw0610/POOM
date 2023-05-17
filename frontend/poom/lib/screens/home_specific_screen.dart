@@ -1,6 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:poom/models/home/fundraiser_specific_model.dart';
 import 'package:poom/models/home/fundraiser_specific_sponsor_model.dart';
 import 'package:poom/screens/donate_screen.dart';
@@ -48,11 +47,14 @@ class DogSpecificScreen extends StatelessWidget {
     );
   }
 
-  void goDonateScreen() {
+  void goDonateScreen(String memberId) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => const DonateScreen(),
+        builder: (context) => DonateScreen(
+          memberId: memberId,
+          fundraiserId: fundraiserId,
+        ),
         fullscreenDialog: true,
       ),
     );
@@ -287,6 +289,11 @@ class DogSpecificScreen extends StatelessWidget {
                               Text('후원자 목록이 없습니다.'),
                             ],
                           )),
+                        ElevatedButton(
+                          onPressed: () =>
+                              goDonateScreen(snapshot.data!.memberId),
+                          child: const Text('임시후원하기버튼'),
+                        ),
                       ],
                     ),
                   ),
@@ -300,29 +307,29 @@ class DogSpecificScreen extends StatelessWidget {
           ));
         },
       ),
-      floatingActionButton: Container(
-        width: MediaQuery.of(context).size.width - 48,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20.0),
-        ),
-        child: FloatingActionButton.extended(
-          backgroundColor: Theme.of(context).primaryColor,
-          onPressed: goDonateScreen,
-          elevation: 8,
-          icon: SvgPicture.asset(
-            'assets/icons/ic_metamask_color.svg',
-            height: 12.0,
-          ),
-          label: const Text(
-            "Metamask로 후원하기",
-            style: TextStyle(
-              fontSize: 18.0,
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      // floatingActionButton: Container(
+      //   width: MediaQuery.of(context).size.width - 48,
+      //   decoration: BoxDecoration(
+      //     borderRadius: BorderRadius.circular(20.0),
+      //   ),
+      //   child: FloatingActionButton.extended(
+      //     backgroundColor: Theme.of(context).primaryColor,
+      //     onPressed: () => goDonateScreen(specificInfo.),
+      //     elevation: 8,
+      //     icon: SvgPicture.asset(
+      //       'assets/icons/ic_metamask_color.svg',
+      //       height: 12.0,
+      //     ),
+      //     label: const Text(
+      //       "Metamask로 후원하기",
+      //       style: TextStyle(
+      //         fontSize: 18.0,
+      //         fontWeight: FontWeight.w400,
+      //       ),
+      //     ),
+      //   ),
+      // ),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }

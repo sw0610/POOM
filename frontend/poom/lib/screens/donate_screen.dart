@@ -4,7 +4,14 @@ import 'package:poom/services/eth_per_krw_api.dart';
 import 'package:poom/utils/metamask_util.dart';
 
 class DonateScreen extends StatefulWidget {
-  const DonateScreen({super.key});
+  final String memberId;
+  final int fundraiserId;
+
+  const DonateScreen({
+    super.key,
+    required this.memberId,
+    required this.fundraiserId,
+  });
 
   static const Color _textColor = Color(0xFF333333);
   static const Color _secondaryTextColor = Color(0xFF666666);
