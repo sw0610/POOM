@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:poom/screens/home_specific_screen.dart';
 import 'package:poom/services/profile_api_service.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shimmer/shimmer.dart';
 
 class SupportRequestScreen extends StatefulWidget {
@@ -14,11 +15,37 @@ class SupportRequestScreen extends StatefulWidget {
 class _SupportRequestScreenState extends State<SupportRequestScreen> {
   late Future<List<dynamic>> result;
 
+  bool hasMore = false;
+  int pageNum = 0;
+  final RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
+  List<dynamic> list = [];
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    result = ProfileApiService().getMySupportRequestList(context, 0, false);
+    result =
+        ProfileApiService().getMySupportRequestList(context, pageNum, false);
+  }
+
+  void _onRefresh() async {
+    await Future.delayed(const Duration(milliseconds: 1000));
+    _refreshController.refreshCompleted();
+  }
+
+  void _onLoading() async {
+    await Future.delayed(const Duration(milliseconds: 1000));
+    if (!hasMore) return;
+
+    pageNum += 1;
+    var moreData = await ProfileApiService()
+        .getMySupportRequestList(context, pageNum, false);
+
+    hasMore = moreData.first;
+    for (int i = 0; i < moreData.last.length; i++) {
+      list.add(moreData.last[i]);
+    }
+    _refreshController.loadComplete();
+    setState(() {});
   }
 
   @override
@@ -48,10 +75,11 @@ class _SupportRequestScreenState extends State<SupportRequestScreen> {
           future: result,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              var hasMore = snapshot.data!.first;
+              hasMore = snapshot.data!.first;
               var shelterName = snapshot.data![1];
               var fundraisers = snapshot.data!.last;
 
+              list = fundraisers;
               if (fundraisers.length == 0) {
                 return const Text("아직 등록한 후원 요청이 없어요!");
               }
@@ -75,33 +103,40 @@ class _SupportRequestScreenState extends State<SupportRequestScreen> {
                     height: 20,
                   ),
                   Expanded(
-                    child: ListView.builder(
-                      itemCount: fundraisers.length,
-                      scrollDirection: Axis.vertical,
-                      itemBuilder: (context, index) {
-                        var current = fundraisers[index];
-                        return Container(
-                          decoration: const BoxDecoration(
-                            border: Border(
-                              bottom: BorderSide(
-                                color: Color(0xFFF4F4F4),
-                                width: 1,
+                    child: SmartRefresher(
+                      onLoading: _onLoading,
+                      onRefresh: _onRefresh,
+                      controller: _refreshController,
+                      enablePullDown: true,
+                      enablePullUp: true,
+                      child: ListView.builder(
+                        itemCount: list.length,
+                        scrollDirection: Axis.vertical,
+                        itemBuilder: (context, index) {
+                          var current = list[index];
+                          return Container(
+                            decoration: const BoxDecoration(
+                              border: Border(
+                                bottom: BorderSide(
+                                  color: Color(0xFFF4F4F4),
+                                  width: 1,
+                                ),
                               ),
                             ),
-                          ),
-                          child: RequestItem(
-                            fundraiserId: current.fundraiserId,
-                            shelterName: current.shelterName ?? shelterName,
-                            dogName: current.dogName,
-                            dogGender: current.dogGender,
-                            endDate: current.endDate,
-                            currentAmount: current.currentAmount,
-                            targetAmount: current.targetAmount,
-                            mainImgUrl: current.mainImgUrl,
-                            nftImgUrl: current.nftImgUrl,
-                          ),
-                        );
-                      },
+                            child: RequestItem(
+                              fundraiserId: current.fundraiserId,
+                              shelterName: current.shelterName ?? shelterName,
+                              dogName: current.dogName,
+                              dogGender: current.dogGender,
+                              endDate: current.endDate,
+                              currentAmount: current.currentAmount,
+                              targetAmount: current.targetAmount,
+                              mainImgUrl: current.mainImgUrl,
+                              nftImgUrl: current.nftImgUrl,
+                            ),
+                          );
+                        },
+                      ),
                     ),
                   ),
                 ],

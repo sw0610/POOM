@@ -624,6 +624,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.2.4"
+  pull_to_refresh:
+    dependency: "direct main"
+    description:
+      name: pull_to_refresh
+      sha256: bbadd5a931837b57739cf08736bea63167e284e71fb23b218c8c9a6e042aad12
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.0"
   rxdart:
     dependency: transitive
     description:
@@ -793,10 +801,10 @@ packages:
     dependency: transitive
     description:
       name: test_api
-      sha256: eb6ac1540b26de412b3403a163d919ba86f6a973fe6cc50ae3541b80092fdcfb
+      sha256: daadc9baabec998b062c9091525aa95786508b1c48e9c30f1f891b8bf6ff2e64
       url: "https://pub.dev"
     source: hosted
-    version: "0.5.1"
+    version: "0.5.2"
   typed_data:
     dependency: transitive
     description:
