@@ -25,6 +25,7 @@ class MetamaskUtil {
   );
   static late final SessionStatus _session;
   static late final String _senderAddress, _uri;
+  static late final bool isAppInstalled;
 
   static WalletConnect getConnector() {
     return _connector;
@@ -38,11 +39,12 @@ class MetamaskUtil {
         _session = await _connector.createSession(
           onDisplayUri: (uri) async {
             _uri = uri;
-            bool isAppInstalled = await canLaunchUrl(Uri.parse(uri));
+            isAppInstalled = await canLaunchUrl(Uri.parse(uri));
             if (isAppInstalled) {
               await launchUrlString(uri, mode: LaunchMode.externalApplication);
             } else {
-              logger.e("[MetamaskUtil] isConnected fail 메타마스크 설치 필요");
+              logger.e(
+                  "[MetamaskUtil] isConnected fail 메타마스크 설치 필요 isAppInstalled: $isAppInstalled");
             }
           },
         );
@@ -54,10 +56,9 @@ class MetamaskUtil {
       } catch (e) {
         // 연결 거절 상태 처리 예정
         logger.e("[MetamaskUtil] 지갑 연결 거절 및 오류 상태 $e");
-        return false;
       }
     }
-    return true;
+    return false;
   }
 
   static Future<String> getMemberAddress() async {
