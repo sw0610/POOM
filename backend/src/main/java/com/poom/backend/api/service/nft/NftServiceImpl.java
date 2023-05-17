@@ -2,7 +2,6 @@ package com.poom.backend.api.service.nft;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.poom.backend.api.dto.fundraiser.FundraiserDetailRes;
-import com.poom.backend.api.dto.fundraiser.SmartContractFundraiserDto;
 import com.poom.backend.api.dto.nft.NftIssueCond;
 import com.poom.backend.api.dto.nft.NftListRes;
 import com.poom.backend.api.dto.nft.NftMetadata;
@@ -11,38 +10,33 @@ import com.poom.backend.api.service.donation.DonationService;
 import com.poom.backend.api.service.fundraiser.FundraiserService;
 import com.poom.backend.api.service.ipfs.IpfsService;
 import com.poom.backend.api.service.member.MemberService;
-import com.poom.backend.config.jwt.JwtFilter;
 import com.poom.backend.db.entity.Member;
 import com.poom.backend.db.repository.MemberRepository;
 import com.poom.backend.exception.BadRequestException;
 import com.poom.backend.solidity.donation.DonationContractService;
 import com.poom.backend.solidity.nft.NftContractService;
-import com.poom.backend.util.ByteArrayMultipartFile;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.io.IOUtils;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
-import javax.swing.text.html.Option;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.math.BigInteger;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class NftServiceImpl implements NFTService {
 
     private final NftContractService nftContractService;
@@ -147,8 +141,14 @@ public class NftServiceImpl implements NFTService {
 
 
             nftContractService.mintNft(smartContractNftDto, memberId, nftIssueCond.getMemberAddress(), nftIssueCond.getDonationId(), fundraiserId);
+            }else{
+                log.info("member signature {} ", nftIssueCond.getMemberSignature());
+                log.info("member sign message {} ", nftIssueCond.getSignMessage());
+                throw new BadRequestException("서명 인증에 실패하였습니다.");
             }
 
+        }else {
+            throw new BadRequestException("진행중인 후원입니다.");
         }
 
 
