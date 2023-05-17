@@ -129,6 +129,16 @@ class _CollectionScreenState extends State<CollectionScreen> {
               var nftCount = snapshot.data!["nftCount"];
               var nftImgUrls = snapshot.data!["nftImgUrls"];
 
+              if (nftCount == 0) {
+                return const Center(
+                  child: Text(
+                    "소유한 NFT가 없어요!",
+                    style: TextStyle(
+                      color: Color(0xFF333333),
+                    ),
+                  ),
+                );
+              }
               return Column(
                 children: [
                   Row(
