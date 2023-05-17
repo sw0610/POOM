@@ -81,6 +81,16 @@ class _RegistScreenState extends State<RegistScreen> {
     if (nftImageInstance == null) {
       prevPage();
       //Snackbar 띄우기
+      const snackBar = SnackBar(
+        content: Text(
+          '강아지 사진이 아니거나 올바른 파일 형식이 아닙니다.',
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Colors.red,
+        duration: Duration(seconds: 3),
+        behavior: SnackBarBehavior.floating,
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
     } else {
       if (mounted) {
         setState(() {
