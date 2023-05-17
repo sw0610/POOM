@@ -29,7 +29,7 @@ class DialogButton extends StatelessWidget {
           ),
           onPressed: () {
             if (result == 1) {
-              Navigator.pushReplacement(
+              Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
                   builder: (context) => DogSpecificScreen(
@@ -38,6 +38,7 @@ class DialogButton extends StatelessWidget {
                   ),
                   fullscreenDialog: false,
                 ),
+                (Route<dynamic> route) => route.isFirst,
               );
               return;
             }
