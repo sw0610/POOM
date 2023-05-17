@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:poom/screens/home_specific_screen.dart';
 import 'package:poom/services/profile_api_service.dart';
@@ -288,8 +289,8 @@ class RequestItem extends StatelessWidget {
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(10.0),
-                  child: Image.network(
-                    mainImgUrl,
+                  child: CachedNetworkImage(
+                    imageUrl: mainImgUrl,
                     width: 100,
                     height: 100,
                     fit: BoxFit.cover,
@@ -300,10 +301,11 @@ class RequestItem extends StatelessWidget {
                   left: 0,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(10.0),
-                    child: Image.network(
-                      nftImgUrl,
+                    child: CachedNetworkImage(
+                      imageUrl: nftImgUrl,
                       width: 32,
                       height: 32,
+                      fit: BoxFit.cover,
                     ),
                   ),
                 ),
