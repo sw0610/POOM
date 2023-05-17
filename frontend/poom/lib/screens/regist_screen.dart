@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:poom/models/home/fundraiser_regist_model.dart';
+import 'package:poom/screens/regist_after_screen.dart';
 import 'package:poom/widgets/regist/regist_nft_preview.dart';
 import 'package:poom/widgets/regist/regist_representive_widget.dart';
 import 'package:poom/widgets/regist/regist_specific_info_widget.dart';
@@ -15,20 +17,25 @@ class RegistScreen extends StatefulWidget {
 
 class _RegistScreenState extends State<RegistScreen> {
   File? representImage;
+  File? nftImage;
   List<File> dogPhotoList = [];
+  late FundraiserRegistModel dogRegistInfo;
 
+  //메인 강아지 사진 고르기
   void _pickRepresentImage() async {
     final pickedFile =
         await ImagePicker().pickImage(source: ImageSource.gallery);
     setState(() {
       if (pickedFile != null) {
         representImage = File(pickedFile.path);
+        nftImage = File(pickedFile.path);
       } else {
         print('No image selected.');
       }
     });
   }
 
+  //강아지 사진 여러장 고르기
   void _pickDogPhotoImage() async {
     final pickedFile =
         await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -41,12 +48,29 @@ class _RegistScreenState extends State<RegistScreen> {
     });
   }
 
+  //고른 강아지 사진 중에서 삭제
   void _deleteDogPhotoImage(int index) {
     setState(() {
       dogPhotoList.removeAt(index);
     });
   }
 
+  void updateInfo(FundraiserRegistModel inputInfo) {
+    dogRegistInfo = inputInfo;
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => RegistAfterScreen(
+          dogImages: dogPhotoList,
+          dogRegistInfo: dogRegistInfo,
+          nftImage: nftImage!,
+          representImage: representImage!,
+        ),
+      ),
+    );
+  }
+
+  //페이지 관리
   int _selectedIndex = 0; // 선택된 인덱스
 
   void nextPage() {
@@ -91,6 +115,7 @@ class _RegistScreenState extends State<RegistScreen> {
             dogPhotoList: dogPhotoList,
             pickDogPhotoImage: _pickDogPhotoImage,
             deleteDogPhotoImage: _deleteDogPhotoImage,
+            updateInfo: updateInfo,
           ),
         ],
       ),
