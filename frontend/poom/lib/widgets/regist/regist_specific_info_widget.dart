@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:poom/models/home/fundraiser_regist_model.dart';
 import 'package:poom/widgets/regist/regist_input_form_widget.dart';
+import 'package:intl/intl.dart';
 
 class RegistSpecificInfo extends StatefulWidget {
   final List<File> dogPhotoList;
@@ -38,11 +39,14 @@ class _RegistSpecificInfoState extends State<RegistSpecificInfo> {
   final String _shelterEthWalletAddress =
       '0xb890800CA5f2b802758FC30AE1f2b3663796331A';
   late String _targetAmount;
-  DateTime _endDate = DateTime.now().add(const Duration(days: 3));
+
+  DateTime _endDate = DateTime.parse(DateFormat('yyyy-MM-dd HH:mm:ss.SSS')
+      .format(DateTime.now().add(const Duration(days: 3))));
 
   final formKey = GlobalKey<FormState>();
 
   void makeFundraiserModel() {
+    print('????>>> $_endDate');
     final instance = FundraiserRegistModel(
       ageIsEstimated: _ageIsEstimated,
       dogAge: int.parse(_dogAge),
