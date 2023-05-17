@@ -44,6 +44,21 @@ class _RegistAfterScreenState extends State<RegistAfterScreen> {
   void doRegist() async {
     String walletAddressInstance = await MetamaskUtil.getMemberAddress();
 
+    if (walletAddressInstance == '') {
+      Navigator.pop(context);
+      const snackBar = SnackBar(
+        content: Text(
+          '메타마스크에서 지갑 주소를 가져올 수 없습니다.',
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Colors.red,
+        duration: Duration(seconds: 3),
+        behavior: SnackBarBehavior.floating,
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      return;
+    }
+
     //메타마스크에서 지갑 주소 가져오기
     widget.dogRegistInfo.shelterEthWalletAddress =
         walletAddressInstance.toLowerCase();
