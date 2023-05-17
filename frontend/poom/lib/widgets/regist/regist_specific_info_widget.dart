@@ -46,7 +46,6 @@ class _RegistSpecificInfoState extends State<RegistSpecificInfo> {
   final formKey = GlobalKey<FormState>();
 
   void makeFundraiserModel() {
-    print('????>>> $_endDate');
     final instance = FundraiserRegistModel(
       ageIsEstimated: _ageIsEstimated,
       dogAge: int.parse(_dogAge),
