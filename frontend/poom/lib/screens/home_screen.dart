@@ -46,16 +46,18 @@ class _HomeScreenState extends State<HomeScreen> {
       page: _page,
       size: SIZE,
     );
-    setState(() {
-      if (hasMoreAndfundraiserList.isNotEmpty) {
-        _hasMore = hasMoreAndfundraiserList[0];
-        if (fundraiserList == null) {
-          fundraiserList = hasMoreAndfundraiserList[1];
-        } else {
-          fundraiserList = fundraiserList! + hasMoreAndfundraiserList[1];
+    if (mounted) {
+      setState(() {
+        if (hasMoreAndfundraiserList.isNotEmpty) {
+          _hasMore = hasMoreAndfundraiserList[0];
+          if (fundraiserList == null) {
+            fundraiserList = hasMoreAndfundraiserList[1];
+          } else {
+            fundraiserList = fundraiserList! + hasMoreAndfundraiserList[1];
+          }
         }
-      }
-    });
+      });
+    }
   }
 
   @override
