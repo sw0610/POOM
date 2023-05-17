@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:poom/services/nft_api.dart';
 import 'package:poom/widgets/collection/collection_card.dart';
 import 'package:poom/widgets/collection/collection_header.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shimmer/shimmer.dart';
 
 class CollectionScreen extends StatefulWidget {
@@ -23,6 +24,12 @@ class _CollectionScreenState extends State<CollectionScreen> {
   bool _isDialogOpen = false;
   final imagePicker = ImagePicker();
   late Future<Map<String, dynamic>> result;
+  final RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
+
+  bool hasMore = false;
+  int pageNum = 0;
+  List<dynamic> list = [];
 
   @override
   void initState() {
@@ -93,6 +100,25 @@ class _CollectionScreenState extends State<CollectionScreen> {
     );
   }
 
+  void _onRefresh() async {
+    await Future.delayed(const Duration(milliseconds: 1000));
+    _refreshController.refreshCompleted();
+  }
+
+  void _onLoading() async {
+    await Future.delayed(const Duration(milliseconds: 1000));
+    if (!hasMore) return;
+
+    pageNum += 1;
+    var moreData = await NftApiService().getUserNFTList(context, pageNum);
+    hasMore = moreData["hasMore"];
+    for (int i = 0; i < moreData["nftImgUrls"].length; i++) {
+      list.add(moreData["nftImgUrls"][i]);
+    }
+    _refreshController.loadComplete();
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -124,11 +150,12 @@ class _CollectionScreenState extends State<CollectionScreen> {
           future: result,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              var hasMore = snapshot.data!["hasMore"];
+              hasMore = snapshot.data!["hasMore"];
               var nickname = snapshot.data!["nickname"];
               var nftCount = snapshot.data!["nftCount"];
               var nftImgUrls = snapshot.data!["nftImgUrls"];
 
+              list = nftImgUrls;
               if (nftCount == 0) {
                 return const Center(
                   child: Text(
@@ -162,25 +189,32 @@ class _CollectionScreenState extends State<CollectionScreen> {
                     height: 20,
                   ),
                   Expanded(
-                    child: GridView.builder(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: _isGrid ? 2 : 1,
-                        mainAxisSpacing: 20,
-                        crossAxisSpacing: 5,
-                        childAspectRatio: _isGrid ? 1 : 1 / 1.32,
+                    child: SmartRefresher(
+                      onLoading: _onLoading,
+                      onRefresh: _onRefresh,
+                      controller: _refreshController,
+                      enablePullDown: true,
+                      enablePullUp: true,
+                      child: GridView.builder(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: _isGrid ? 2 : 1,
+                          mainAxisSpacing: 20,
+                          crossAxisSpacing: 5,
+                          childAspectRatio: _isGrid ? 1 : 1 / 1.32,
+                        ),
+                        itemCount: list.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return CollectionCard(
+                              imageUrl: list[index],
+                              isGrid: _isGrid,
+                              isOwner: _isOwner,
+                              isDialogOpen: _isDialogOpen,
+                              showCustomDialog: showCustomDialog,
+                              setShowDialog: () {
+                                _isDialogOpen = true;
+                              });
+                        },
                       ),
-                      itemCount: nftCount,
-                      itemBuilder: (BuildContext context, int index) {
-                        return CollectionCard(
-                            imageUrl: nftImgUrls[index],
-                            isGrid: _isGrid,
-                            isOwner: _isOwner,
-                            isDialogOpen: _isDialogOpen,
-                            showCustomDialog: showCustomDialog,
-                            setShowDialog: () {
-                              _isDialogOpen = true;
-                            });
-                      },
                     ),
                   ),
                 ],
