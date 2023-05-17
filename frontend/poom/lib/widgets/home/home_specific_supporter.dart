@@ -1,23 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:poom/screens/user_collection_screen.dart';
 
 class Supporter extends StatelessWidget {
   final String nickname, imgPath, memberId;
   final double amount;
 
-  const Supporter({
-    super.key,
-    required this.nickname,
-    required this.imgPath,
-    required this.amount,
-    required this.memberId,
-  });
-
-  void goNftScreen() {
-    //NFT 발급 페이지로 이동
-  }
+  const Supporter(
+      {super.key,
+      required this.nickname,
+      required this.imgPath,
+      required this.amount,
+      required this.memberId,
+      s});
 
   @override
   Widget build(BuildContext context) {
+    void goNftScreen() {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => UserCollectionScreen(memberId: memberId),
+            fullscreenDialog: true,
+          ));
+    }
+
     return Column(
       children: [
         const SizedBox(
