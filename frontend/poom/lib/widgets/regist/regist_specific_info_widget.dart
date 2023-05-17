@@ -35,9 +35,6 @@ class _RegistSpecificInfoState extends State<RegistSpecificInfo> {
   late String _dogFeature;
   late String _dogName;
 
-  // late String _shelterEthWalletAddress;
-  final String _shelterEthWalletAddress =
-      '0xb890800CA5f2b802758FC30AE1f2b3663796331A';
   late String _targetAmount;
 
   DateTime _endDate = DateTime.parse(DateFormat('yyyy-MM-dd HH:mm:ss.SSS')
@@ -52,7 +49,7 @@ class _RegistSpecificInfoState extends State<RegistSpecificInfo> {
       dogGender: _dogGender,
       dogFeature: _dogFeature,
       dogName: _dogName,
-      shelterEthWalletAddress: _shelterEthWalletAddress,
+      shelterEthWalletAddress: '',
       endDate: _endDate,
       targetAmount: double.parse(_targetAmount),
     );
