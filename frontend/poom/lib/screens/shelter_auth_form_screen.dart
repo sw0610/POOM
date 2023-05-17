@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:kpostal/kpostal.dart';
+import 'package:poom/services/shelter_api.dart';
 import 'package:poom/widgets/profile/text_input.dart';
 
 class ShelterAuthFormScreen extends StatefulWidget {
@@ -31,17 +32,18 @@ class _ShelterAuthFormScreenState extends State<ShelterAuthFormScreen> {
   }
 
   final ImagePicker imagePicker = ImagePicker();
-  List<XFile>? imageFileList = [];
+  List<XFile> imageFileList = [];
 
   void selectImages() async {
     final List<XFile> selectedImages = await imagePicker.pickMultiImage();
     if (selectedImages.isNotEmpty) {
-      imageFileList!.addAll(selectedImages);
+      imageFileList.addAll(selectedImages);
     }
-    print("Image List Length:${imageFileList!.length}");
+    print(imageFileList.first.path);
+    print("Image List Length:${imageFileList.length}");
 
     // 5개 초과시 안내 메세지 보이기
-    if (imageFileList!.length >= 6) {
+    if (imageFileList.length >= 6) {
       print("5개까지 등록 가능해요!");
       return;
     }
@@ -111,6 +113,9 @@ class _ShelterAuthFormScreenState extends State<ShelterAuthFormScreen> {
                     setState(() {
                       _shelterName = newValue;
                     });
+                  },
+                  onChanged: (newValue) {
+                    _shelterName = newValue;
                   },
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -205,6 +210,9 @@ class _ShelterAuthFormScreenState extends State<ShelterAuthFormScreen> {
                     setState(() {
                       _shelterPhone = newValue;
                     });
+                  },
+                  onChanged: (newValue) {
+                    _shelterPhone = newValue;
                   },
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -315,7 +323,7 @@ class _ShelterAuthFormScreenState extends State<ShelterAuthFormScreen> {
                       Expanded(
                         child: GridView.builder(
                             shrinkWrap: true,
-                            itemCount: imageFileList!.length,
+                            itemCount: imageFileList.length,
                             gridDelegate:
                                 const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 5,
@@ -327,7 +335,7 @@ class _ShelterAuthFormScreenState extends State<ShelterAuthFormScreen> {
                                 clipBehavior: Clip.none,
                                 children: [
                                   Image.file(
-                                    File(imageFileList![index].path),
+                                    File(imageFileList[index].path),
                                     fit: BoxFit.cover,
                                   ),
                                   Positioned(
@@ -336,7 +344,7 @@ class _ShelterAuthFormScreenState extends State<ShelterAuthFormScreen> {
                                     child: GestureDetector(
                                       onTap: () {
                                         setState(() {
-                                          imageFileList!.removeAt(index);
+                                          imageFileList.removeAt(index);
                                         });
                                       },
                                       child: Container(
@@ -381,8 +389,33 @@ class _ShelterAuthFormScreenState extends State<ShelterAuthFormScreen> {
                         ),
                         child: TextButton(
                           onPressed: () {
+                            if (_shelterAddress == "") {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(const SnackBar(
+                                content: Text("보호소 주소는 필수 입력 정보 입니다."),
+                              ));
+                              return;
+                            }
+
+                            if (imageFileList.isEmpty) {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(const SnackBar(
+                                content: Text("증명서류는 필수 첨부 자료입니다."),
+                              ));
+                              return;
+                            }
+
                             if (_formKey.currentState!.validate()) {
                               _formKey.currentState!.save();
+                              if (imageFileList.isEmpty) return;
+                              ShelterApiService().certifyShelter(context, {
+                                "certificateImages": imageFileList,
+                                "cond": {
+                                  'shelterName': _shelterName,
+                                  'shelterAddress': _shelterAddress,
+                                  'shelterPhoneNumber': _shelterPhone,
+                                }
+                              });
                             }
                           },
                           child: const Text(

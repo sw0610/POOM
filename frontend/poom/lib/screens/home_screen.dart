@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:poom/models/home_dog_card_model.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:poom/screens/regist_screen.dart';
+import 'package:poom/services/home_api.dart';
 import 'package:poom/widgets/home/home_dog_card.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -13,26 +14,86 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   String nickname = '';
+  bool isShelter = false;
   final _sortType = ['모집 중', '모집완료'];
+  bool _isClosed = false;
   String? _selectedSortType;
-  List<HomeDogCardModel> fundraiserList = [];
+  bool _hasMore = false;
+  List<dynamic>? fundraiserList;
+  int _page = 0;
+  static const int SIZE = 10;
+
+  //무한스크롤 감지 컨트롤러
+  final ScrollController _scrollController = ScrollController();
 
   //현재 로그인한 유저의 닉네임 가져오기
-  void getNickname() async {
+  void getNicknameAndIsShelter() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? prefNickname = pref.getString('nickname');
+    bool? prefIsShelter = pref.getBool('isShelter');
     setState(() {
       nickname = prefNickname!;
+      isShelter = prefIsShelter!;
     });
+  }
+
+  //후원 모집 목록 가져오기
+  void getFundraiserList() async {
+    print('isClosed: $_isClosed \n page: $_page \n size: $SIZE');
+    List<dynamic> hasMoreAndfundraiserList = await HomeApi.getFundraiserList(
+      context: context,
+      isClosed: _isClosed,
+      page: _page,
+      size: SIZE,
+    );
+    setState(() {
+      if (hasMoreAndfundraiserList.isNotEmpty) {
+        _hasMore = hasMoreAndfundraiserList[0];
+        if (fundraiserList == null) {
+          fundraiserList = hasMoreAndfundraiserList[1];
+        } else {
+          fundraiserList = fundraiserList! + hasMoreAndfundraiserList[1];
+        }
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    // 스크롤 이벤트 리스너 해제
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  // 스크롤 이벤트 핸들러
+  void _onScroll() {
+    // 스크롤이 끝에 도달한 경우
+    if (_hasMore && _scrollController.position.extentAfter < 10) {
+      _page += 1;
+      getFundraiserList();
+    }
+  }
+
+  //access token 보려고 임시로
+  static const storage = FlutterSecureStorage();
+  void getAccessToken() async {
+    var accesstoken = await storage.read(key: 'accesstoken');
+    var refreshtoken = await storage.read(key: 'refreshtoken');
+    print('홈화면 accesstoken: $accesstoken');
+    print('홈화면 refreshtoken: $refreshtoken');
   }
 
   @override
   void initState() {
     super.initState();
-    getNickname();
+    getNicknameAndIsShelter();
     setState(() {
       _selectedSortType = _sortType[0];
     });
+    getFundraiserList();
+    // 스크롤 이벤트 리스너 등록
+    _scrollController.addListener(_onScroll);
+    getAccessToken(); //access token 보려고 임시로
   }
 
   @override
@@ -83,16 +144,17 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
           actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 8.0),
-              child: IconButton(
-                onPressed: goRegistScreen,
-                icon: const Icon(
-                  Icons.add,
-                  color: Color(0xFF333333),
+            if (isShelter)
+              Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: IconButton(
+                  onPressed: goRegistScreen,
+                  icon: const Icon(
+                    Icons.add,
+                    color: Color(0xFF333333),
+                  ),
                 ),
-              ),
-            )
+              )
           ],
         ),
       ),
@@ -100,6 +162,7 @@ class _HomeScreenState extends State<HomeScreen> {
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
         child: ListView.builder(
+          controller: _scrollController,
           itemBuilder: (context, index) {
             //첫번째 자식요소
             if (index == 0) {
@@ -112,6 +175,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   left: 24,
                   right: 24,
                   top: 30,
+                  bottom: 20,
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -141,29 +205,59 @@ class _HomeScreenState extends State<HomeScreen> {
                         onChanged: (value) {
                           setState(() {
                             _selectedSortType = value;
+                            _page = 0;
+                            setState(() {
+                              if (value == "모집 중") {
+                                _isClosed = false;
+                              } else {
+                                _isClosed = true;
+                              }
+                            });
+                            fundraiserList = null;
+                            getFundraiserList();
                           });
                         })
                   ],
                 ),
               );
             }
-            return fundraiserList.isNotEmpty
+            return fundraiserList == null
                 ? Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                    ),
-                    child: HomeDogCard(dogInfo: fundraiserList[index - 2]),
-                  )
-                : Padding(
                     padding: const EdgeInsets.all(24),
                     child: Container(
                       height: 120,
                       alignment: Alignment.center,
-                      child: const Text('등록된 게시글 없음'),
+                      child: CircularProgressIndicator(
+                        color: Theme.of(context).primaryColor,
+                      ),
                     ),
-                  );
+                  )
+                : fundraiserList!.isEmpty
+                    ? Padding(
+                        padding: const EdgeInsets.all(24),
+                        child: Container(
+                          height: 120,
+                          alignment: Alignment.center,
+                          child: const Text(
+                            '도움이 필요한 보호견이 없어요',
+                            style: TextStyle(
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                      )
+                    : Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 24,
+                        ),
+                        child: HomeDogCard(dogInfo: fundraiserList![index - 2]),
+                      );
           },
-          itemCount: fundraiserList.isNotEmpty ? fundraiserList.length + 2 : 3,
+          itemCount: fundraiserList == null
+              ? 3
+              : fundraiserList!.isEmpty
+                  ? 3
+                  : fundraiserList!.length + 2,
         ),
       ),
     );
@@ -182,7 +276,7 @@ class HomeIntroWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
-      height: 400,
+      height: MediaQuery.of(context).size.width,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

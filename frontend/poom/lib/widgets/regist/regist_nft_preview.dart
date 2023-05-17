@@ -40,7 +40,7 @@ class _RegistNftPreviewState extends State<RegistNftPreview> {
     return Container(
       color: Theme.of(context).colorScheme.background,
       child: _isLoading
-          ? const Loading(
+          ? const LoadingWidget(
               title: 'NFT 생성 중',
               description: '등록하신 사진으로 \n AI가 NFT를 만들고 있어멍!',
             )
