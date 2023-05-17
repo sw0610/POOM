@@ -33,9 +33,9 @@ class Supporter extends StatelessWidget {
               fit: BoxFit.cover,
             ),
           ),
-          const Text(
-            '닉네임',
-            style: TextStyle(
+          Text(
+            nickname,
+            style: const TextStyle(
               color: Color(0xFF666666),
               fontSize: 14,
               fontWeight: FontWeight.w400,

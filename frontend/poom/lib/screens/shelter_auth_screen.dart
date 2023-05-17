@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:poom/models/profile/shelter_model.dart';
+import 'package:poom/services/shelter_api.dart';
+import 'package:shimmer/shimmer.dart';
 
 class ShelterAuthScreen extends StatefulWidget {
   const ShelterAuthScreen({super.key});
@@ -9,6 +12,14 @@ class ShelterAuthScreen extends StatefulWidget {
 
 class _ShelterAuthScreenState extends State<ShelterAuthScreen> {
   static const Color _textColor = Color(0xFF333333);
+  late Future<ShelterModel> shelterInfo;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    shelterInfo = ShelterApiService().getShelterInfo(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,81 +62,106 @@ class _ShelterAuthScreenState extends State<ShelterAuthScreen> {
                 Expanded(
                   child: Stack(
                     children: [
-                      Container(
-                        height: 178,
-                        decoration: BoxDecoration(
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.7),
-                              blurRadius: 4.0,
-                              spreadRadius: 0.0,
-                              offset: const Offset(0, 4),
-                            )
-                          ],
-                          gradient: const LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              Color(0xFFFF8E01),
-                              Color(0xFFFFB75C),
-                            ],
-                          ),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: const Padding(
-                          padding: EdgeInsets.all(20),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "동물사랑센터",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Text(
-                                "서울특별시 서초구 양재1동 양재천로19길 22",
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              SizedBox(
-                                height: 4,
-                              ),
-                              Text(
-                                "02-6956-7890",
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              SizedBox(
-                                height: 48,
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Text(
-                                    "등록일 2023.05.01",
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w400,
-                                      color: Colors.white,
-                                    ),
-                                  ),
+                      FutureBuilder(
+                        future: shelterInfo,
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            return Container(
+                              height: 178,
+                              decoration: BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.7),
+                                    blurRadius: 4.0,
+                                    spreadRadius: 0.0,
+                                    offset: const Offset(0, 4),
+                                  )
                                 ],
+                                gradient: const LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [
+                                    Color(0xFFFF8E01),
+                                    Color(0xFFFFB75C),
+                                  ],
+                                ),
+                                borderRadius: BorderRadius.circular(10),
                               ),
-                            ],
-                          ),
-                        ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(20),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      snapshot.data!.shelterName,
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    Text(
+                                      snapshot.data!.shelterAddress,
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 4,
+                                    ),
+                                    Text(
+                                      snapshot.data!.shelterPhoneNumber,
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 48,
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        Text(
+                                          "ID ${snapshot.data!.shelterId}",
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w400,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          }
+                          return Shimmer.fromColors(
+                            baseColor: const Color(0xFFFFB75C),
+                            highlightColor: Colors.white,
+                            child: Container(
+                              height: 178,
+                              decoration: BoxDecoration(
+                                gradient: const LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [
+                                    Color(0xFFFF8E01),
+                                    Color(0xFFFFB75C),
+                                  ],
+                                ),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                          );
+                        },
                       ),
                       Positioned(
                         top: 20,

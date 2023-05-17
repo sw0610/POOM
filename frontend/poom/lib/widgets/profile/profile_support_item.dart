@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:poom/screens/collection_screen.dart';
+import 'package:poom/widgets/collection/cahced_image.dart';
 
 class SupportItem extends StatelessWidget {
   static const _primaryColor = Color(0xFFFF8E01);
@@ -10,15 +10,19 @@ class SupportItem extends StatelessWidget {
     Colors.green.shade400
   ];
 
-  final String dogName, donateAmount, donateDate;
-  final int isIssued;
+  final int donationId, fundraiserId, isIssued;
+  final double donateAmount;
+  final String dogName, donateDate, nftImgUrl;
 
   const SupportItem({
     super.key,
+    required this.donationId,
+    required this.fundraiserId,
     required this.dogName,
     required this.donateAmount,
     required this.donateDate,
     required this.isIssued,
+    required this.nftImgUrl,
   });
   @override
   Widget build(BuildContext context) {
@@ -34,11 +38,10 @@ class SupportItem extends StatelessWidget {
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(4),
-                  child: const SizedBox(
+                  child: SizedBox(
                     width: 68,
                     child: CachedImage(
-                      imageUrl:
-                          "https://i1.sndcdn.com/artworks-000660272461-rmfvxq-t500x500.jpg",
+                      imageUrl: nftImgUrl,
                     ),
                   ),
                 ),

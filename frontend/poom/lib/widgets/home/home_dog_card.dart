@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:poom/models/home_dog_card_model.dart';
+import 'package:poom/models/home/home_dog_card_model.dart';
 import 'package:poom/screens/home_specific_screen.dart';
 
 class HomeDogCard extends StatelessWidget {
@@ -14,10 +14,14 @@ class HomeDogCard extends StatelessWidget {
   Widget build(BuildContext context) {
     //보호견 상세페이지로 이동
     void goDogSpecificScreen() {
+      print('dogCard fundraiserId: ${dogInfo.fundraiserId}');
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => const DogSpecificScreen(),
+          builder: (context) => DogSpecificScreen(
+            fundraiserId: dogInfo.fundraiserId,
+            context: context,
+          ),
           fullscreenDialog: false,
         ),
       );
@@ -27,11 +31,7 @@ class HomeDogCard extends StatelessWidget {
       onTap: goDogSpecificScreen,
       child: Column(
         children: [
-          const SizedBox(
-            height: 20,
-          ),
           Container(
-            height: 120,
             decoration: BoxDecoration(
               borderRadius: const BorderRadius.all(
                 Radius.circular(10),
@@ -45,22 +45,22 @@ class HomeDogCard extends StatelessWidget {
               color: Theme.of(context).colorScheme.background,
             ),
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(10.0),
               child: Row(
                 children: [
                   Stack(
                     children: [
                       Container(
                         clipBehavior: Clip.antiAlias,
-                        width: 100,
-                        height: 100,
+                        width: 112,
+                        height: 112,
                         decoration: const BoxDecoration(
                           borderRadius: BorderRadius.all(
                             Radius.circular(10),
                           ),
                         ),
                         child: Image.network(
-                          'https://image.dongascience.com/Photo/2020/03/5bddba7b6574b95d37b6079c199d7101.jpg',
+                          dogInfo.mainImgUrl,
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -76,7 +76,7 @@ class HomeDogCard extends StatelessWidget {
                             ),
                           ),
                           child: Image.network(
-                            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRm5q9thkNI7sXmH0ysGnn4_ugIwQxgoec3WQ&usqp=CAU',
+                            dogInfo.nftImgUrl,
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -84,83 +84,86 @@ class HomeDogCard extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(
-                    width: 10,
+                    width: 16,
                   ),
                   Expanded(
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Row(
-                              children: [
-                                Text(
-                                  '쿵이',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 16,
-                                    color: Color(0xFF333333),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                Text(
-                                  '♂',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 16,
-                                    color: Colors.blue,
-                                  ),
-                                ),
-                              ],
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(4),
                             ),
-                            Container(
-                              decoration: BoxDecoration(
-                                borderRadius: const BorderRadius.all(
-                                  Radius.circular(10),
-                                ),
-                                color: Theme.of(context).primaryColor,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 6,
+                              vertical: 2,
+                            ),
+                            child: Text(
+                              dogInfo.shelterName,
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.background,
                               ),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 6,
-                                  vertical: 2,
-                                ),
-                                child: Text(
-                                  '인천광역시 보호소',
-                                  style: TextStyle(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .background,
-                                  ),
-                                ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Row(
+                          children: [
+                            Text(
+                              dogInfo.dogName,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 16,
+                                color: Color(0xFF333333),
                               ),
-                            )
+                            ),
+                            const SizedBox(
+                              width: 5,
+                            ),
+                            Text(
+                              dogInfo.dogGender == 0 ? '♀' : '♂',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 16,
+                                color: dogInfo.dogGender == 0
+                                    ? Colors.pink
+                                    : Colors.blue,
+                              ),
+                            ),
                           ],
                         ),
-                        const SizedBox(height: 10),
-                        const Row(
+                        const SizedBox(
+                          height: 6,
+                        ),
+                        Row(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            ClassificationText(classification: '후원 마감'),
-                            ValueText(value: '23.01.01 23:42'),
+                            const ClassificationText(classification: '후원 마감'),
+                            ValueText(value: dogInfo.endDate),
                           ],
                         ),
                         const SizedBox(height: 5),
-                        const Row(
+                        Row(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            ClassificationText(classification: '현재 모금액'),
-                            ValueText(value: '12 MATIC'),
+                            const ClassificationText(classification: '현재 모금액'),
+                            ValueText(
+                                value:
+                                    '${dogInfo.currentAmount.toString()} eth'),
                           ],
                         ),
                         const SizedBox(height: 5),
-                        const Row(
+                        Row(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            ClassificationText(classification: '목표액'),
-                            ValueText(value: '30 MATIC'),
+                            const ClassificationText(classification: '목표액'),
+                            ValueText(
+                                value:
+                                    '${dogInfo.targetAmount.toString()} eth'),
                           ],
                         ),
                       ],
@@ -169,6 +172,9 @@ class HomeDogCard extends StatelessWidget {
                 ],
               ),
             ),
+          ),
+          const SizedBox(
+            height: 20,
           ),
         ],
       ),

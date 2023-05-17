@@ -1,10 +1,11 @@
-class HomeDogCardModel {
-  final int fundraiserId;
-  final String dogName, mainImgUrl, nftImgUrl, dogGender, shelterName;
-  final DateTime endDate;
-  final double currendAmount, targetAmount;
+class RequestItemModel {
+  final int fundraiserId, dogGender;
+  final String dogName, mainImgUrl, nftImgUrl;
+  final String? shelterName;
+  final String endDate;
+  final double currentAmount, targetAmount;
 
-  HomeDogCardModel.fromJson(Map<String, dynamic> json)
+  RequestItemModel.fromJson(Map<String, dynamic> json)
       : fundraiserId = json['fundraiserId'],
         dogName = json['dogName'],
         mainImgUrl = json['mainImgUrl'],
@@ -12,6 +13,6 @@ class HomeDogCardModel {
         dogGender = json['dogGender'],
         shelterName = json['shelterName'],
         endDate = json['endDate'],
-        currendAmount = json['currendAmount'],
+        currentAmount = json['currentAmount'],
         targetAmount = json['targetAmount'];
 }
