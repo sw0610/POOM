@@ -153,7 +153,7 @@ public class FundraiserServiceImpl implements FundraiserService {
             }
 
             Shelter shelter = shelterRepository.findById(smartContractFundraiserDto.getShelterId())
-                    .orElseThrow(() -> new BadRequestException("보호소 정보가 없습니다"));
+                    .orElseGet(() -> Shelter.builder().shelterName("보호소").build());
             String shelterName = shelter.getShelterName();
             FundraiserDto fundraiserDto = FundraiserDto.builder()
                     .fundraiserId(smartContractFundraiserDto.getFundraiserId())
