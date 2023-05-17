@@ -5,6 +5,7 @@ import com.poom.backend.api.dto.fundraiser.IPFSFundraiserDto;
 import com.poom.backend.api.dto.fundraiser.SmartContractFundraiserDto;
 import com.poom.backend.api.service.ipfs.IpfsService;
 import com.poom.backend.api.service.member.MemberService;
+import com.poom.backend.db.entity.Member;
 import com.poom.backend.db.repository.MemberRepository;
 import com.poom.backend.exception.BadRequestException;
 import com.poom.backend.solidity.donation.DonationContractService;
@@ -97,7 +98,13 @@ public class DonationServiceImpl implements DonationService {
         List<FundraiserDonationDto> fundraiserDonationList = donationList.stream()
                 .map(donation ->
                         FundraiserDonationDto.toFundraiserDonationDto(donation,
-                                memberRepository.findById(donation.getMemberId()).orElseThrow(() -> new BadRequestException("회원 정보가 없습니다."))
+                                memberRepository.findById(donation.getMemberId()).orElseGet(
+                                        ()->
+                                        Member.builder()
+                                                .id("6448d3f63b5986731525d6bc")
+                                                .nickname("John")
+                                                .profileImgUrl("https://ipfs.io/ipfs/QmU7RHoJHdeRFhJPwz1zxFodzibyedV1RCuDdAvNuw2cTk")
+                                                .build())
                         ))
                 .collect(Collectors.toList());
         ;
