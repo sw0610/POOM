@@ -7,7 +7,9 @@ class FundraiserSpecificModel {
       mainImgUrl,
       nftImgUrl,
       dogFeature,
-      endDate;
+      endDate,
+      memberId;
+
   int dogGender, dogAge;
   bool ageIsEstimated, isClosed;
   double targetAmount, currentAmount;
@@ -24,6 +26,7 @@ class FundraiserSpecificModel {
         dogImgUrls = json['dogImgUrls'],
         dogFeature = json['dogFeature'],
         endDate = json['endDate'],
+        memberId = json['memberId'],
         dogGender = json['dogGender'],
         dogAge = json['dogAge'],
         ageIsEstimated = json['ageIsEstimated'],

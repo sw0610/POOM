@@ -312,7 +312,7 @@ class HomeIntroWidget extends StatelessWidget {
               children: [
                 SizedBox(
                   width: MediaQuery.of(context).size.width,
-                  height: 310,
+                  height: 300,
                 ),
                 Positioned(
                   bottom: 0,
