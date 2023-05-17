@@ -8,8 +8,9 @@ import 'package:poom/screens/full_image_screen.dart';
 import 'package:poom/screens/shelter_specific_screen.dart';
 import 'package:poom/services/home_api.dart';
 import 'package:poom/widgets/home/home_specific_supporter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class DogSpecificScreen extends StatelessWidget {
+class DogSpecificScreen extends StatefulWidget {
   final int fundraiserId;
   final Future<FundraiserSpecificModel> specificInfo;
   final BuildContext context;
@@ -23,9 +24,36 @@ class DogSpecificScreen extends StatelessWidget {
           context: context,
         );
 
+  @override
+  State<DogSpecificScreen> createState() => _DogSpecificScreenState();
+}
+
+class _DogSpecificScreenState extends State<DogSpecificScreen> {
+  bool? isClosed, isMine;
+  late final String myMemberId, fundraiserMemberId;
+  late final double remainAmount;
+
+  void getMemberIdAndIsClosed() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    FundraiserSpecificModel specificResult = await widget.specificInfo;
+    setState(() {
+      myMemberId = preferences.getString('memberId')!;
+      fundraiserMemberId = specificResult.memberId;
+      remainAmount = specificResult.targetAmount - specificResult.currentAmount;
+      isClosed = specificResult.isClosed;
+      isMine = myMemberId == specificResult.memberId;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getMemberIdAndIsClosed();
+  }
+
   void goShelterInfoScreen(String shelterId) {
     Navigator.push(
-      context,
+      widget.context,
       MaterialPageRoute(
         builder: (context) => ShelterInfoScreen(
           context: context,
@@ -38,7 +66,7 @@ class DogSpecificScreen extends StatelessWidget {
 
   void goFullImageScreen(String imgUrl) {
     Navigator.push(
-      context,
+      widget.context,
       MaterialPageRoute(
         builder: (context) => FullImageScreen(
           imgUrl: imgUrl,
@@ -48,11 +76,15 @@ class DogSpecificScreen extends StatelessWidget {
     );
   }
 
-  void goDonateScreen() {
+  void goDonateScreen(String memberId, double remainAmount) {
     Navigator.push(
-      context,
+      widget.context,
       MaterialPageRoute(
-        builder: (context) => const DonateScreen(),
+        builder: (context) => DonateScreen(
+          memberId: memberId,
+          fundraiserId: widget.fundraiserId,
+          remainAmount: remainAmount,
+        ),
         fullscreenDialog: true,
       ),
     );
@@ -76,7 +108,7 @@ class DogSpecificScreen extends StatelessWidget {
         ),
       ),
       body: FutureBuilder(
-        future: specificInfo,
+        future: widget.specificInfo,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return SingleChildScrollView(
@@ -279,14 +311,15 @@ class DogSpecificScreen extends StatelessWidget {
                             ),
                         if (snapshot.data!.donations.isEmpty)
                           const Center(
-                              child: Column(
-                            children: [
-                              SizedBox(
-                                height: 30,
-                              ),
-                              Text('후원자 목록이 없습니다.'),
-                            ],
-                          )),
+                            child: Column(
+                              children: [
+                                SizedBox(
+                                  height: 30,
+                                ),
+                                Text('후원자 목록이 없습니다.'),
+                              ],
+                            ),
+                          ),
                       ],
                     ),
                   ),
@@ -300,28 +333,35 @@ class DogSpecificScreen extends StatelessWidget {
           ));
         },
       ),
-      floatingActionButton: Container(
-        width: MediaQuery.of(context).size.width - 48,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20.0),
-        ),
-        child: FloatingActionButton.extended(
-          backgroundColor: Theme.of(context).primaryColor,
-          onPressed: goDonateScreen,
-          elevation: 8,
-          icon: SvgPicture.asset(
-            'assets/icons/ic_metamask_color.svg',
-            height: 12.0,
-          ),
-          label: const Text(
-            "Metamask로 후원하기",
-            style: TextStyle(
-              fontSize: 18.0,
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-        ),
-      ),
+      floatingActionButton: (isMine != null && isClosed != null)
+          ? Container(
+              width: MediaQuery.of(context).size.width - 48,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20.0),
+              ),
+              child: FloatingActionButton.extended(
+                backgroundColor: (!isMine! && !isClosed!)
+                    ? const Color(0xFFFF8E01)
+                    : const Color(0xff0999999),
+                onPressed: (!isMine! && !isClosed!)
+                    ? () => goDonateScreen(fundraiserMemberId, remainAmount)
+                    : null,
+                elevation: 8,
+                icon: SvgPicture.asset(
+                  'assets/icons/ic_metamask_color.svg',
+                  height: 12.0,
+                ),
+                label: const Text(
+                  "Metamask로 후원하기",
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ),
+            )
+          : null,
+      floatingActionButtonAnimator: null,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
