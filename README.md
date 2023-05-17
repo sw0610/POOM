@@ -122,7 +122,7 @@
 
 ## 🔒 ERD
 
-![ERD](./assets/donjo-erd.png)
+![ERD](./assets/poom_ERD.png)
 
 ## 📄 아키텍처 구성도
 
@@ -131,61 +131,61 @@
 ## ⚙️ 프로젝트 파일 구조
 
 **Backend**
+  <pre>
+  src 
+    ├─ api 
+    │    ├─ controller 
+    │    ├─ service 
+    │    │    ├─ {name}Service 
+    │    │    └─ {name}ServiceImpl
+    │    └─ dto
+    │        └─ {name}
+    │          ├─ request
+    │          ├─ response
+    │          └─ {SimpleDto1}
+    ├─ config
+    ├─ db
+    │    ├─ entity
+    │    ├─ repository
+    │    └─ enum
+    ├─ exception
+    └─ util
+  </pre>  
 
-  src
-    ㄴ api
-        ㄴ controller
-        ㄴ service
-            ㄴ {name}Service
-            ㄴ {name}ServiceImpl
-        ㄴ dto
-            ㄴ {name}
-              ㄴ request
-              ㄴ response
-              ㄴ {SimpleDto1}
-    ㄴ config
-    ㄴ db
-        ㄴ entity
-        ㄴ repository
-        ㄴ enum
-    
-    ㄴ exception
-    ㄴ util
-    
 **Frontend**
-
-  .
-    ㄴ .dart_tool
-    ㄴ .idea
-    ㄴ android
-    ㄴ assets
-        ㄴ config
-        ㄴ gifs
-        ㄴ icons
-        ㄴ images
-    ㄴ build
-    ㄴ fonts
-    ㄴ ios
-    ㄴ lib
-        ㄴ models
-            ㄴ home
-            ㄴ profile
-        ㄴ screens
-        ㄴ services
-        ㄴ utils
-        ㄴ widgets
-            ㄴ collection
-            ㄴ home
-            ㄴ loading
-            ㄴ profile
-            ㄴ regist
-            ㄴ shelter
-    ㄴ linux
-    ㄴ macos
-    ㄴ test
-    ㄴ web
-    ㄴ windows
-
+<pre>
+.
+├─.dart_tool
+├─.idea
+├─android
+├─assets
+│  ├─config
+│  ├─gifs
+│  ├─icons
+│  └─images
+├─build
+├─fonts
+├─ios
+├─lib
+│  ├─models
+│  │  ├─home
+│  │  └─profile
+│  ├─screens
+│  ├─services
+│  ├─utils
+│  └─widgets
+│      ├─collection
+│      ├─home
+│      ├─loading
+│      ├─profile
+│      ├─regist
+│      └─shelter
+├─linux
+├─macos
+├─test
+├─web
+└─windows
+</pre>
 ## 🗣 협업 환경
 
 - Jira
@@ -219,9 +219,8 @@
 - AI 학습 모델 정확도 개선
   - 더 많은 이미지를 수집하여 학습 시킨 뒤 모델의 정확도를 더 높일 수 있습니다.
   - 정확도를 높인 모델 기반으로 이미지 구별을 더 명확하게 할 수 있습니다.
-- TODO
-  - TODO
-  - TODO
+- 이미지 카툰화 개선
+  - 강아지 이미지에 대한 카툰화를 이미지와 더 유사하게 생성할 수 있습니다.
 
 ## POOM 서비스 화면
 
