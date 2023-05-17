@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:poom/widgets/loading/loading_widget.dart';
@@ -5,10 +7,15 @@ import 'package:poom/widgets/loading/loading_widget.dart';
 class RegistNftPreview extends StatefulWidget {
   final VoidCallback prevPage;
   final VoidCallback nextPage;
-  const RegistNftPreview({
+  File? representImage;
+  File? nftImage;
+
+  RegistNftPreview({
     super.key,
     required this.prevPage,
     required this.nextPage,
+    this.nftImage,
+    this.representImage,
   });
 
   @override
@@ -16,30 +23,11 @@ class RegistNftPreview extends StatefulWidget {
 }
 
 class _RegistNftPreviewState extends State<RegistNftPreview> {
-  bool _isLoading = true;
-
-  //임시로 로딩화면 3초 후에 로딩 완료
-  @override
-  void initState() {
-    super.initState();
-
-    Future.delayed(const Duration(seconds: 3), () {
-      setState(() {
-        _isLoading = false;
-      });
-    });
-  }
-
-  void reloadNft() {
-    //현재 있는 이미지를 이용하여 NFT 재생성
-    print('reload NFT');
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
       color: Theme.of(context).colorScheme.background,
-      child: _isLoading
+      child: widget.nftImage == null
           ? const LoadingWidget(
               title: 'NFT 생성 중',
               description: '등록하신 사진으로 \n AI가 NFT를 만들고 있어멍!',
@@ -70,9 +58,8 @@ class _RegistNftPreviewState extends State<RegistNftPreview> {
                         width: MediaQuery.of(context).size.width * 0.7,
                         height: MediaQuery.of(context).size.width * 0.7,
                         decoration: BoxDecoration(
-                          image: const DecorationImage(
-                            image: NetworkImage(
-                                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRm5q9thkNI7sXmH0ysGnn4_ugIwQxgoec3WQ&usqp=CAU'),
+                          image: DecorationImage(
+                            image: FileImage(widget.nftImage!),
                             fit: BoxFit.cover,
                           ),
                           borderRadius: const BorderRadius.all(
@@ -89,23 +76,16 @@ class _RegistNftPreviewState extends State<RegistNftPreview> {
                     ],
                   ),
                   const SizedBox(
-                    height: 40,
+                    height: 20,
                   ),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const SizedBox(),
-                      ButtonStyle(
-                        svg: 'assets/icons/ic_reload.svg',
-                        buttonTitle: '재생성',
-                        doFunction: reloadNft,
-                      ),
                       ButtonStyle(
                         svg: 'assets/icons/ic_gallery.svg',
                         buttonTitle: '사진 변경',
                         doFunction: widget.prevPage,
                       ),
-                      const SizedBox(),
                     ],
                   ),
                   const Expanded(
@@ -157,7 +137,7 @@ class ButtonStyle extends StatelessWidget {
     return GestureDetector(
       onTap: doFunction,
       child: Container(
-        width: 88,
+        width: MediaQuery.of(context).size.width * 0.7,
         height: 62,
         decoration: const BoxDecoration(
           color: Color(0xFFF9F9F9),
@@ -165,7 +145,7 @@ class ButtonStyle extends StatelessWidget {
             Radius.circular(10),
           ),
         ),
-        child: Column(
+        child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SvgPicture.asset(
@@ -173,7 +153,7 @@ class ButtonStyle extends StatelessWidget {
               color: const Color(0xFF333333),
             ),
             const SizedBox(
-              height: 8,
+              width: 8,
             ),
             Text(
               buttonTitle,

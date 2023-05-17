@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:poom/models/home/fundraiser_regist_model.dart';
 import 'package:poom/screens/regist_after_screen.dart';
+import 'package:poom/services/make_nft.dart';
 import 'package:poom/widgets/regist/regist_nft_preview.dart';
 import 'package:poom/widgets/regist/regist_representive_widget.dart';
 import 'package:poom/widgets/regist/regist_specific_info_widget.dart';
@@ -28,7 +29,7 @@ class _RegistScreenState extends State<RegistScreen> {
     setState(() {
       if (pickedFile != null) {
         representImage = File(pickedFile.path);
-        nftImage = File(pickedFile.path);
+        // nftImage = File(pickedFile.path);
       } else {
         print('No image selected.');
       }
@@ -73,6 +74,22 @@ class _RegistScreenState extends State<RegistScreen> {
   //페이지 관리
   int _selectedIndex = 0; // 선택된 인덱스
 
+  void nextPageAndMakeNFT() async {
+    nextPage();
+    var nftImageInstance = await MakeNft.getNft(mainImg: representImage!);
+    //강아지 사진이 아니라면 다시 돌아오기
+    if (nftImageInstance == null) {
+      prevPage();
+      //Snackbar 띄우기
+    } else {
+      if (mounted) {
+        setState(() {
+          nftImage = nftImageInstance;
+        });
+      }
+    }
+  }
+
   void nextPage() {
     if (_selectedIndex < 2) {
       setState(() {
@@ -85,6 +102,7 @@ class _RegistScreenState extends State<RegistScreen> {
     if (_selectedIndex > 0) {
       setState(() {
         _selectedIndex = _selectedIndex - 1;
+        if (_selectedIndex == 0) nftImage = null;
       });
     }
   }
@@ -103,13 +121,15 @@ class _RegistScreenState extends State<RegistScreen> {
         index: _selectedIndex,
         children: [
           RegistRepresentive(
-            nextPage: nextPage,
+            nextPage: nextPageAndMakeNFT,
             representImage: representImage,
             pickRepresentImage: () => _pickRepresentImage(),
           ),
           RegistNftPreview(
             nextPage: nextPage,
             prevPage: prevPage,
+            nftImage: nftImage,
+            representImage: representImage,
           ),
           RegistSpecificInfo(
             dogPhotoList: dogPhotoList,
