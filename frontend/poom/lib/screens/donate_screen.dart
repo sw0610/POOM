@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:poom/services/eth_per_krw_api.dart';
 import 'package:poom/utils/metamask_util.dart';
+import 'package:poom/widgets/home/dialog_button.dart';
 
 class DonateScreen extends StatefulWidget {
   final String memberId;
@@ -81,18 +82,63 @@ class _DonateScreenState extends State<DonateScreen> {
 
       if (_inputEth != '' && double.parse(_inputEth) >= widget.remainAmount) {
         _inputEth = widget.remainAmount.toString();
-        isEnabled = false;
       }
     });
   }
 
-  void _doDonate(BuildContext context) {
+  Future<String?> _doDonate(BuildContext context) async {
     double ethAmount = double.parse(_inputEth);
-    print(ethAmount.runtimeType);
-    print(ethAmount);
 
-    // metamask 연결
-    MetamaskUtil.handleGenerateSupport();
+    int result = await MetamaskUtil.handleGenerateSupport(
+        widget.fundraiserId, ethAmount);
+
+    return handleShowDialog(result);
+  }
+
+  Future<String?> handleShowDialog(int result) {
+    return showDialog<String>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        insetPadding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
+        elevation: 1,
+        title: Text(
+          textAlign: TextAlign.center,
+          result == -1
+              ? "잔고 부족"
+              : result == 0
+                  ? "후원 오류"
+                  : "후원 성공",
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        content: Text(
+          textAlign: TextAlign.center,
+          result == -1
+              ? "계좌 잔고가 부족해요! 잔고를 확인해주세요."
+              : result == 0
+                  ? "잠시 후 다시 시도해주세요."
+                  : "후원 내역은 나의 프로필에서 확인할 수 있어요:)",
+          style: const TextStyle(
+            fontSize: 14,
+          ),
+        ),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(20),
+          ),
+        ),
+        buttonPadding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
+        actions: const <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [DialogButton()],
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -123,7 +169,6 @@ class _DonateScreenState extends State<DonateScreen> {
                 height: 68,
                 decoration: const BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(10)),
-                  // color: Color(0xFFFFF4E6),
                   color: Color(0xFFFFF4E6),
                 ),
                 child: Padding(
