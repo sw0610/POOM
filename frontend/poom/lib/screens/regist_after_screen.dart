@@ -45,7 +45,7 @@ class _RegistAfterScreenState extends State<RegistAfterScreen> {
     String walletAddressInstance = await MetamaskUtil.getMemberAddress();
 
     if (walletAddressInstance == '') {
-      Navigator.pop(context);
+      Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
       const snackBar = SnackBar(
         content: Text(
           '메타마스크에서 지갑 주소를 가져올 수 없습니다.',
