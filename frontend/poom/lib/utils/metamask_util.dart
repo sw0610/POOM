@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart';
 import 'package:logger/logger.dart';
 import 'package:poom/services/nft_api.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:walletconnect_dart/walletconnect_dart.dart';
@@ -11,7 +12,6 @@ import 'package:web3dart/web3dart.dart';
 class MetamaskUtil {
   static const apiUrl =
       "https://sepolia.infura.io/v3/0be8b78f1cad416a80f5d523b264e437";
-
   static final WalletConnect _connector = WalletConnect(
     bridge: 'https://bridge.walletconnect.org',
     clientMeta: const PeerMeta(
@@ -38,19 +38,18 @@ class MetamaskUtil {
         _session = await _connector.createSession(
           onDisplayUri: (uri) async {
             _uri = uri;
-            bool isLaunched = await launchUrlString(uri,
-                mode: LaunchMode.externalApplication);
-
-            // metamask 설치여부에 따른 가이드 제공
-            if (!isLaunched) {
-              logger.d("[MetamaskUtil] Metamask 설치 필요");
-              return;
+            bool isAppInstalled = await canLaunchUrl(Uri.parse(uri));
+            if (isAppInstalled) {
+              await launchUrlString(uri, mode: LaunchMode.externalApplication);
+            } else {
+              logger.e("[MetamaskUtil] isConnected fail 메타마스크 설치 필요");
             }
           },
         );
 
         // 지갑주소 및 체인아이디 설정
         _senderAddress = _session.accounts.first;
+
         return true;
       } catch (e) {
         // 연결 거절 상태 처리 예정
@@ -61,47 +60,90 @@ class MetamaskUtil {
     return true;
   }
 
+  static Future<String> getMemberAddress() async {
+    if (await isConnected()) {
+      return _senderAddress;
+    }
+    return "";
+  }
+
   // 후원 발생 및 후원 메서드
-  static void handleGenerateSupport() async {
-    final EthereumAddress contractAddr =
-        EthereumAddress.fromHex("0x8e1887B19307c2a9e6B0430a77257650dFFa7A02");
+  static Future<int> handleGenerateSupport(
+      int fundraiserId, double amount) async {
     DeployedContract? contract;
     Logger logger = Logger();
+    final EthereumAddress contractAddr =
+        EthereumAddress.fromHex("0x8e1887B19307c2a9e6B0430a77257650dFFa7A02");
 
-    // 파일 읽어오기
+    // json파일 -> abi
     await rootBundle.loadString('assets/contract.json').then((value) => {
           contract = DeployedContract(
               ContractAbi.fromJson(value, "poom"), contractAddr)
         });
 
+    // contractFunction 설정
     ContractFunction? donate = contract?.function("donate");
-    final Web3Client client = Web3Client(apiUrl, Client());
 
+    // 후원 발생 시간 설정
     DateTime dateTime = DateTime.now();
     int millisecondsSinceEpoch = dateTime.millisecondsSinceEpoch;
-
-    // test
-    var fundraiserId = 5;
-    var memberId = "64584cc982f977110415a93c";
     var donationTime = millisecondsSinceEpoch;
 
-    // await client
-    //     .call(
-    //       contract: contract!,
-    //       function: donate!,
-    //       params: [
-    //         BigInt.from(fundraiserId),
-    //         memberId,
-    //         BigInt.from(donationTime),
-    //       ],
-    //     )
-    //     .then((value) => print("success $value"))
-    //     .catchError((err) => print("error $err"));
-  }
+    // provider 연결
+    EthereumWalletConnectProvider provider =
+        EthereumWalletConnectProvider(_connector);
 
-  // json파일 읽는 메서드
-  Future<String> readAbi() async {
-    return await rootBundle.loadString('contract.json');
+    // memeberId 조회
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    String memberId = preferences.getString("memberId")!;
+
+    // 메타마스크 연결 여부 확인
+    if (await isConnected()) {
+      try {
+        String contractAd = "0x8e1887B19307c2a9e6B0430a77257650dFFa7A02";
+        final functionParameters = [
+          BigInt.from(fundraiserId),
+          memberId,
+          BigInt.from(donationTime),
+        ];
+
+        final data = donate?.encodeCall(functionParameters);
+
+        final uri = Uri.parse(_uri);
+        if (!await launchUrl(uri)) {
+          throw Exception('Could not launch $uri');
+        }
+
+        // 지갑에 후원할 만큼의 금액이 들어있는지 확인하고
+        // 없을 때 처리
+        var client = Web3Client(apiUrl, Client());
+        var balance = await client.getBalance(
+            EthereumAddress.fromHex(_senderAddress)); // WalletConnect로 받아온 잔고 값
+        double walletConnectBalance = balance.getValueInUnit(EtherUnit.ether);
+
+        if (walletConnectBalance < amount) {
+          logger.e("[MetamaskUtils] handleGenerateSupport 잔고 부족 $amount");
+          return -1;
+        }
+
+        var convertedAmount = amount * 1e18;
+        String transactionHash = await provider.sendTransaction(
+          from: _senderAddress,
+          to: contractAd,
+          data: data,
+          value: BigInt.from(convertedAmount),
+        );
+
+        logger.i(
+            "[MetamaskUtil] sendTransaction success transactionHash: $transactionHash");
+
+        return 1;
+      } catch (e) {
+        logger.e("[MetamaskUtils]  sendTransaction fail $e");
+        return 0;
+      }
+    }
+    return 0;
   }
 
   // NFT 발급 메서드
