@@ -42,9 +42,11 @@ class _RegistAfterScreenState extends State<RegistAfterScreen> {
   }
 
   void doRegist() async {
+    String walletAddressInstance = await MetamaskUtil.getMemberAddress();
+
     //메타마스크에서 지갑 주소 가져오기
     widget.dogRegistInfo.shelterEthWalletAddress =
-        await MetamaskUtil.getMemberAddress();
+        walletAddressInstance.toLowerCase();
 
     print("지갑주소>>>>>>> ${widget.dogRegistInfo.shelterEthWalletAddress}");
 
