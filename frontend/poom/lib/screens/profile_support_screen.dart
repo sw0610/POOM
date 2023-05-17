@@ -92,7 +92,7 @@ class _ProfileSupportScreenState extends State<ProfileSupportScreen> {
                         );
                       },
                       separatorBuilder: (context, index) => const SizedBox(
-                        height: 20,
+                        height: 10,
                       ),
                     );
                   }
@@ -172,7 +172,7 @@ class _ProfileSupportScreenState extends State<ProfileSupportScreen> {
                         );
                       },
                       separatorBuilder: (context, index) => const SizedBox(
-                        height: 20,
+                        height: 10,
                       ),
                     ),
                   );

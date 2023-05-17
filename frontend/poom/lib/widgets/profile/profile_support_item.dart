@@ -1,5 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:poom/widgets/collection/cahced_image.dart';
+import 'package:shimmer/shimmer.dart';
 
 class SupportItem extends StatelessWidget {
   static const _primaryColor = Color(0xFFFF8E01);
@@ -40,8 +41,23 @@ class SupportItem extends StatelessWidget {
                   borderRadius: BorderRadius.circular(4),
                   child: SizedBox(
                     width: 68,
-                    child: CachedImage(
+                    child: CachedNetworkImage(
                       imageUrl: nftImgUrl,
+                      width: 100,
+                      height: 100,
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) => Shimmer.fromColors(
+                        baseColor: Colors.grey.shade100,
+                        highlightColor: Colors.white,
+                        child: Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                              color: Colors.grey.shade100,
+                              borderRadius: BorderRadius.circular(12)),
+                        ),
+                      ),
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
                     ),
                   ),
                 ),
