@@ -12,6 +12,8 @@ class DogSpecificScreen extends StatelessWidget {
   final int fundraiserId;
   final Future<FundraiserSpecificModel> specificInfo;
   final BuildContext context;
+  late final String memberId;
+  late final bool isClosed;
 
   DogSpecificScreen({
     super.key,
@@ -21,6 +23,7 @@ class DogSpecificScreen extends StatelessWidget {
           fundraiserId: fundraiserId,
           context: context,
         );
+  // ).then((FundraiserSpecificModel specificResult) => memberId = specificResult.memberId);
 
   void goShelterInfoScreen(String shelterId) {
     Navigator.push(
@@ -47,13 +50,14 @@ class DogSpecificScreen extends StatelessWidget {
     );
   }
 
-  void goDonateScreen(String memberId) {
+  void goDonateScreen(String memberId, double remainAmount) {
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => DonateScreen(
           memberId: memberId,
           fundraiserId: fundraiserId,
+          remainAmount: remainAmount,
         ),
         fullscreenDialog: true,
       ),
@@ -290,8 +294,12 @@ class DogSpecificScreen extends StatelessWidget {
                             ],
                           )),
                         ElevatedButton(
-                          onPressed: () =>
-                              goDonateScreen(snapshot.data!.memberId),
+                          onPressed: () {
+                            double remainAmount = snapshot.data!.targetAmount -
+                                snapshot.data!.currentAmount;
+                            goDonateScreen(
+                                snapshot.data!.memberId, remainAmount);
+                          },
                           child: const Text('임시후원하기버튼'),
                         ),
                       ],
