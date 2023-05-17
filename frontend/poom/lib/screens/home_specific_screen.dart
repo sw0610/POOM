@@ -305,6 +305,7 @@ class _DogSpecificScreenState extends State<DogSpecificScreen> {
                           for (FundraiserSpecificSponsorModel supporter
                               in snapshot.data!.donations)
                             Supporter(
+                              memberId: supporter.memberId,
                               nickname: supporter.nickname,
                               imgPath: supporter.profileImgUrl,
                               amount: supporter.donationAmount,
@@ -377,7 +378,7 @@ class DogInfo extends StatelessWidget {
     required this.title,
     required this.value,
   }) : super(key: key);
-
+ 
   @override
   Widget build(BuildContext context) {
     return Column(
