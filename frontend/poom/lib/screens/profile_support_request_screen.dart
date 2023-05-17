@@ -15,7 +15,9 @@ class SupportRequestScreen extends StatefulWidget {
 
 class _SupportRequestScreenState extends State<SupportRequestScreen> {
   late Future<List<dynamic>> result;
-
+  String _selectedSortType = "모집 중";
+  final _sortType = ['모집 중', '모집완료'];
+  bool _isClosed = false;
   bool hasMore = false;
   int pageNum = 0;
   final RefreshController _refreshController =
@@ -39,13 +41,20 @@ class _SupportRequestScreenState extends State<SupportRequestScreen> {
 
     pageNum += 1;
     var moreData = await ProfileApiService()
-        .getMySupportRequestList(context, pageNum, false);
+        .getMySupportRequestList(context, pageNum, _isClosed);
 
     hasMore = moreData.first;
     for (int i = 0; i < moreData.last.length; i++) {
       list.add(moreData.last[i]);
     }
     _refreshController.loadComplete();
+    setState(() {});
+  }
+
+  void getSupportList() async {
+    pageNum = 0;
+    result = ProfileApiService()
+        .getMySupportRequestList(context, pageNum, _isClosed);
     setState(() {});
   }
 
@@ -98,6 +107,32 @@ class _SupportRequestScreenState extends State<SupportRequestScreen> {
                           color: SupportRequestScreen._textColor,
                         ),
                       ),
+                      DropdownButton(
+                          isDense: true,
+                          alignment: Alignment.bottomRight,
+                          underline: Container(
+                            height: 0,
+                          ),
+                          value: _selectedSortType,
+                          items: _sortType
+                              .map((e) => DropdownMenuItem(
+                                    value: e,
+                                    child: Text(e),
+                                  ))
+                              .toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedSortType = value!;
+                              setState(() {
+                                if (value == "모집 중") {
+                                  _isClosed = false;
+                                } else {
+                                  _isClosed = true;
+                                }
+                              });
+                            });
+                            getSupportList();
+                          }),
                     ],
                   ),
                   const SizedBox(
