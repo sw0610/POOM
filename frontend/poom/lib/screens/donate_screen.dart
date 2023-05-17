@@ -6,11 +6,13 @@ import 'package:poom/utils/metamask_util.dart';
 class DonateScreen extends StatefulWidget {
   final String memberId;
   final int fundraiserId;
+  final double remainAmount;
 
   const DonateScreen({
     super.key,
     required this.memberId,
     required this.fundraiserId,
+    required this.remainAmount,
   });
 
   static const Color _textColor = Color(0xFF333333);
@@ -74,6 +76,11 @@ class _DonateScreenState extends State<DonateScreen> {
       if (_inputEth != '' && double.parse(_inputEth) != 0) {
         isEnabled = true;
       } else {
+        isEnabled = false;
+      }
+
+      if (_inputEth != '' && double.parse(_inputEth) >= widget.remainAmount) {
+        _inputEth = widget.remainAmount.toString();
         isEnabled = false;
       }
     });
