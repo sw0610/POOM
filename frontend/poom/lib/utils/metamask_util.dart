@@ -173,6 +173,7 @@ class MetamaskUtil {
           "signMessage": "ISSUE NFT"
         });
 
+        print(data);
         NftApiService().issueNFt(context, data);
       } catch (e) {
         // 연결 거절 상태 처리 예정

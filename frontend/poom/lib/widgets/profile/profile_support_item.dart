@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:poom/utils/metamask_util.dart';
 import 'package:shimmer/shimmer.dart';
 
 class SupportItem extends StatelessWidget {
@@ -124,7 +125,13 @@ class SupportItem extends StatelessWidget {
                             backgroundColor: _primaryColor,
                             foregroundColor: Colors.white,
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            Map<String, dynamic> data = {
+                              "donationId": donationId,
+                              "fundraiserId": fundraiserId
+                            };
+                            MetamaskUtil.handleIssueNft(context, data);
+                          },
                           child: const Text("발급"),
                         )
                       : const SizedBox(),
