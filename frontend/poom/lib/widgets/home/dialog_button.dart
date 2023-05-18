@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:poom/screens/home_specific_screen.dart';
 
 class DialogButton extends StatelessWidget {
   static const textHintColor = Color(0xFF999999);
   static const primaryColor = Color(0xFFFF8E01);
   static const textColor = Color(0xFF333333);
-  const DialogButton({
+  late int result;
+  late int fundraiserId;
+  DialogButton({
     super.key,
+    required this.result,
+    required this.fundraiserId,
   });
 
   @override
@@ -22,8 +27,29 @@ class DialogButton extends StatelessWidget {
               side: const BorderSide(color: primaryColor),
             ),
           ),
-          onPressed: () => Navigator.pop(context, "Ok"),
-          child: const Text("확인"),
+          onPressed: () {
+            if (result == 1) {
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => DogSpecificScreen(
+                    fundraiserId: fundraiserId,
+                    context: context,
+                  ),
+                  fullscreenDialog: false,
+                ),
+                (Route<dynamic> route) => route.isFirst,
+              );
+              return;
+            }
+            Navigator.pop(context, "Ok");
+          },
+          child: const Text(
+            "확인",
+            style: TextStyle(
+              color: Colors.white,
+            ),
+          ),
         ),
       ),
     );

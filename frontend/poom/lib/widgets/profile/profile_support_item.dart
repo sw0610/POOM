@@ -1,5 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:poom/widgets/collection/cahced_image.dart';
+import 'package:poom/utils/metamask_util.dart';
+import 'package:shimmer/shimmer.dart';
 
 class SupportItem extends StatelessWidget {
   static const _primaryColor = Color(0xFFFF8E01);
@@ -13,8 +15,8 @@ class SupportItem extends StatelessWidget {
   final int donationId, fundraiserId, isIssued;
   final double donateAmount;
   final String dogName, donateDate, nftImgUrl;
-
-  const SupportItem({
+  bool isLoading = false;
+  SupportItem({
     super.key,
     required this.donationId,
     required this.fundraiserId,
@@ -40,8 +42,23 @@ class SupportItem extends StatelessWidget {
                   borderRadius: BorderRadius.circular(4),
                   child: SizedBox(
                     width: 68,
-                    child: CachedImage(
+                    child: CachedNetworkImage(
                       imageUrl: nftImgUrl,
+                      width: 100,
+                      height: 100,
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) => Shimmer.fromColors(
+                        baseColor: Colors.grey.shade100,
+                        highlightColor: Colors.white,
+                        child: Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                              color: Colors.grey.shade100,
+                              borderRadius: BorderRadius.circular(12)),
+                        ),
+                      ),
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
                     ),
                   ),
                 ),
@@ -108,8 +125,17 @@ class SupportItem extends StatelessWidget {
                             backgroundColor: _primaryColor,
                             foregroundColor: Colors.white,
                           ),
-                          onPressed: () {},
-                          child: const Text("발급"),
+                          onPressed: () async {
+                            isLoading = true;
+                            Map<String, dynamic> data = {
+                              "donationId": donationId,
+                              "fundraiserId": fundraiserId
+                            };
+                            await MetamaskUtil.handleIssueNft(context, data);
+                            isLoading = false;
+                          },
+                          child:
+                              isLoading ? const Text("발급중") : const Text("발급"),
                         )
                       : const SizedBox(),
                 ),

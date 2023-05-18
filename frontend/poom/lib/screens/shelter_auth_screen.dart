@@ -67,7 +67,7 @@ class _ShelterAuthScreenState extends State<ShelterAuthScreen> {
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
                             return Container(
-                              height: 178,
+                              height: 190,
                               decoration: BoxDecoration(
                                 boxShadow: [
                                   BoxShadow(

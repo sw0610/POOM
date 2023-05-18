@@ -25,6 +25,7 @@ class MetamaskUtil {
   );
   static late final SessionStatus _session;
   static late final String _senderAddress, _uri;
+  static late final bool isAppInstalled;
 
   static WalletConnect getConnector() {
     return _connector;
@@ -38,11 +39,12 @@ class MetamaskUtil {
         _session = await _connector.createSession(
           onDisplayUri: (uri) async {
             _uri = uri;
-            bool isAppInstalled = await canLaunchUrl(Uri.parse(uri));
+            isAppInstalled = await canLaunchUrl(Uri.parse(uri));
             if (isAppInstalled) {
               await launchUrlString(uri, mode: LaunchMode.externalApplication);
             } else {
-              logger.e("[MetamaskUtil] isConnected fail 메타마스크 설치 필요");
+              logger.e(
+                  "[MetamaskUtil] isConnected fail 메타마스크 설치 필요 isAppInstalled: $isAppInstalled");
             }
           },
         );
@@ -54,7 +56,6 @@ class MetamaskUtil {
       } catch (e) {
         // 연결 거절 상태 처리 예정
         logger.e("[MetamaskUtil] 지갑 연결 거절 및 오류 상태 $e");
-        return false;
       }
     }
     return true;
@@ -73,7 +74,7 @@ class MetamaskUtil {
     DeployedContract? contract;
     Logger logger = Logger();
     final EthereumAddress contractAddr =
-        EthereumAddress.fromHex("0x8e1887B19307c2a9e6B0430a77257650dFFa7A02");
+        EthereumAddress.fromHex("0xd5fdd635F96A76F316E8E12A36fdd7586Cb2D505");
 
     // json파일 -> abi
     await rootBundle.loadString('assets/contract.json').then((value) => {
@@ -100,7 +101,7 @@ class MetamaskUtil {
     // 메타마스크 연결 여부 확인
     if (await isConnected()) {
       try {
-        String contractAd = "0x8e1887B19307c2a9e6B0430a77257650dFFa7A02";
+        String contractAd = "0xd5fdd635F96A76F316E8E12A36fdd7586Cb2D505";
         final functionParameters = [
           BigInt.from(fundraiserId),
           memberId,
@@ -147,7 +148,7 @@ class MetamaskUtil {
   }
 
   // NFT 발급 메서드
-  static void handleIssueNft(
+  static Future<bool> handleIssueNft(
       BuildContext context, Map<String, dynamic> data) async {
     Logger logger = Logger();
 
@@ -162,22 +163,23 @@ class MetamaskUtil {
         }
 
         var signature = await provider.personalSign(
-            message: "ISSUED_NFT", address: _senderAddress, password: "");
+            message: "issue", address: _senderAddress, password: "");
 
         logger.d("[MetamaskUtil] sign success $signature");
 
         data.addAll({
           "memberAddress": _senderAddress,
           "memberSignature": signature,
-          "signMessage": "ISSUE NFT"
+          "signMessage": "issue"
         });
 
-        NftApiService().issueNFt(context, data);
+        return NftApiService().issueNFt(context, data);
       } catch (e) {
         // 연결 거절 상태 처리 예정
         logger.e("[MetamaskUtil] 지갑 서명 오류 상태 $e");
-        return;
+        throw false;
       }
     }
+    return false;
   }
 }
