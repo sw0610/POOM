@@ -81,6 +81,8 @@ dependencies:
 
   pointycastle: ^3.7.3
 
+  lottie: ^2.3.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

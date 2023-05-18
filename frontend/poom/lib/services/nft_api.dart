@@ -52,14 +52,16 @@ class NftApiService {
     }
   }
 
-  void issueNFt(BuildContext context, Map<String, dynamic> data) async {
+  Future<bool> issueNFt(BuildContext context, Map<String, dynamic> data) async {
     Logger logger = Logger();
     try {
       var dio = await authDio(context);
       var response = await dio.post("/donations/nft/issued", data: data);
       logger.i("[NftService] issueNFT success $response");
+      return true;
     } catch (e) {
       logger.e("[NftService] issueNFt fail $e");
+      return false;
     }
   }
 }

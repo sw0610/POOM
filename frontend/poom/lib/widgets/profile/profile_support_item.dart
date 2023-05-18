@@ -15,8 +15,8 @@ class SupportItem extends StatelessWidget {
   final int donationId, fundraiserId, isIssued;
   final double donateAmount;
   final String dogName, donateDate, nftImgUrl;
-
-  const SupportItem({
+  bool isLoading = false;
+  SupportItem({
     super.key,
     required this.donationId,
     required this.fundraiserId,
@@ -125,14 +125,17 @@ class SupportItem extends StatelessWidget {
                             backgroundColor: _primaryColor,
                             foregroundColor: Colors.white,
                           ),
-                          onPressed: () {
+                          onPressed: () async {
+                            isLoading = true;
                             Map<String, dynamic> data = {
                               "donationId": donationId,
                               "fundraiserId": fundraiserId
                             };
-                            MetamaskUtil.handleIssueNft(context, data);
+                            await MetamaskUtil.handleIssueNft(context, data);
+                            isLoading = false;
                           },
-                          child: const Text("발급"),
+                          child:
+                              isLoading ? const Text("발급중") : const Text("발급"),
                         )
                       : const SizedBox(),
                 ),

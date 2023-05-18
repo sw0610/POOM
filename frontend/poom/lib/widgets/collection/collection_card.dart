@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:poom/widgets/collection/cahced_image.dart';
+import 'package:poom/widgets/collection/selected_card.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:social_share/social_share.dart';
 import 'package:http/http.dart' as http;
@@ -50,76 +51,86 @@ class _CollectionCardState extends State<CollectionCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: Colors.white.withOpacity(0.9),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
-      clipBehavior: Clip.hardEdge,
-      child: SizedBox(
-        child: Column(
-          children: [
-            Stack(
-              children: [
-                CachedImage(
-                  imageUrl: widget.imageUrl,
-                ),
-                Positioned(
-                  left: 0,
-                  top: 0,
-                  child: Shimmer.fromColors(
-                    baseColor: Colors.grey.shade100.withOpacity(0.5),
-                    highlightColor: Colors.white,
-                    child: Container(
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                fullscreenDialog: true,
+                builder: (context) => SelectedCard(imageUrl: widget.imageUrl)));
+      },
+      child: Card(
+        color: Colors.white.withOpacity(0.9),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        clipBehavior: Clip.hardEdge,
+        child: SizedBox(
+          child: Column(
+            children: [
+              Stack(
+                children: [
+                  CachedImage(
+                    imageUrl: widget.imageUrl,
+                  ),
+                  Positioned(
+                    left: 0,
+                    top: 0,
+                    child: Shimmer.fromColors(
+                      baseColor: Colors.blue.shade100.withOpacity(0.2),
+                      highlightColor: Colors.white,
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.15),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              widget.isGrid & !widget.isOwner
+                  ? const SizedBox()
+                  : SizedBox(
                       width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.width,
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.15),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            widget.isGrid & !widget.isOwner
-                ? const SizedBox()
-                : SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    child: GestureDetector(
-                      onTap: () {
-                        fileFromImageUrl(widget.imageUrl).then((result) {
-                          if (result == false && widget.isDialogOpen == false) {
-                            widget.setShowDialog(true);
-                            widget.showCustomDialog(context);
-                          }
-                        });
-                      },
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const SizedBox(
-                            height: 32,
-                          ),
-                          SvgPicture.asset(
-                            "assets/icons/ic _instagram.svg",
-                            width: 24,
-                            height: 24,
-                          ),
-                          const SizedBox(
-                            height: 6,
-                          ),
-                          const Text(
-                            "공유",
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
+                      child: GestureDetector(
+                        onTap: () {
+                          fileFromImageUrl(widget.imageUrl).then((result) {
+                            if (result == false &&
+                                widget.isDialogOpen == false) {
+                              widget.setShowDialog(true);
+                              widget.showCustomDialog(context);
+                            }
+                          });
+                        },
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const SizedBox(
+                              height: 32,
                             ),
-                          ),
-                        ],
+                            SvgPicture.asset(
+                              "assets/icons/ic _instagram.svg",
+                              width: 24,
+                              height: 24,
+                            ),
+                            const SizedBox(
+                              height: 6,
+                            ),
+                            const Text(
+                              "공유",
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -148,7 +148,7 @@ class MetamaskUtil {
   }
 
   // NFT 발급 메서드
-  static void handleIssueNft(
+  static Future<bool> handleIssueNft(
       BuildContext context, Map<String, dynamic> data) async {
     Logger logger = Logger();
 
@@ -173,12 +173,13 @@ class MetamaskUtil {
           "signMessage": "issue"
         });
 
-        NftApiService().issueNFt(context, data);
+        return NftApiService().issueNFt(context, data);
       } catch (e) {
         // 연결 거절 상태 처리 예정
         logger.e("[MetamaskUtil] 지갑 서명 오류 상태 $e");
-        return;
+        throw false;
       }
     }
+    return false;
   }
 }
