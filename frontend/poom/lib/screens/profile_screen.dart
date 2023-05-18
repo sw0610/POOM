@@ -221,28 +221,38 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         decoration: BoxDecoration(
                                           color: ProfileScreen
                                                   .shelterStatusColorSet[
-                                              shelterStatus],
+                                              shelterStatus ?? 0],
                                           borderRadius: const BorderRadius.all(
                                               Radius.circular(4)),
                                         ),
                                         child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 3, horizontal: 4),
-                                          child: snapshot.data!.shelterStatus !=
-                                                  null
-                                              ? Text(
-                                                  ProfileScreen
-                                                          .shelterStatusData[
-                                                      snapshot.data!
-                                                          .shelterStatus]!,
-                                                  style: const TextStyle(
-                                                    color: ProfileScreen
-                                                        ._textColor,
-                                                    fontWeight: FontWeight.w500,
-                                                  ),
-                                                )
-                                              : const SizedBox(),
-                                        ),
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 3, horizontal: 4),
+                                            child:
+                                                snapshot.data!.shelterStatus !=
+                                                        null
+                                                    ? Text(
+                                                        ProfileScreen
+                                                                .shelterStatusData[
+                                                            snapshot.data!
+                                                                .shelterStatus]!,
+                                                        style: const TextStyle(
+                                                          color: ProfileScreen
+                                                              ._textColor,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                        ),
+                                                      )
+                                                    : Text(
+                                                        ProfileScreen
+                                                            .shelterStatusData[0]!,
+                                                        style: const TextStyle(
+                                                          color: ProfileScreen
+                                                              ._textColor,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                        ),
+                                                      )),
                                       ),
                                     ),
                                   ],
