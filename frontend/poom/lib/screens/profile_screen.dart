@@ -245,7 +245,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                       )
                                                     : Text(
                                                         ProfileScreen
-                                                            .shelterStatusData[0]!,
+                                                                .shelterStatusData[
+                                                            "UN_AUTH"]!,
                                                         style: const TextStyle(
                                                           color: ProfileScreen
                                                               ._textColor,
