@@ -74,7 +74,7 @@ class MetamaskUtil {
     DeployedContract? contract;
     Logger logger = Logger();
     final EthereumAddress contractAddr =
-        EthereumAddress.fromHex("0xDFEe7A8b3E695364cF2dF476c00b58cC16eF9CeF");
+        EthereumAddress.fromHex("0xd5fdd635F96A76F316E8E12A36fdd7586Cb2D505");
 
     // json파일 -> abi
     await rootBundle.loadString('assets/contract.json').then((value) => {
@@ -101,7 +101,7 @@ class MetamaskUtil {
     // 메타마스크 연결 여부 확인
     if (await isConnected()) {
       try {
-        String contractAd = "0xDFEe7A8b3E695364cF2dF476c00b58cC16eF9CeF";
+        String contractAd = "0xd5fdd635F96A76F316E8E12A36fdd7586Cb2D505";
         final functionParameters = [
           BigInt.from(fundraiserId),
           memberId,
