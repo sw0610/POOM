@@ -8,6 +8,8 @@ import 'package:poom/services/make_nft.dart';
 import 'package:poom/widgets/regist/regist_nft_preview.dart';
 import 'package:poom/widgets/regist/regist_representive_widget.dart';
 import 'package:poom/widgets/regist/regist_specific_info_widget.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:image/image.dart' as img;
 
 class RegistScreen extends StatefulWidget {
   const RegistScreen({Key? key}) : super(key: key);
@@ -93,8 +95,10 @@ class _RegistScreenState extends State<RegistScreen> {
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     } else {
       if (mounted) {
+        File croppedImage = await getImageAsSquare(nftImageInstance);
         setState(() {
-          nftImage = nftImageInstance;
+          nftImage = croppedImage;
+          // nftImage = nftImageInstance;
         });
       }
     }
@@ -151,4 +155,25 @@ class _RegistScreenState extends State<RegistScreen> {
       ),
     );
   }
+}
+
+Future<File> getImageAsSquare(File imageFile) async {
+  final Directory appDir = await getApplicationDocumentsDirectory();
+  final String appPath = appDir.path;
+
+  // 이미지 로드
+  var image = img.decodeImage(await imageFile.readAsBytes());
+
+  // 이미지를 정방형으로 조정
+  final int size = image!.width > image.height ? image.height : image.width;
+  final img.Image squareImage = img.copyResizeCropSquare(image, size: size);
+
+  // 새 파일로 저장
+  final String newPath = '$appPath/square_image.jpg';
+  final File newImageFile = File(newPath);
+  await newImageFile.writeAsBytes(img.encodeJpg(squareImage));
+
+  print('정방형 이미지가 저장되었습니다: $newPath');
+
+  return newImageFile;
 }

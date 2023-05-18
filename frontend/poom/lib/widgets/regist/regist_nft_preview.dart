@@ -60,7 +60,8 @@ class _RegistNftPreviewState extends State<RegistNftPreview> {
                         decoration: BoxDecoration(
                           image: DecorationImage(
                             image: FileImage(widget.nftImage!),
-                            fit: BoxFit.cover,
+                            // fit: BoxFit.cover,
+                            fit: BoxFit.contain,
                           ),
                           borderRadius: const BorderRadius.all(
                             Radius.circular(20),
