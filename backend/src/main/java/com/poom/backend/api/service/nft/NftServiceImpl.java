@@ -16,6 +16,7 @@ import com.poom.backend.exception.BadRequestException;
 import com.poom.backend.solidity.donation.DonationContractService;
 import com.poom.backend.solidity.nft.NftContractService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.io.IOUtils;
@@ -35,6 +36,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class NftServiceImpl implements NFTService {
 
     private final NftContractService nftContractService;
@@ -138,8 +140,14 @@ public class NftServiceImpl implements NFTService {
 
 
             nftContractService.mintNft(smartContractNftDto, memberId, nftIssueCond.getMemberAddress(), nftIssueCond.getDonationId(), fundraiserId);
+            }else{
+                log.info("member signature {} ", nftIssueCond.getMemberSignature());
+                log.info("member sign message {} ", nftIssueCond.getSignMessage());
+                throw new BadRequestException("서명 인증에 실패하였습니다.");
             }
 
+        }else {
+            throw new BadRequestException("진행중인 후원입니다.");
         }
 
 
