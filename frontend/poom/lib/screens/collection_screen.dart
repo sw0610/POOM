@@ -199,7 +199,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: _isGrid ? 2 : 1,
                           mainAxisSpacing: 20,
-                          crossAxisSpacing: 5,
+                          crossAxisSpacing: 20,
                           childAspectRatio: _isGrid ? 1 : 1 / 1.32,
                         ),
                         itemCount: list.length,
