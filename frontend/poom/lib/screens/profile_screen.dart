@@ -228,14 +228,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         child: Padding(
                                           padding: const EdgeInsets.symmetric(
                                               vertical: 3, horizontal: 4),
-                                          child: Text(
-                                            ProfileScreen.shelterStatusData[
-                                                snapshot.data!.shelterStatus]!,
-                                            style: const TextStyle(
-                                              color: ProfileScreen._textColor,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                          ),
+                                          child: snapshot.data!.shelterStatus !=
+                                                  null
+                                              ? Text(
+                                                  ProfileScreen
+                                                          .shelterStatusData[
+                                                      snapshot.data!
+                                                          .shelterStatus]!,
+                                                  style: const TextStyle(
+                                                    color: ProfileScreen
+                                                        ._textColor,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                )
+                                              : const SizedBox(),
                                         ),
                                       ),
                                     ),

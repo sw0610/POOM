@@ -1,6 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:poom/screens/home_specific_screen.dart';
 import 'package:poom/services/profile_api_service.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shimmer/shimmer.dart';
 
 class SupportRequestScreen extends StatefulWidget {
@@ -13,12 +15,47 @@ class SupportRequestScreen extends StatefulWidget {
 
 class _SupportRequestScreenState extends State<SupportRequestScreen> {
   late Future<List<dynamic>> result;
-
+  String _selectedSortType = "모집 중";
+  final _sortType = ['모집 중', '모집완료'];
+  bool _isClosed = false;
+  bool hasMore = false;
+  int pageNum = 0;
+  final RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
+  List<dynamic> list = [];
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    result = ProfileApiService().getMySupportRequestList(context, 0, false);
+    result =
+        ProfileApiService().getMySupportRequestList(context, pageNum, false);
+  }
+
+  void _onRefresh() async {
+    await Future.delayed(const Duration(milliseconds: 1000));
+    _refreshController.refreshCompleted();
+  }
+
+  void _onLoading() async {
+    await Future.delayed(const Duration(milliseconds: 1000));
+    if (!hasMore) return;
+
+    pageNum += 1;
+    var moreData = await ProfileApiService()
+        .getMySupportRequestList(context, pageNum, _isClosed);
+
+    hasMore = moreData.first;
+    for (int i = 0; i < moreData.last.length; i++) {
+      list.add(moreData.last[i]);
+    }
+    _refreshController.loadComplete();
+    setState(() {});
+  }
+
+  void getSupportList() async {
+    pageNum = 0;
+    result = ProfileApiService()
+        .getMySupportRequestList(context, pageNum, _isClosed);
+    setState(() {});
   }
 
   @override
@@ -48,10 +85,11 @@ class _SupportRequestScreenState extends State<SupportRequestScreen> {
           future: result,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              var hasMore = snapshot.data!.first;
+              hasMore = snapshot.data!.first;
               var shelterName = snapshot.data![1];
               var fundraisers = snapshot.data!.last;
 
+              list = fundraisers;
               if (fundraisers.length == 0) {
                 return const Text("아직 등록한 후원 요청이 없어요!");
               }
@@ -69,39 +107,72 @@ class _SupportRequestScreenState extends State<SupportRequestScreen> {
                           color: SupportRequestScreen._textColor,
                         ),
                       ),
+                      DropdownButton(
+                          isDense: true,
+                          alignment: Alignment.bottomRight,
+                          underline: Container(
+                            height: 0,
+                          ),
+                          value: _selectedSortType,
+                          items: _sortType
+                              .map((e) => DropdownMenuItem(
+                                    value: e,
+                                    child: Text(e),
+                                  ))
+                              .toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedSortType = value!;
+                              setState(() {
+                                if (value == "모집 중") {
+                                  _isClosed = false;
+                                } else {
+                                  _isClosed = true;
+                                }
+                              });
+                            });
+                            getSupportList();
+                          }),
                     ],
                   ),
                   const SizedBox(
                     height: 20,
                   ),
                   Expanded(
-                    child: ListView.builder(
-                      itemCount: fundraisers.length,
-                      scrollDirection: Axis.vertical,
-                      itemBuilder: (context, index) {
-                        var current = fundraisers[index];
-                        return Container(
-                          decoration: const BoxDecoration(
-                            border: Border(
-                              bottom: BorderSide(
-                                color: Color(0xFFF4F4F4),
-                                width: 1,
+                    child: SmartRefresher(
+                      onLoading: _onLoading,
+                      onRefresh: _onRefresh,
+                      controller: _refreshController,
+                      enablePullDown: true,
+                      enablePullUp: true,
+                      child: ListView.builder(
+                        itemCount: list.length,
+                        scrollDirection: Axis.vertical,
+                        itemBuilder: (context, index) {
+                          var current = list[index];
+                          return Container(
+                            decoration: const BoxDecoration(
+                              border: Border(
+                                bottom: BorderSide(
+                                  color: Color(0xFFF4F4F4),
+                                  width: 1,
+                                ),
                               ),
                             ),
-                          ),
-                          child: RequestItem(
-                            fundraiserId: current.fundraiserId,
-                            shelterName: current.shelterName ?? shelterName,
-                            dogName: current.dogName,
-                            dogGender: current.dogGender,
-                            endDate: current.endDate,
-                            currentAmount: current.currentAmount,
-                            targetAmount: current.targetAmount,
-                            mainImgUrl: current.mainImgUrl,
-                            nftImgUrl: current.nftImgUrl,
-                          ),
-                        );
-                      },
+                            child: RequestItem(
+                              fundraiserId: current.fundraiserId,
+                              shelterName: current.shelterName ?? shelterName,
+                              dogName: current.dogName,
+                              dogGender: current.dogGender,
+                              endDate: current.endDate,
+                              currentAmount: current.currentAmount,
+                              targetAmount: current.targetAmount,
+                              mainImgUrl: current.mainImgUrl,
+                              nftImgUrl: current.nftImgUrl,
+                            ),
+                          );
+                        },
+                      ),
                     ),
                   ),
                 ],
@@ -253,8 +324,8 @@ class RequestItem extends StatelessWidget {
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(10.0),
-                  child: Image.network(
-                    mainImgUrl,
+                  child: CachedNetworkImage(
+                    imageUrl: mainImgUrl,
                     width: 100,
                     height: 100,
                     fit: BoxFit.cover,
@@ -265,10 +336,11 @@ class RequestItem extends StatelessWidget {
                   left: 0,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(10.0),
-                    child: Image.network(
-                      nftImgUrl,
+                    child: CachedNetworkImage(
+                      imageUrl: nftImgUrl,
                       width: 32,
                       height: 32,
+                      fit: BoxFit.cover,
                     ),
                   ),
                 ),

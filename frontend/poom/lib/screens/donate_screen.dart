@@ -27,6 +27,13 @@ class _DonateScreenState extends State<DonateScreen> {
   double ethPerKRW = 0.0; //초기값은 string -> api 받아오면 double 타입으로 변경
   String krw = '';
 
+  final dialogMsg = {
+    -1: ["잔고부족", "지갑 잔고를 확인해주세요!"],
+    0: ["후원오류", "잠시 후 다시 후원해주세요!"],
+    1: ["후원성공", "후원 내역은 나의 프로필에서 확인할 수 있어요:)"],
+    2: ["메타마스크 미설치", "메타마스크를 먼저 설치해주세요!"],
+  };
+
   final String _shelterName = "용인시 보호소";
   final String _dogName = "쿵이";
   String _inputEth = '';
@@ -91,7 +98,6 @@ class _DonateScreenState extends State<DonateScreen> {
 
     int result = await MetamaskUtil.handleGenerateSupport(
         widget.fundraiserId, ethAmount);
-
     return handleShowDialog(result);
   }
 
@@ -103,12 +109,8 @@ class _DonateScreenState extends State<DonateScreen> {
         insetPadding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
         elevation: 1,
         title: Text(
+          dialogMsg[result]!.first,
           textAlign: TextAlign.center,
-          result == -1
-              ? "잔고 부족"
-              : result == 0
-                  ? "후원 오류"
-                  : "후원 성공",
           style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w600,
@@ -116,11 +118,7 @@ class _DonateScreenState extends State<DonateScreen> {
         ),
         content: Text(
           textAlign: TextAlign.center,
-          result == -1
-              ? "계좌 잔고가 부족해요! 잔고를 확인해주세요."
-              : result == 0
-                  ? "잠시 후 다시 시도해주세요."
-                  : "후원 내역은 나의 프로필에서 확인할 수 있어요:)",
+          dialogMsg[result]!.last,
           style: const TextStyle(
             fontSize: 14,
           ),
@@ -131,10 +129,15 @@ class _DonateScreenState extends State<DonateScreen> {
           ),
         ),
         buttonPadding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
-        actions: const <Widget>[
+        actions: <Widget>[
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [DialogButton()],
+            children: [
+              DialogButton(
+                result: result,
+                fundraiserId: widget.fundraiserId,
+              )
+            ],
           ),
         ],
       ),
