@@ -91,7 +91,7 @@ class _SupportRequestScreenState extends State<SupportRequestScreen> {
 
               list = fundraisers;
               if (fundraisers.length == 0) {
-                return const Text("아직 등록한 후원 요청이 없어요!");
+                return const Center(child: Text("아직 등록한 후원 요청이 없어요!"));
               }
 
               return Column(
