@@ -88,12 +88,17 @@ public class ShelterServiceImpl implements ShelterService{
     private Shelter getOrCreateShelterInfo(String memberId, List<MultipartFile> certificateImages, ShelterAuthCond shelterAuthCond) {
         // 쉘터 정보를 가져옵니다 (없다면 새로 만듭니다)
         Shelter shelter = null;
+        // 쉘터가 있다면
         if(shelterAuthCond.getShelterId() != null){
             shelter = shelterRepository.findById(shelterAuthCond.getShelterId())
                     .orElseThrow(()-> new BadRequestException("잘못된 보호소 ID입니다."));
             shelter = getOrUpdateShelterInfo(shelter, certificateImages, shelterAuthCond);
         }
+        // 쉘터가 없다면
         else{
+            // 쉘터가 없는데 이미 운영하고 있는 쉘터가 있는 경우
+            if(shelterRepository.findShelterByAdminId(memberId).isPresent()) throw new BadRequestException("이미 요청을 등록하였습니다.");
+
             shelter = shelterAuthCond.createEntity(memberId, getCertificateImageUrls(certificateImages));
             shelter = shelterRepository.save(shelter);
         }
