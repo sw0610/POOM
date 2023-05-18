@@ -15,8 +15,13 @@ class MemberApi {
     try {
       var dio = await authDio(context);
       var response = await dio.get('$baseUrl/members');
+
       print('회원정보 가져오기=================');
-      print(response);
+      print(response.data['shelterStatus'].runtimeType);
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      if (response.data['shelterStatus'] == 'AUTH') {
+        await preferences.setBool('isShelter', true);
+      }
     } catch (e) {
       print(e);
     }
