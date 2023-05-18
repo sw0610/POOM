@@ -93,6 +93,7 @@ contract DonationProcess is FundraiserProcess {
         // 목표 금액을 넘겼으면 끝내기
         if(fundraisers[_fundraiserId].currentAmount== fundraisers[_fundraiserId].targetAmount){
             _endFundraiser(_fundraiserId);
+            _setNftFundraiserEnded(_fundraiserId);
         }
 
     }
