@@ -29,6 +29,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
 
   bool hasMore = false;
   int pageNum = 0;
+  int nftCount = 0;
   List<dynamic> list = [];
 
   @override
@@ -108,13 +109,12 @@ class _CollectionScreenState extends State<CollectionScreen> {
   void _onLoading() async {
     await Future.delayed(const Duration(milliseconds: 1000));
     if (!hasMore) return;
-
+    if (nftCount != 0 && nftCount == list.length) return;
     pageNum += 1;
-    var moreData = await NftApiService().getUserNFTList(context, pageNum);
-    hasMore = moreData["hasMore"];
-    for (int i = 0; i < moreData["nftImgUrls"].length; i++) {
-      list.add(moreData["nftImgUrls"][i]);
-    }
+    var data = await NftApiService().getUserNFTList(context, pageNum);
+    List<dynamic> moreNftList = data["nftImgUrls"];
+    hasMore = data["hasMore"];
+    list.addAll(moreNftList);
     _refreshController.loadComplete();
     setState(() {});
   }
@@ -152,10 +152,10 @@ class _CollectionScreenState extends State<CollectionScreen> {
             if (snapshot.hasData) {
               hasMore = snapshot.data!["hasMore"];
               var nickname = snapshot.data!["nickname"];
-              var nftCount = snapshot.data!["nftCount"];
+              nftCount = snapshot.data!["nftCount"];
               var nftImgUrls = snapshot.data!["nftImgUrls"];
-
               list = nftImgUrls;
+
               if (nftCount == 0) {
                 return const Center(
                   child: Text(
