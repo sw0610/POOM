@@ -1,10 +1,8 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart';
 import 'package:logger/logger.dart';
-import 'package:pointycastle/export.dart';
+import 'package:poom/services/nft_api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -60,7 +58,7 @@ class MetamaskUtil {
         logger.e("[MetamaskUtil] 지갑 연결 거절 및 오류 상태 $e");
       }
     }
-    return false;
+    return true;
   }
 
   static Future<String> getMemberAddress() async {
@@ -149,28 +147,6 @@ class MetamaskUtil {
     return 0;
   }
 
-  static String getMessageHash(String message) {
-    final keccak = KeccakDigest(256);
-    final messageBytes = utf8.encode(message);
-    Uint8List uint8List = Uint8List.fromList(messageBytes);
-    final hashBytes = keccak.process(uint8List);
-    final hash = hashBytes
-        .map((byte) => byte.toRadixString(16).padLeft(2, '0'))
-        .join('');
-    return hash;
-  }
-
-  static Uint8List hexToBytes(String hexString) {
-    final length = hexString.length;
-    final data = Uint8List(length ~/ 2);
-    for (var i = 0; i < length; i += 2) {
-      final hex = hexString.substring(i, i + 2);
-      final byte = int.parse(hex, radix: 16);
-      data[i ~/ 2] = byte;
-    }
-    return data;
-  }
-
   // NFT 발급 메서드
   static void handleIssueNft(
       BuildContext context, Map<String, dynamic> data) async {
@@ -186,25 +162,18 @@ class MetamaskUtil {
           throw Exception('Could not launch $uri');
         }
 
-        // var signature = await provider.personalSign(
-        //     message: "issue", address: _senderAddress, password: "");
+        var signature = await provider.personalSign(
+            message: "issue", address: _senderAddress, password: "");
 
-        var hashMsg = getMessageHash("issue");
-        var byte = hexToBytes(hashMsg);
-        final messageHash = byte.sublist(0, 32);
-        print(messageHash);
-        // var signature =
-        //     await provider.sign(message: messageHash, address: _senderAddress);
+        logger.d("[MetamaskUtil] sign success $signature");
 
-        // logger.d("[MetamaskUtil] sign success $signature");
+        data.addAll({
+          "memberAddress": _senderAddress,
+          "memberSignature": signature,
+          "signMessage": "issue"
+        });
 
-        // data.addAll({
-        //   "memberAddress": _senderAddress,
-        //   "memberSignature": signature,
-        //   "signMessage": hashMsg
-        // });
-
-        // NftApiService().issueNFt(context, data);
+        NftApiService().issueNFt(context, data);
       } catch (e) {
         // 연결 거절 상태 처리 예정
         logger.e("[MetamaskUtil] 지갑 서명 오류 상태 $e");
