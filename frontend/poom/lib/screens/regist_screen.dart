@@ -4,9 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:poom/models/home/fundraiser_regist_model.dart';
 import 'package:poom/screens/regist_after_screen.dart';
+import 'package:poom/services/make_nft.dart';
 import 'package:poom/widgets/regist/regist_nft_preview.dart';
 import 'package:poom/widgets/regist/regist_representive_widget.dart';
 import 'package:poom/widgets/regist/regist_specific_info_widget.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:image/image.dart' as img;
 
 class RegistScreen extends StatefulWidget {
   const RegistScreen({Key? key}) : super(key: key);
@@ -28,7 +31,7 @@ class _RegistScreenState extends State<RegistScreen> {
     setState(() {
       if (pickedFile != null) {
         representImage = File(pickedFile.path);
-        nftImage = File(pickedFile.path);
+        // nftImage = File(pickedFile.path);
       } else {
         print('No image selected.');
       }
@@ -73,6 +76,34 @@ class _RegistScreenState extends State<RegistScreen> {
   //페이지 관리
   int _selectedIndex = 0; // 선택된 인덱스
 
+  void nextPageAndMakeNFT() async {
+    nextPage();
+    var nftImageInstance = await MakeNft.getNft(mainImg: representImage!);
+    //강아지 사진이 아니라면 다시 돌아오기
+    if (nftImageInstance == null) {
+      prevPage();
+      //Snackbar 띄우기
+      const snackBar = SnackBar(
+        content: Text(
+          '강아지 사진이 아니거나 올바른 파일 형식이 아닙니다.',
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Colors.red,
+        duration: Duration(seconds: 3),
+        behavior: SnackBarBehavior.floating,
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    } else {
+      if (mounted) {
+        File croppedImage = await getImageAsSquare(nftImageInstance);
+        setState(() {
+          nftImage = croppedImage;
+          // nftImage = nftImageInstance;
+        });
+      }
+    }
+  }
+
   void nextPage() {
     if (_selectedIndex < 2) {
       setState(() {
@@ -85,6 +116,7 @@ class _RegistScreenState extends State<RegistScreen> {
     if (_selectedIndex > 0) {
       setState(() {
         _selectedIndex = _selectedIndex - 1;
+        if (_selectedIndex == 0) nftImage = null;
       });
     }
   }
@@ -103,13 +135,15 @@ class _RegistScreenState extends State<RegistScreen> {
         index: _selectedIndex,
         children: [
           RegistRepresentive(
-            nextPage: nextPage,
+            nextPage: nextPageAndMakeNFT,
             representImage: representImage,
             pickRepresentImage: () => _pickRepresentImage(),
           ),
           RegistNftPreview(
             nextPage: nextPage,
             prevPage: prevPage,
+            nftImage: nftImage,
+            representImage: representImage,
           ),
           RegistSpecificInfo(
             dogPhotoList: dogPhotoList,
@@ -121,4 +155,25 @@ class _RegistScreenState extends State<RegistScreen> {
       ),
     );
   }
+}
+
+Future<File> getImageAsSquare(File imageFile) async {
+  final Directory appDir = await getApplicationDocumentsDirectory();
+  final String appPath = appDir.path;
+
+  // 이미지 로드
+  var image = img.decodeImage(await imageFile.readAsBytes());
+
+  // 이미지를 정방형으로 조정
+  final int size = image!.width > image.height ? image.height : image.width;
+  final img.Image squareImage = img.copyResizeCropSquare(image, size: size);
+
+  // 새 파일로 저장
+  final String newPath = '$appPath/square_image.jpg';
+  final File newImageFile = File(newPath);
+  await newImageFile.writeAsBytes(img.encodeJpg(squareImage));
+
+  print('정방형 이미지가 저장되었습니다: $newPath');
+
+  return newImageFile;
 }

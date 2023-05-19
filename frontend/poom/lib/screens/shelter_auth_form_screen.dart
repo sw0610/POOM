@@ -39,9 +39,7 @@ class _ShelterAuthFormScreenState extends State<ShelterAuthFormScreen> {
     if (selectedImages.isNotEmpty) {
       imageFileList.addAll(selectedImages);
     }
-    print(imageFileList.first.path);
-    print("Image List Length:${imageFileList.length}");
-
+    print(imageFileList);
     // 5개 초과시 안내 메세지 보이기
     if (imageFileList.length >= 6) {
       print("5개까지 등록 가능해요!");
@@ -258,22 +256,6 @@ class _ShelterAuthFormScreenState extends State<ShelterAuthFormScreen> {
                 const SizedBox(
                   height: 32,
                 ),
-                // Row(
-                //   children: [
-                //     GestureDetector(
-                //       onTap: () {
-                //         selectImages();
-                //       },
-                //       child: Container(
-                //         decoration: const BoxDecoration(
-                //           color: Colors.red,
-                //         ),
-                //         width: 60,
-                //         height: 60,
-                //       ),
-                //     ),
-                //   ],
-                // ),
                 SingleChildScrollView(
                   child: Row(
                     children: [
@@ -388,7 +370,7 @@ class _ShelterAuthFormScreenState extends State<ShelterAuthFormScreen> {
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: TextButton(
-                          onPressed: () {
+                          onPressed: () async {
                             if (_shelterAddress == "") {
                               ScaffoldMessenger.of(context)
                                   .showSnackBar(const SnackBar(
@@ -416,6 +398,8 @@ class _ShelterAuthFormScreenState extends State<ShelterAuthFormScreen> {
                                   'shelterPhoneNumber': _shelterPhone,
                                 }
                               });
+
+                              Navigator.pop(context);
                             }
                           },
                           child: const Text(

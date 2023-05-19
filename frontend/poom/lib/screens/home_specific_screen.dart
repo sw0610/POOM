@@ -291,8 +291,8 @@ class _DogSpecificScreenState extends State<DogSpecificScreen> {
                         DogInfo(
                           title: '나이',
                           value: snapshot.data!.ageIsEstimated
-                              ? '${snapshot.data!.dogAge}세'
-                              : '${snapshot.data!.dogAge}세 추정',
+                              ? '${snapshot.data!.dogAge}세 추정'
+                              : '${snapshot.data!.dogAge}세',
                         ),
                         DogInfo(
                           title: '특징',
@@ -305,6 +305,7 @@ class _DogSpecificScreenState extends State<DogSpecificScreen> {
                           for (FundraiserSpecificSponsorModel supporter
                               in snapshot.data!.donations)
                             Supporter(
+                              memberId: supporter.memberId,
                               nickname: supporter.nickname,
                               imgPath: supporter.profileImgUrl,
                               amount: supporter.donationAmount,
