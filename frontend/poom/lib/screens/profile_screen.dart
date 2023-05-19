@@ -221,7 +221,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         decoration: BoxDecoration(
                                           color: ProfileScreen
                                                   .shelterStatusColorSet[
-                                              shelterStatus ?? 0],
+                                              shelterStatus ?? "UN_AUTH"],
                                           borderRadius: const BorderRadius.all(
                                               Radius.circular(4)),
                                         ),
