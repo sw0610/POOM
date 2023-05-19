@@ -11,12 +11,12 @@ public class ConvertUtil {
 
   // Double -> uint
   public static BigInteger etherToWei(Double amount){
-    return new BigDecimal(amount).multiply( new BigDecimal("1000000000000000000")).toBigInteger();
+    return BigDecimal.valueOf(amount).multiply(BigDecimal.TEN.pow(10)).toBigInteger();
   }
 
   // uint -> Double
   public static Double weiToEther(BigInteger amount) {
-    BigDecimal divisor = new BigDecimal("1000000000000000000"); // 10^18
+    BigDecimal divisor = BigDecimal.TEN.pow(10); // 10^18
     return new BigDecimal(amount).divide(divisor).doubleValue();
   }
   // LocalDateTime -> uint
