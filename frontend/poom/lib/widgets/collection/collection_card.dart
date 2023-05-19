@@ -1,9 +1,10 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:poom/widgets/collection/cahced_image.dart';
+import 'package:poom/widgets/collection/selected_card.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:social_share/social_share.dart';
 import 'package:http/http.dart' as http;
@@ -50,25 +51,32 @@ class _CollectionCardState extends State<CollectionCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: Colors.white.withOpacity(0.9),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
-      clipBehavior: Clip.hardEdge,
-      child: SizedBox(
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                fullscreenDialog: true,
+                builder: (context) => SelectedCard(imageUrl: widget.imageUrl)));
+      },
+      child: Card(
+        clipBehavior: widget.isGrid ? Clip.none : Clip.hardEdge,
+        color: Colors.white.withOpacity(0.9),
         child: Column(
           children: [
             Stack(
               children: [
-                CachedImage(
+                CachedNetworkImage(
                   imageUrl: widget.imageUrl,
                 ),
+                // CachedImage(
+                //   imageUrl: widget.imageUrl,
+                // ),
                 Positioned(
                   left: 0,
                   top: 0,
                   child: Shimmer.fromColors(
-                    baseColor: Colors.grey.shade100.withOpacity(0.5),
+                    baseColor: Colors.blue.shade100.withOpacity(0.2),
                     highlightColor: Colors.white,
                     child: Container(
                       width: MediaQuery.of(context).size.width,

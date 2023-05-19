@@ -26,7 +26,11 @@ class ShelterApiService {
 
       var cond = data["cond"];
 
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      var shelterId = preferences.getString("shelterId");
+
       FormData formData = FormData.fromMap({
+        "shelterId": shelterId,
         'certificateImages': multipartFiles,
         'shelterName': cond["shelterName"],
         'shelterAddress': cond["shelterAddress"],
@@ -34,6 +38,7 @@ class ShelterApiService {
       });
 
       final response = await dio.post("/shelters/auth", data: formData);
+
       logger.i("[ShelterApiService] certifyShelter() success $response");
     } catch (e) {
       logger.e("[ShelterApiService] certifyShelter() fail $e");
