@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:poom/screens/regist_screen.dart';
 import 'package:poom/services/home_api.dart';
+import 'package:poom/services/member_api.dart';
 import 'package:poom/widgets/home/home_dog_card.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -28,6 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   //현재 로그인한 유저의 닉네임 가져오기
   void getNicknameAndIsShelter() async {
+    await MemberApi.getMemberInfo(context);
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? prefNickname = pref.getString('nickname');
     bool? prefIsShelter = pref.getBool('isShelter');
@@ -46,16 +48,18 @@ class _HomeScreenState extends State<HomeScreen> {
       page: _page,
       size: SIZE,
     );
-    setState(() {
-      if (hasMoreAndfundraiserList.isNotEmpty) {
-        _hasMore = hasMoreAndfundraiserList[0];
-        if (fundraiserList == null) {
-          fundraiserList = hasMoreAndfundraiserList[1];
-        } else {
-          fundraiserList = fundraiserList! + hasMoreAndfundraiserList[1];
+    if (mounted) {
+      setState(() {
+        if (hasMoreAndfundraiserList.isNotEmpty) {
+          _hasMore = hasMoreAndfundraiserList[0];
+          if (fundraiserList == null) {
+            fundraiserList = hasMoreAndfundraiserList[1];
+          } else {
+            fundraiserList = fundraiserList! + hasMoreAndfundraiserList[1];
+          }
         }
-      }
-    });
+      });
+    }
   }
 
   @override
@@ -86,6 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+
     getNicknameAndIsShelter();
     setState(() {
       _selectedSortType = _sortType[0];

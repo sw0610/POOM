@@ -291,8 +291,8 @@ class _DogSpecificScreenState extends State<DogSpecificScreen> {
                         DogInfo(
                           title: '나이',
                           value: snapshot.data!.ageIsEstimated
-                              ? '${snapshot.data!.dogAge}세'
-                              : '${snapshot.data!.dogAge}세 추정',
+                              ? '${snapshot.data!.dogAge}세 추정'
+                              : '${snapshot.data!.dogAge}세',
                         ),
                         DogInfo(
                           title: '특징',
@@ -378,7 +378,7 @@ class DogInfo extends StatelessWidget {
     required this.title,
     required this.value,
   }) : super(key: key);
- 
+
   @override
   Widget build(BuildContext context) {
     return Column(

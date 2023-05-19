@@ -4,15 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:poom/models/home/fundraiser_regist_model.dart';
 import 'package:poom/screens/home_specific_screen.dart';
 import 'package:poom/services/fundraiser_api.dart';
+import 'package:poom/utils/metamask_util.dart';
 import 'package:poom/widgets/loading/loading_widget.dart';
 
 class RegistAfterScreen extends StatefulWidget {
   final File representImage;
   final File nftImage;
   final List<File> dogImages;
-  final FundraiserRegistModel dogRegistInfo;
+  FundraiserRegistModel dogRegistInfo;
 
-  const RegistAfterScreen({
+  RegistAfterScreen({
     super.key,
     required this.representImage,
     required this.nftImage,
@@ -41,6 +42,29 @@ class _RegistAfterScreenState extends State<RegistAfterScreen> {
   }
 
   void doRegist() async {
+    String walletAddressInstance = await MetamaskUtil.getMemberAddress();
+
+    if (walletAddressInstance == '') {
+      Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
+      const snackBar = SnackBar(
+        content: Text(
+          '메타마스크에서 지갑 주소를 가져올 수 없습니다.',
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Colors.red,
+        duration: Duration(seconds: 3),
+        behavior: SnackBarBehavior.floating,
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      return;
+    }
+
+    //메타마스크에서 지갑 주소 가져오기
+    widget.dogRegistInfo.shelterEthWalletAddress =
+        walletAddressInstance.toLowerCase();
+
+    print("지갑주소>>>>>>> ${widget.dogRegistInfo.shelterEthWalletAddress}");
+
     fundraiserId = await FundraiserApi.postFundraiserRegist(
       context: context,
       mainImage: widget.representImage,
