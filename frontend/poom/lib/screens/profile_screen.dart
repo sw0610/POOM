@@ -221,22 +221,39 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         decoration: BoxDecoration(
                                           color: ProfileScreen
                                                   .shelterStatusColorSet[
-                                              shelterStatus],
+                                              shelterStatus ?? "UN_AUTH"],
                                           borderRadius: const BorderRadius.all(
                                               Radius.circular(4)),
                                         ),
                                         child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 3, horizontal: 4),
-                                          child: Text(
-                                            ProfileScreen.shelterStatusData[
-                                                snapshot.data!.shelterStatus]!,
-                                            style: const TextStyle(
-                                              color: ProfileScreen._textColor,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                          ),
-                                        ),
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 3, horizontal: 4),
+                                            child:
+                                                snapshot.data!.shelterStatus !=
+                                                        null
+                                                    ? Text(
+                                                        ProfileScreen
+                                                                .shelterStatusData[
+                                                            snapshot.data!
+                                                                .shelterStatus]!,
+                                                        style: const TextStyle(
+                                                          color: ProfileScreen
+                                                              ._textColor,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                        ),
+                                                      )
+                                                    : Text(
+                                                        ProfileScreen
+                                                                .shelterStatusData[
+                                                            "UN_AUTH"]!,
+                                                        style: const TextStyle(
+                                                          color: ProfileScreen
+                                                              ._textColor,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                        ),
+                                                      )),
                                       ),
                                     ),
                                   ],

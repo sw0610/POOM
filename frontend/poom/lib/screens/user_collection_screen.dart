@@ -1,41 +1,37 @@
-import 'dart:async';
-
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:poom/services/nft_api.dart';
-import 'package:poom/widgets/collection/collection_card.dart';
 import 'package:poom/widgets/collection/collection_header.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shimmer/shimmer.dart';
 
-class CollectionScreen extends StatefulWidget {
-  const CollectionScreen({super.key});
+class UserCollectionScreen extends StatefulWidget {
+  final String memberId;
+  const UserCollectionScreen({
+    super.key,
+    required this.memberId,
+  });
 
   static const Color _textColor = Color(0xFF333333);
   static const _primaryColor = Color(0xFFFF8E01);
 
   @override
-  State<CollectionScreen> createState() => _CollectionScreenState();
+  State<UserCollectionScreen> createState() => _UserCollectionScreenState();
 }
 
-class _CollectionScreenState extends State<CollectionScreen> {
+class _UserCollectionScreenState extends State<UserCollectionScreen> {
   bool _isGrid = false;
   final bool _isOwner = false;
   bool _isDialogOpen = false;
   final imagePicker = ImagePicker();
   late Future<Map<String, dynamic>> result;
-  final RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
-
+  List<String> nftList = [];
   bool hasMore = false;
-  int pageNum = 0;
-  int nftCount = 0;
-  List<dynamic> list = [];
 
   @override
   void initState() {
     super.initState();
-    result = NftApiService().getUserNFTList(context, 0);
+    result = NftApiService().getAnotherUserNFTList(context, 0, widget.memberId);
   }
 
   // 다이얼로그 안내
@@ -73,7 +69,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
           actions: <Widget>[
             Container(
               decoration: const BoxDecoration(
-                color: CollectionScreen._primaryColor,
+                color: UserCollectionScreen._primaryColor,
                 borderRadius: BorderRadius.all(
                   Radius.circular(10),
                 ),
@@ -101,24 +97,6 @@ class _CollectionScreenState extends State<CollectionScreen> {
     );
   }
 
-  void _onRefresh() async {
-    await Future.delayed(const Duration(milliseconds: 1000));
-    _refreshController.refreshCompleted();
-  }
-
-  void _onLoading() async {
-    await Future.delayed(const Duration(milliseconds: 1000));
-    if (!hasMore) return;
-    if (nftCount != 0 && nftCount == list.length) return;
-    pageNum += 1;
-    var data = await NftApiService().getUserNFTList(context, pageNum);
-    List<dynamic> moreNftList = data["nftImgUrls"];
-    hasMore = data["hasMore"];
-    list.addAll(moreNftList);
-    _refreshController.loadComplete();
-    setState(() {});
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -128,7 +106,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
         preferredSize: const Size.fromHeight(60),
         child: AppBar(
           backgroundColor: Colors.white,
-          foregroundColor: CollectionScreen._textColor,
+          foregroundColor: UserCollectionScreen._textColor,
           shadowColor: const Color(0xFFE4E4E4),
           centerTitle: true,
           elevation: 1,
@@ -152,14 +130,12 @@ class _CollectionScreenState extends State<CollectionScreen> {
             if (snapshot.hasData) {
               hasMore = snapshot.data!["hasMore"];
               var nickname = snapshot.data!["nickname"];
-              nftCount = snapshot.data!["nftCount"];
+              var nftCount = snapshot.data!["nftCount"];
               var nftImgUrls = snapshot.data!["nftImgUrls"];
-              list = nftImgUrls;
-
               if (nftCount == 0) {
                 return const Center(
                   child: Text(
-                    "소유한 NFT가 없어요!",
+                    "아직 발급한 NFT가 없어요!",
                     style: TextStyle(
                       color: Color(0xFF333333),
                     ),
@@ -189,32 +165,43 @@ class _CollectionScreenState extends State<CollectionScreen> {
                     height: 20,
                   ),
                   Expanded(
-                    child: SmartRefresher(
-                      onLoading: _onLoading,
-                      onRefresh: _onRefresh,
-                      controller: _refreshController,
-                      enablePullDown: true,
-                      enablePullUp: true,
-                      child: GridView.builder(
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: _isGrid ? 2 : 1,
-                          mainAxisSpacing: 20,
-                          crossAxisSpacing: 20,
-                          childAspectRatio: _isGrid ? 1 : 1 / 1.32,
-                        ),
-                        itemCount: list.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return CollectionCard(
-                              imageUrl: list[index],
-                              isGrid: _isGrid,
-                              isOwner: _isOwner,
-                              isDialogOpen: _isDialogOpen,
-                              showCustomDialog: showCustomDialog,
-                              setShowDialog: () {
-                                _isDialogOpen = true;
-                              });
-                        },
+                    child: GridView.builder(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: _isGrid ? 2 : 1,
+                        mainAxisSpacing: 20,
+                        crossAxisSpacing: 5,
+                        childAspectRatio: _isGrid | !_isOwner ? 1 : 1 / 1.32,
                       ),
+                      itemCount: nftCount,
+                      itemBuilder: (BuildContext context, int index) {
+                        return CachedNetworkImage(
+                          imageUrl: nftImgUrls[index],
+                          width: MediaQuery.of(context).size.width,
+                          imageBuilder: (context, imageProvider) => Container(
+                            decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.circular(10.0), // 반경을 적용할 값
+                              image: DecorationImage(
+                                image: imageProvider,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                          placeholder: (context, url) => Shimmer.fromColors(
+                            baseColor: Colors.grey.shade100,
+                            highlightColor: Colors.white,
+                            child: Container(
+                              width: double.infinity,
+                              height: MediaQuery.of(context).size.width,
+                              decoration: BoxDecoration(
+                                  color: Colors.grey.shade100,
+                                  borderRadius: BorderRadius.circular(12)),
+                            ),
+                          ),
+                          errorWidget: (context, url, error) =>
+                              const Icon(Icons.error),
+                        );
+                      },
                     ),
                   ),
                 ],
@@ -244,16 +231,18 @@ class _CollectionScreenState extends State<CollectionScreen> {
                         crossAxisCount: _isGrid ? 2 : 1,
                         mainAxisSpacing: 20,
                         crossAxisSpacing: 5,
-                        childAspectRatio: _isGrid ? 1 : 1 / 1.32,
+                        childAspectRatio: 1,
                       ),
                       itemCount: 2,
                       itemBuilder: (BuildContext context, int index) {
-                        return Card(
-                          color: Colors.grey.shade400,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
+                        return Container(
+                          width: MediaQuery.of(context).size.width,
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade400,
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(20),
+                            ),
                           ),
-                          clipBehavior: Clip.hardEdge,
                         );
                       },
                     ),

@@ -1,7 +1,8 @@
 class FundraiserRegistModel {
   final bool ageIsEstimated;
   final int dogAge, dogGender;
-  final String dogFeature, dogName, shelterEthWalletAddress;
+  final String dogFeature, dogName;
+  String shelterEthWalletAddress;
   final DateTime endDate;
   final double targetAmount;
 

@@ -73,7 +73,7 @@ class _ProfileSupportScreenState extends State<ProfileSupportScreen> {
                     var supportList = snapshot.data!.last;
 
                     if (supportList.length == 0) {
-                      return const Text("아직 후원한 내역이 없어요!");
+                      return const Center(child: Text("아직 후원한 내역이 없어요!"));
                     }
 
                     return ListView.separated(
@@ -92,7 +92,7 @@ class _ProfileSupportScreenState extends State<ProfileSupportScreen> {
                         );
                       },
                       separatorBuilder: (context, index) => const SizedBox(
-                        height: 20,
+                        height: 10,
                       ),
                     );
                   }
@@ -172,7 +172,7 @@ class _ProfileSupportScreenState extends State<ProfileSupportScreen> {
                         );
                       },
                       separatorBuilder: (context, index) => const SizedBox(
-                        height: 20,
+                        height: 10,
                       ),
                     ),
                   );
