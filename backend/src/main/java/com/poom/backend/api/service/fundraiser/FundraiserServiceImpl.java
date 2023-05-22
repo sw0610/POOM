@@ -160,6 +160,7 @@ public class FundraiserServiceImpl implements FundraiserService {
                     .shelterName(shelterName)
                     .dogName(ipfsFundraiserDto.getDogName())
                     .dogGender(ipfsFundraiserDto.getDogGender())
+                    .dogFeature(ipfsFundraiserDto.getDogFeature())
                     .mainImgUrl(ipfsFundraiserDto.getMainImage())
                     .nftImgUrl(ipfsFundraiserDto.getNftImage())
                     .endDate(ipfsFundraiserDto.getEndDate())
