@@ -15,8 +15,9 @@ class MakeNft {
 
       var dio = Dio();
       var response = await dio.post(
-        // 'http://10.0.2.2:8080/nfts',
-        'http://172.30.1.11:8000/api2/nfts',
+        // 'http://10.0.2.2:8080/nfts', //에뮬레이터
+        // 'http://172.30.1.11:8000/api2/nfts',  //집
+        'http://70.12.230.172:8000/api2/nfts', //멀티게스트
         data: formData,
         options: Options(responseType: ResponseType.bytes),
       );
