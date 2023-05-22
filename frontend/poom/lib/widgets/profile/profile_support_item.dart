@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:poom/utils/metamask_util.dart';
 import 'package:shimmer/shimmer.dart';
 
-class SupportItem extends StatelessWidget {
+class SupportItem extends StatefulWidget {
   static const _primaryColor = Color(0xFFFF8E01);
   static List<String> stateTypes = ["진행중", "발급완료", "발급가능"];
   static List<Color> stateColors = [
@@ -15,8 +15,8 @@ class SupportItem extends StatelessWidget {
   final int donationId, fundraiserId, isIssued;
   final double donateAmount;
   final String dogName, donateDate, nftImgUrl;
-  bool isLoading = false;
-  SupportItem({
+
+  const SupportItem({
     super.key,
     required this.donationId,
     required this.fundraiserId,
@@ -26,6 +26,14 @@ class SupportItem extends StatelessWidget {
     required this.isIssued,
     required this.nftImgUrl,
   });
+
+  @override
+  State<SupportItem> createState() => _SupportItemState();
+}
+
+class _SupportItemState extends State<SupportItem> {
+  bool isLoading = false;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -43,7 +51,7 @@ class SupportItem extends StatelessWidget {
                   child: SizedBox(
                     width: 68,
                     child: CachedNetworkImage(
-                      imageUrl: nftImgUrl,
+                      imageUrl: widget.nftImgUrl,
                       width: 100,
                       height: 100,
                       fit: BoxFit.cover,
@@ -70,18 +78,18 @@ class SupportItem extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      dogName,
+                      widget.dogName,
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    Text("$donateAmount eth",
+                    Text("${widget.donateAmount} eth",
                         style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
                         )),
-                    Text(donateDate,
+                    Text(widget.donateDate,
                         style: const TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w300,
@@ -99,7 +107,8 @@ class SupportItem extends StatelessWidget {
                     children: [
                       Container(
                         decoration: BoxDecoration(
-                          color: stateColors.elementAt(isIssued),
+                          color: SupportItem.stateColors
+                              .elementAt(widget.isIssued),
                           shape: BoxShape.circle,
                         ),
                         width: 8,
@@ -109,7 +118,7 @@ class SupportItem extends StatelessWidget {
                         width: 4,
                       ),
                       Text(
-                        stateTypes.elementAt(isIssued),
+                        SupportItem.stateTypes.elementAt(widget.isIssued),
                         style: const TextStyle(
                           color: Color(0xFF999999),
                         ),
@@ -119,20 +128,24 @@ class SupportItem extends StatelessWidget {
                 ),
                 Expanded(
                   flex: 1,
-                  child: isIssued == 2
+                  child: widget.isIssued == 2
                       ? TextButton(
                           style: TextButton.styleFrom(
-                            backgroundColor: _primaryColor,
+                            backgroundColor: SupportItem._primaryColor,
                             foregroundColor: Colors.white,
                           ),
                           onPressed: () async {
-                            isLoading = true;
+                            setState(() {
+                              isLoading = true;
+                            });
                             Map<String, dynamic> data = {
-                              "donationId": donationId,
-                              "fundraiserId": fundraiserId
+                              "donationId": widget.donationId,
+                              "fundraiserId": widget.fundraiserId
                             };
                             await MetamaskUtil.handleIssueNft(context, data);
-                            isLoading = false;
+                            setState(() {
+                              isLoading = false;
+                            });
                           },
                           child:
                               isLoading ? const Text("발급중") : const Text("발급"),
