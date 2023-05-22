@@ -62,6 +62,14 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  Future<void> onRefresh() async {
+    setState(() {
+      _page = 0;
+      fundraiserList = null;
+      getFundraiserList();
+    });
+  }
+
   @override
   void dispose() {
     // 스크롤 이벤트 리스너 해제
@@ -163,106 +171,110 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-      body: SizedBox(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
-        child: ListView.builder(
-          controller: _scrollController,
-          itemBuilder: (context, index) {
-            //첫번째 자식요소
-            if (index == 0) {
-              return HomeIntroWidget(nickname: nickname);
-            }
-            //두번째 자식요소
-            else if (index == 1) {
-              return Padding(
-                padding: const EdgeInsets.only(
-                  left: 24,
-                  right: 24,
-                  top: 30,
-                  bottom: 20,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    const Text(
-                      '도움이 필요해요!',
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: Color(0xFF333333),
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    DropdownButton(
-                        isDense: true,
-                        alignment: Alignment.bottomRight,
-                        underline: Container(
-                          height: 0,
+      body: RefreshIndicator(
+        onRefresh: onRefresh,
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          child: ListView.builder(
+            controller: _scrollController,
+            itemBuilder: (context, index) {
+              //첫번째 자식요소
+              if (index == 0) {
+                return HomeIntroWidget(nickname: nickname);
+              }
+              //두번째 자식요소
+              else if (index == 1) {
+                return Padding(
+                  padding: const EdgeInsets.only(
+                    left: 24,
+                    right: 24,
+                    top: 30,
+                    bottom: 20,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      const Text(
+                        '도움이 필요해요!',
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Color(0xFF333333),
+                          fontWeight: FontWeight.w700,
                         ),
-                        value: _selectedSortType,
-                        items: _sortType
-                            .map((e) => DropdownMenuItem(
-                                  value: e,
-                                  child: Text(e),
-                                ))
-                            .toList(),
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedSortType = value;
-                            _page = 0;
-                            setState(() {
-                              if (value == "모집 중") {
-                                _isClosed = false;
-                              } else {
-                                _isClosed = true;
-                              }
-                            });
-                            fundraiserList = null;
-                            getFundraiserList();
-                          });
-                        })
-                  ],
-                ),
-              );
-            }
-            return fundraiserList == null
-                ? Padding(
-                    padding: const EdgeInsets.all(24),
-                    child: Container(
-                      height: 120,
-                      alignment: Alignment.center,
-                      child: CircularProgressIndicator(
-                        color: Theme.of(context).primaryColor,
                       ),
-                    ),
-                  )
-                : fundraiserList!.isEmpty
-                    ? Padding(
-                        padding: const EdgeInsets.all(24),
-                        child: Container(
-                          height: 120,
-                          alignment: Alignment.center,
-                          child: const Text(
-                            '도움이 필요한 보호견이 없어요',
-                            style: TextStyle(
-                              fontSize: 16,
+                      DropdownButton(
+                          isDense: true,
+                          alignment: Alignment.bottomRight,
+                          underline: Container(
+                            height: 0,
+                          ),
+                          value: _selectedSortType,
+                          items: _sortType
+                              .map((e) => DropdownMenuItem(
+                                    value: e,
+                                    child: Text(e),
+                                  ))
+                              .toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedSortType = value;
+                              _page = 0;
+                              setState(() {
+                                if (value == "모집 중") {
+                                  _isClosed = false;
+                                } else {
+                                  _isClosed = true;
+                                }
+                              });
+                              fundraiserList = null;
+                              getFundraiserList();
+                            });
+                          })
+                    ],
+                  ),
+                );
+              }
+              return fundraiserList == null
+                  ? Padding(
+                      padding: const EdgeInsets.all(24),
+                      child: Container(
+                        height: 120,
+                        alignment: Alignment.center,
+                        child: CircularProgressIndicator(
+                          color: Theme.of(context).primaryColor,
+                        ),
+                      ),
+                    )
+                  : fundraiserList!.isEmpty
+                      ? Padding(
+                          padding: const EdgeInsets.all(24),
+                          child: Container(
+                            height: 120,
+                            alignment: Alignment.center,
+                            child: const Text(
+                              '도움이 필요한 보호견이 없어요',
+                              style: TextStyle(
+                                fontSize: 16,
+                              ),
                             ),
                           ),
-                        ),
-                      )
-                    : Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 24,
-                        ),
-                        child: HomeDogCard(dogInfo: fundraiserList![index - 2]),
-                      );
-          },
-          itemCount: fundraiserList == null
-              ? 3
-              : fundraiserList!.isEmpty
-                  ? 3
-                  : fundraiserList!.length + 2,
+                        )
+                      : Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 24,
+                          ),
+                          child:
+                              HomeDogCard(dogInfo: fundraiserList![index - 2]),
+                        );
+            },
+            itemCount: fundraiserList == null
+                ? 3
+                : fundraiserList!.isEmpty
+                    ? 3
+                    : fundraiserList!.length + 2,
+          ),
         ),
       ),
     );
