@@ -27,7 +27,7 @@ class MemberApi {
     }
   }
 
-  static Future<void> login(BuildContext context) async {
+  static Future<void> login(BuildContext context, bool refresh) async {
     //페이지 새로고침 함수
     void refreshScreen() {
       Navigator.pushReplacement(
@@ -64,15 +64,17 @@ class MemberApi {
           var accesstoken = await storage.read(key: 'accesstoken');
           print('Access token: $accesstoken');
 
-          //페이지 새로고침
-          refreshScreen();
+          if (refresh) {
+            //페이지 새로고침
+            refreshScreen();
+          }
         } else {
           print('Error Code: ${response.statusCode}');
         }
       } else {
         print('Invalid Kakao Token');
         await KakaoApi.kakaoLogin();
-        login(context); //다시 로그인 시도
+        login(context, true); //다시 로그인 시도
       }
     } catch (e) {
       print(e);

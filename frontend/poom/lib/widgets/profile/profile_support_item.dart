@@ -35,6 +35,13 @@ class _SupportItemState extends State<SupportItem> {
   bool isLoading = false;
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    print("발급 현황 ${widget.isIssued}");
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       height: 92,

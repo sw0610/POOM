@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:poom/models/profile/shelter_model.dart';
+import 'package:poom/services/member_api.dart';
 import 'package:poom/services/shelter_api.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -14,11 +15,17 @@ class _ShelterAuthScreenState extends State<ShelterAuthScreen> {
   static const Color _textColor = Color(0xFF333333);
   late Future<ShelterModel> shelterInfo;
 
+  void getAccessToken() async {
+    await MemberApi.login(context, false);
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     shelterInfo = ShelterApiService().getShelterInfo(context);
+    // access token 재발급
+    getAccessToken();
   }
 
   @override
