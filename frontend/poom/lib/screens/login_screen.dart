@@ -7,7 +7,7 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     void doLogin() async {
-      await MemberApi.login(context);
+      await MemberApi.login(context, true);
     }
 
     return Scaffold(

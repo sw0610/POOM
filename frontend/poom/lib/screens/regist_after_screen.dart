@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:poom/models/home/fundraiser_regist_model.dart';
 import 'package:poom/screens/home_specific_screen.dart';
 import 'package:poom/services/fundraiser_api.dart';
-import 'package:poom/utils/metamask_util.dart';
 import 'package:poom/widgets/loading/loading_widget.dart';
 
 class RegistAfterScreen extends StatefulWidget {
@@ -65,8 +64,8 @@ class _RegistAfterScreenState extends State<RegistAfterScreen> {
 
     // print("지갑주소>>>>>>> ${widget.dogRegistInfo.shelterEthWalletAddress}");
 
-    widget.dogRegistInfo.shelterEthWalletAddress =
-        '0x80e8ceA9D63b0D64C94d42B8248Bb9c409117b36'.toLowerCase();
+    // widget.dogRegistInfo.shelterEthWalletAddress =
+    //     '0x80e8ceA9D63b0D64C94d42B8248Bb9c409117b36'.toLowerCase();
 
     fundraiserId = await FundraiserApi.postFundraiserRegist(
       context: context,

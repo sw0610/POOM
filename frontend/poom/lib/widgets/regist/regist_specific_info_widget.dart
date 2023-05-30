@@ -49,7 +49,8 @@ class _RegistSpecificInfoState extends State<RegistSpecificInfo> {
       dogGender: _dogGender,
       dogFeature: _dogFeature,
       dogName: _dogName,
-      shelterEthWalletAddress: '',
+      shelterEthWalletAddress:
+          '0x80e8ceA9D63b0D64C94d42B8248Bb9c409117b36'.toLowerCase(),
       endDate: _endDate,
       targetAmount: double.parse(_targetAmount),
     );
